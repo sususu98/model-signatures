@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/sususu98/model-signatures/schemas/signature.schema.json",
+  "title": "Model Signature Entry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "provider",
+    "source",
+    "model",
+    "signature_type",
+    "signature",
+    "evidence",
+    "observed_at"
+  ],
+  "properties": {
+    "provider": {
+      "type": "string",
+      "enum": ["claude", "gpt", "gemini"]
+    },
+    "source": {
+      "type": "string",
+      "enum": ["api", "claude-code", "other"]
+    },
+    "model": {
+      "type": "string",
+      "minLength": 1
+    },
+    "signature_type": {
+      "type": "string",
+      "minLength": 1,
+      "examples": ["response_shape", "tool_call_shape", "thinking_signature"]
+    },
+    "signature": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["captured_from"],
+      "properties": {
+        "captured_from": {
+          "type": "string",
+          "minLength": 1
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "redactions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    }
+  }
+}
+
