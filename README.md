@@ -9,6 +9,10 @@ Current scope:
   - Claude Code
 - GPT
 - Gemini
+  - AI Studio
+  - Vertex AI
+  - Antigravity
+  - Gemini CLI
 
 The goal is to keep the data small, reviewable, and safe to publish. Do not commit API keys,
 authorization headers, cookies, private prompts, user content, or raw logs that may contain
@@ -26,7 +30,14 @@ signatures/
   gpt/
     signatures.json
   gemini/
-    signatures.json
+    aistudio/
+      signatures.json
+    vertex/
+      signatures.json
+    antigravity/
+      signatures.json
+    gemini-cli/
+      signatures.json
 schemas/
   signature.schema.json
 ```
@@ -63,4 +74,3 @@ Basic JSON validation:
 ```bash
 jq empty signatures/**/*.json schemas/*.json
 ```
-

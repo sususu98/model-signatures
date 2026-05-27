@@ -1,4 +1,8 @@
 # Gemini Signatures
 
-Add Gemini signature entries to `signatures.json`.
+Gemini signatures are split by source:
 
+- `aistudio`: Google AI Studio observations.
+- `vertex`: Vertex AI observations.
+- `antigravity`: Antigravity client observations.
+- `gemini-cli`: Gemini CLI observations.

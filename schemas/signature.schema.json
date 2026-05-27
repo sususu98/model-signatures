@@ -20,7 +20,15 @@
     },
     "source": {
       "type": "string",
-      "enum": ["api", "claude-code", "other"]
+      "enum": [
+        "api",
+        "claude-code",
+        "aistudio",
+        "vertex",
+        "antigravity",
+        "gemini-cli",
+        "other"
+      ]
     },
     "model": {
       "type": "string",
@@ -62,4 +70,3 @@
     }
   }
 }
-
