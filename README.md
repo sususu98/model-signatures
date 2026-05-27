@@ -8,6 +8,8 @@ Current scope:
   - API
   - Claude Code
 - GPT
+  - API
+  - Codex
 - Gemini
   - AI Studio
   - Vertex AI
@@ -28,7 +30,10 @@ signatures/
     claude-code/
       signatures.json
   gpt/
-    signatures.json
+    api/
+      signatures.json
+    codex/
+      signatures.json
   gemini/
     aistudio/
       signatures.json

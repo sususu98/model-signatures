@@ -1,4 +1,6 @@
 # GPT Signatures
 
-Add GPT signature entries to `signatures.json`.
+GPT signatures are split by source:
 
+- `api`: GPT API observations.
+- `codex`: Codex client observations.

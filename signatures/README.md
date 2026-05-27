@@ -6,7 +6,8 @@ Currently tracked providers:
 
 - `claude/api`
 - `claude/claude-code`
-- `gpt`
+- `gpt/api`
+- `gpt/codex`
 - `gemini/aistudio`
 - `gemini/vertex`
 - `gemini/antigravity`
