@@ -1,14 +1,23 @@
 # Signatures
 
-Provider signature data lives under this directory.
+This directory contains metadata-only observations grouped by model family and trusted endpoint
+surface.
 
-Currently tracked providers:
+Published endpoint buckets:
 
-- `claude/api`
+- `claude/anthropic`
+- `claude/aws-bedrock`
+- `claude/azure`
+- `claude/vertex`
 - `claude/claude-code`
-- `gpt/api`
+- `gpt/openai`
+- `gpt/azure-openai`
 - `gpt/codex`
 - `gemini/aistudio`
 - `gemini/vertex`
 - `gemini/antigravity`
 - `gemini/gemini-cli`
+- `grok/xai`
+
+Do not add local gateway names, filename-derived buckets, or unverified routing labels here. Keep
+those in `internal/` until a direct endpoint source is credible enough to publish.

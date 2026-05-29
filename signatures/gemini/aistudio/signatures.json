@@ -1,2 +1,625 @@
-[]
-
+[
+  {
+    "schema_version": "1.0",
+    "model_family": "gemini",
+    "endpoint": {
+      "id": "aistudio",
+      "confidence": "github_reported",
+      "provider": "google",
+      "product": "Google AI Studio Gemini",
+      "protocol": "gemini-generate-content"
+    },
+    "model": "gemini-2.5-pro",
+    "collection_status": "stable",
+    "signature_source": {
+      "protocol": "gemini-generate-content",
+      "container_type": "part",
+      "field": "thoughtSignature",
+      "alternate_fields": [
+        "thought_signature"
+      ],
+      "json_path": "$.candidates[].content.parts[].thoughtSignature",
+      "request_replay_json_path": "$.contents[].parts[].thoughtSignature",
+      "provider_term": "thought signature",
+      "notes": "Gemini signatures may appear on text parts, thought parts, or functionCall parts."
+    },
+    "sample": {
+      "raw_policy": "metadata_only",
+      "sha256": "be83b264a4f55eab490f8de81e5d93af6817468c4613a67c48281b3a999dd55e",
+      "length": 380,
+      "encoding": "base64",
+      "omitted_reason": "raw provider-native signature is not published"
+    },
+    "classification": {
+      "format": "protobuf",
+      "decoded_length": 283,
+      "top_level_first_byte": "0x0a",
+      "prefix": "Ci",
+      "valid_outer_format": true
+    },
+    "payload_shape": {
+      "request": {
+        "protocol": "gemini-generate-content",
+        "root_path": "$",
+        "conversation_path": "$.contents",
+        "system_paths": [
+          "$.systemInstruction",
+          "$.system_instruction"
+        ],
+        "message_paths": [
+          "$.contents[]"
+        ],
+        "signature_paths": [
+          "$.contents[].parts[].thoughtSignature",
+          "$.contents[].parts[].thought_signature"
+        ],
+        "signature_container_paths": [
+          "$.contents[].parts[?(@.thoughtSignature)]",
+          "$.contents[].parts[?(@.thought_signature)]"
+        ],
+        "reasoning_text_paths": [
+          "$.contents[].parts[?(@.thought==true)].text"
+        ],
+        "tool_call_paths": [
+          "$.contents[].parts[?(@.functionCall)]"
+        ],
+        "tool_result_paths": [
+          "$.contents[].parts[?(@.functionResponse)]"
+        ],
+        "id_paths": [
+          "$.contents[].parts[].functionCall.id",
+          "$.contents[].parts[].functionResponse.id"
+        ],
+        "related_paths": [
+          "$.providerOptions.google.thoughtSignature",
+          "$.providerOptions.googleVertex.thoughtSignature",
+          "$.providerOptions.vertex.thoughtSignature",
+          "$.providerMetadata.google.thoughtSignature",
+          "$.providerMetadata.googleVertex.thoughtSignature",
+          "$.providerMetadata.vertex.thoughtSignature"
+        ],
+        "ordering_invariants": [
+          "model functionCall parts pair with following user functionResponse parts",
+          "the first functionCall in a model turn must carry a valid thoughtSignature or sentinel",
+          "adapter metadata namespaces must be resolved before serializing functionCall thoughtSignature to the wire",
+          "functionResponse parts must not receive a copied functionCall thoughtSignature unless native server-tool response metadata provides one"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "response": {
+        "protocol": "gemini-generate-content",
+        "root_path": "$",
+        "conversation_path": "$.candidates[].content",
+        "message_paths": [
+          "$.candidates[].content"
+        ],
+        "signature_paths": [
+          "$.candidates[].content.parts[].thoughtSignature",
+          "$.candidates[].content.parts[].thought_signature"
+        ],
+        "signature_container_paths": [
+          "$.candidates[].content.parts[?(@.thoughtSignature)]",
+          "$.candidates[].content.parts[?(@.thought_signature)]"
+        ],
+        "reasoning_text_paths": [
+          "$.candidates[].content.parts[?(@.thought==true)].text"
+        ],
+        "tool_call_paths": [
+          "$.candidates[].content.parts[?(@.functionCall)]"
+        ],
+        "id_paths": [
+          "$.candidates[].content.parts[].functionCall.id"
+        ],
+        "related_paths": [
+          "$.providerMetadata.google.thoughtSignature",
+          "$.providerMetadata.googleVertex.thoughtSignature",
+          "$.providerMetadata.vertex.thoughtSignature"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "stream": {
+        "protocol": "gemini-generate-content",
+        "root_path": "$",
+        "signature_paths": [
+          "$.candidates[].content.parts[].thoughtSignature",
+          "$.candidates[].content.parts[].thought_signature"
+        ],
+        "reasoning_text_paths": [
+          "$.candidates[].content.parts[?(@.thought==true)].text"
+        ],
+        "stream_events": [
+          "GenerateContentResponse chunk"
+        ],
+        "prompt_content_policy": "not_collected"
+      }
+    },
+    "conversion": {
+      "round_trip_required": true,
+      "replay_scope": "same_endpoint",
+      "cross_endpoint_safe": false,
+      "fallback_policy": "skip_thought_signature_validator",
+      "cache_key_hints": [
+        "thought_text",
+        "text_part",
+        "function_call_id",
+        "conversation_prefix"
+      ],
+      "notes": "Gemini can use skip_thought_signature_validator for some incompatible model-part replay cases."
+    },
+    "protocol_profile_id": "gemini-generate-content-thought-signature-v1",
+    "replay_contract": {
+      "emitted_in": "response_and_stream",
+      "replayed_in": "next_request_history",
+      "must_replay": true,
+      "scope": [
+        "same_endpoint",
+        "same_model",
+        "same_conversation_prefix",
+        "same_tool_call"
+      ],
+      "native_endpoint_ids": [
+        "aistudio",
+        "vertex",
+        "antigravity",
+        "gemini-cli"
+      ],
+      "foreign_signature_policy": "replace_with_sentinel",
+      "synthetic_replacement": {
+        "allowed": true,
+        "field": "thoughtSignature",
+        "value": "skip_thought_signature_validator",
+        "when": [
+          "first functionCall in a model turn has no replayable provider-native signature",
+          "foreign or malformed signature must be bypassed for Gemini request validation"
+        ]
+      },
+      "tool_pairing": {
+        "required": true,
+        "pairing_rule": "function_call_followed_by_function_response",
+        "call_id_paths": [
+          "$.contents[].parts[].functionCall.id"
+        ],
+        "response_id_paths": [
+          "$.contents[].parts[].functionResponse.id"
+        ],
+        "order_sensitive": true,
+        "signature_required_on": "first_function_call_part"
+      },
+      "notes": "Gemini can preserve provider-native thoughtSignature values, but uses the documented sentinel for some incompatible functionCall replay cases."
+    },
+    "provenance": {
+      "source_repo": "google-gemini/gemini-cli",
+      "evidence_url": "https://github.com/google-gemini/gemini-cli/issues/5671#issuecomment-3163110722",
+      "legacy_source_file": "github/google-gemini-gemini-cli-issues-5671-comment-3163110722.md",
+      "legacy_source_line": 73,
+      "legacy_source_name": "google-gemini-gemini-cli-issue-5671-comment-3163110722",
+      "backend_claim": "gemini-api-key",
+      "backend_confidence": "github_reported",
+      "notes": "Metadata-only import from public Gemini CLI issue comment comparing Gemini API-key behavior with Code Assist OAuth. The raw thoughtSignature and prompt/tool payload are omitted."
+    },
+    "observed_at": "2025-08-07T08:38:24+00:00",
+    "redactions": [
+      "request_context",
+      "user_content",
+      "tool_arguments"
+    ]
+  },
+  {
+    "schema_version": "1.0",
+    "model_family": "gemini",
+    "endpoint": {
+      "id": "aistudio",
+      "confidence": "github_reported",
+      "provider": "google",
+      "product": "Google AI Studio Gemini",
+      "protocol": "gemini-generate-content"
+    },
+    "model": "gemini-2.5-pro",
+    "collection_status": "stable",
+    "signature_source": {
+      "protocol": "gemini-generate-content",
+      "container_type": "part",
+      "field": "thoughtSignature",
+      "alternate_fields": [
+        "thought_signature"
+      ],
+      "json_path": "$.candidates[].content.parts[].thoughtSignature",
+      "request_replay_json_path": "$.contents[].parts[].thoughtSignature",
+      "provider_term": "thought signature",
+      "notes": "Gemini signatures may appear on text parts, thought parts, or functionCall parts."
+    },
+    "sample": {
+      "raw_policy": "metadata_only",
+      "sha256": "3bce3188e25839bd4eac8cbb913dd958a26aa3870d5f43c2765f607a97c288a2",
+      "length": 716,
+      "encoding": "base64",
+      "omitted_reason": "raw provider-native signature is not published"
+    },
+    "classification": {
+      "format": "protobuf",
+      "decoded_length": 537,
+      "top_level_first_byte": "0x0a",
+      "prefix": "Cp",
+      "valid_outer_format": true
+    },
+    "payload_shape": {
+      "request": {
+        "protocol": "gemini-generate-content",
+        "root_path": "$",
+        "conversation_path": "$.contents",
+        "system_paths": [
+          "$.systemInstruction",
+          "$.system_instruction"
+        ],
+        "message_paths": [
+          "$.contents[]"
+        ],
+        "signature_paths": [
+          "$.contents[].parts[].thoughtSignature",
+          "$.contents[].parts[].thought_signature"
+        ],
+        "signature_container_paths": [
+          "$.contents[].parts[?(@.thoughtSignature)]",
+          "$.contents[].parts[?(@.thought_signature)]"
+        ],
+        "reasoning_text_paths": [
+          "$.contents[].parts[?(@.thought==true)].text"
+        ],
+        "tool_call_paths": [
+          "$.contents[].parts[?(@.functionCall)]"
+        ],
+        "tool_result_paths": [
+          "$.contents[].parts[?(@.functionResponse)]"
+        ],
+        "id_paths": [
+          "$.contents[].parts[].functionCall.id",
+          "$.contents[].parts[].functionResponse.id"
+        ],
+        "related_paths": [
+          "$.providerOptions.google.thoughtSignature",
+          "$.providerOptions.googleVertex.thoughtSignature",
+          "$.providerOptions.vertex.thoughtSignature",
+          "$.providerMetadata.google.thoughtSignature",
+          "$.providerMetadata.googleVertex.thoughtSignature",
+          "$.providerMetadata.vertex.thoughtSignature"
+        ],
+        "ordering_invariants": [
+          "model functionCall parts pair with following user functionResponse parts",
+          "the first functionCall in a model turn must carry a valid thoughtSignature or sentinel",
+          "adapter metadata namespaces must be resolved before serializing functionCall thoughtSignature to the wire",
+          "functionResponse parts must not receive a copied functionCall thoughtSignature unless native server-tool response metadata provides one"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "response": {
+        "protocol": "gemini-generate-content",
+        "root_path": "$",
+        "conversation_path": "$.candidates[].content",
+        "message_paths": [
+          "$.candidates[].content"
+        ],
+        "signature_paths": [
+          "$.candidates[].content.parts[].thoughtSignature",
+          "$.candidates[].content.parts[].thought_signature"
+        ],
+        "signature_container_paths": [
+          "$.candidates[].content.parts[?(@.thoughtSignature)]",
+          "$.candidates[].content.parts[?(@.thought_signature)]"
+        ],
+        "reasoning_text_paths": [
+          "$.candidates[].content.parts[?(@.thought==true)].text"
+        ],
+        "tool_call_paths": [
+          "$.candidates[].content.parts[?(@.functionCall)]"
+        ],
+        "id_paths": [
+          "$.candidates[].content.parts[].functionCall.id"
+        ],
+        "related_paths": [
+          "$.providerMetadata.google.thoughtSignature",
+          "$.providerMetadata.googleVertex.thoughtSignature",
+          "$.providerMetadata.vertex.thoughtSignature"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "stream": {
+        "protocol": "gemini-generate-content",
+        "root_path": "$",
+        "signature_paths": [
+          "$.candidates[].content.parts[].thoughtSignature",
+          "$.candidates[].content.parts[].thought_signature"
+        ],
+        "reasoning_text_paths": [
+          "$.candidates[].content.parts[?(@.thought==true)].text"
+        ],
+        "stream_events": [
+          "GenerateContentResponse chunk"
+        ],
+        "prompt_content_policy": "not_collected"
+      }
+    },
+    "conversion": {
+      "round_trip_required": true,
+      "replay_scope": "same_endpoint",
+      "cross_endpoint_safe": false,
+      "fallback_policy": "skip_thought_signature_validator",
+      "cache_key_hints": [
+        "thought_text",
+        "text_part",
+        "function_call_id",
+        "conversation_prefix"
+      ],
+      "notes": "Gemini can use skip_thought_signature_validator for some incompatible model-part replay cases."
+    },
+    "protocol_profile_id": "gemini-generate-content-thought-signature-v1",
+    "replay_contract": {
+      "emitted_in": "response_and_stream",
+      "replayed_in": "next_request_history",
+      "must_replay": true,
+      "scope": [
+        "same_endpoint",
+        "same_model",
+        "same_conversation_prefix",
+        "same_tool_call"
+      ],
+      "native_endpoint_ids": [
+        "aistudio",
+        "vertex",
+        "antigravity",
+        "gemini-cli"
+      ],
+      "foreign_signature_policy": "replace_with_sentinel",
+      "synthetic_replacement": {
+        "allowed": true,
+        "field": "thoughtSignature",
+        "value": "skip_thought_signature_validator",
+        "when": [
+          "first functionCall in a model turn has no replayable provider-native signature",
+          "foreign or malformed signature must be bypassed for Gemini request validation"
+        ]
+      },
+      "tool_pairing": {
+        "required": true,
+        "pairing_rule": "function_call_followed_by_function_response",
+        "call_id_paths": [
+          "$.contents[].parts[].functionCall.id"
+        ],
+        "response_id_paths": [
+          "$.contents[].parts[].functionResponse.id"
+        ],
+        "order_sensitive": true,
+        "signature_required_on": "first_function_call_part"
+      },
+      "notes": "Gemini can preserve provider-native thoughtSignature values, but uses the documented sentinel for some incompatible functionCall replay cases."
+    },
+    "provenance": {
+      "legacy_source_file": "github/pydantic-pydantic-ai/tests/models/cassettes/test_google/test_google_model_retry.yaml",
+      "legacy_source_line": 68,
+      "legacy_source_name": "test_google_model_retry",
+      "backend_claim": "aistudio",
+      "backend_confidence": "github_reported",
+      "notes": "Metadata-only import from public pydantic-ai Google AI Studio cassette. The file records generativelanguage.googleapis.com generateContent traffic and a response part thoughtSignature; raw signature, prompt text, tool arguments, and provider credentials are omitted.",
+      "source_repo": "pydantic/pydantic-ai",
+      "evidence_url": "https://github.com/pydantic/pydantic-ai/blob/5542eee013b1d5aaf77295ecf5f8a9b91401d52b/tests/models/cassettes/test_google/test_google_model_retry.yaml"
+    },
+    "observed_at": "2026-05-28T01:10:39Z",
+    "redactions": [
+      "request_context",
+      "user_content",
+      "tool_arguments",
+      "provider_key",
+      "project_id",
+      "oauth_token",
+      "raw_thought_signature"
+    ]
+  },
+  {
+    "schema_version": "1.0",
+    "model_family": "gemini",
+    "endpoint": {
+      "id": "aistudio",
+      "confidence": "github_reported",
+      "provider": "google",
+      "product": "Google AI Studio Gemini",
+      "protocol": "gemini-generate-content"
+    },
+    "model": "gemini-3-pro-preview",
+    "collection_status": "stable",
+    "signature_source": {
+      "protocol": "gemini-generate-content",
+      "container_type": "part",
+      "field": "thoughtSignature",
+      "alternate_fields": [
+        "thought_signature"
+      ],
+      "json_path": "$.candidates[].content.parts[].thoughtSignature",
+      "request_replay_json_path": "$.contents[].parts[].thoughtSignature",
+      "provider_term": "thought signature",
+      "notes": "Gemini signatures may appear on text parts, thought parts, or functionCall parts."
+    },
+    "sample": {
+      "raw_policy": "metadata_only",
+      "sha256": "258361627909cff1cf88b92b72b4b0accd91f250eeea6e8a37bfa36d7e1b9ab8",
+      "length": 1408,
+      "encoding": "base64",
+      "omitted_reason": "raw provider-native signature is not published"
+    },
+    "classification": {
+      "format": "wrapped_protobuf_unclassified",
+      "decoded_length": 1026,
+      "top_level_first_byte": "0x12",
+      "prefix": "Ep",
+      "valid_outer_format": true
+    },
+    "payload_shape": {
+      "request": {
+        "protocol": "gemini-generate-content",
+        "root_path": "$",
+        "conversation_path": "$.contents",
+        "system_paths": [
+          "$.systemInstruction",
+          "$.system_instruction"
+        ],
+        "message_paths": [
+          "$.contents[]"
+        ],
+        "signature_paths": [
+          "$.contents[].parts[].thoughtSignature",
+          "$.contents[].parts[].thought_signature"
+        ],
+        "signature_container_paths": [
+          "$.contents[].parts[?(@.thoughtSignature)]",
+          "$.contents[].parts[?(@.thought_signature)]"
+        ],
+        "reasoning_text_paths": [
+          "$.contents[].parts[?(@.thought==true)].text"
+        ],
+        "tool_call_paths": [
+          "$.contents[].parts[?(@.functionCall)]"
+        ],
+        "tool_result_paths": [
+          "$.contents[].parts[?(@.functionResponse)]"
+        ],
+        "id_paths": [
+          "$.contents[].parts[].functionCall.id",
+          "$.contents[].parts[].functionResponse.id"
+        ],
+        "related_paths": [
+          "$.providerOptions.google.thoughtSignature",
+          "$.providerOptions.googleVertex.thoughtSignature",
+          "$.providerOptions.vertex.thoughtSignature",
+          "$.providerMetadata.google.thoughtSignature",
+          "$.providerMetadata.googleVertex.thoughtSignature",
+          "$.providerMetadata.vertex.thoughtSignature"
+        ],
+        "ordering_invariants": [
+          "model functionCall parts pair with following user functionResponse parts",
+          "the first functionCall in a model turn must carry a valid thoughtSignature or sentinel",
+          "adapter metadata namespaces must be resolved before serializing functionCall thoughtSignature to the wire",
+          "functionResponse parts must not receive a copied functionCall thoughtSignature unless native server-tool response metadata provides one"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "response": {
+        "protocol": "gemini-generate-content",
+        "root_path": "$",
+        "conversation_path": "$.candidates[].content",
+        "message_paths": [
+          "$.candidates[].content"
+        ],
+        "signature_paths": [
+          "$.candidates[].content.parts[].thoughtSignature",
+          "$.candidates[].content.parts[].thought_signature"
+        ],
+        "signature_container_paths": [
+          "$.candidates[].content.parts[?(@.thoughtSignature)]",
+          "$.candidates[].content.parts[?(@.thought_signature)]"
+        ],
+        "reasoning_text_paths": [
+          "$.candidates[].content.parts[?(@.thought==true)].text"
+        ],
+        "tool_call_paths": [
+          "$.candidates[].content.parts[?(@.functionCall)]"
+        ],
+        "id_paths": [
+          "$.candidates[].content.parts[].functionCall.id"
+        ],
+        "related_paths": [
+          "$.providerMetadata.google.thoughtSignature",
+          "$.providerMetadata.googleVertex.thoughtSignature",
+          "$.providerMetadata.vertex.thoughtSignature"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "stream": {
+        "protocol": "gemini-generate-content",
+        "root_path": "$",
+        "signature_paths": [
+          "$.candidates[].content.parts[].thoughtSignature",
+          "$.candidates[].content.parts[].thought_signature"
+        ],
+        "reasoning_text_paths": [
+          "$.candidates[].content.parts[?(@.thought==true)].text"
+        ],
+        "stream_events": [
+          "GenerateContentResponse chunk"
+        ],
+        "prompt_content_policy": "not_collected"
+      }
+    },
+    "conversion": {
+      "round_trip_required": true,
+      "replay_scope": "same_endpoint",
+      "cross_endpoint_safe": false,
+      "fallback_policy": "skip_thought_signature_validator",
+      "cache_key_hints": [
+        "thought_text",
+        "text_part",
+        "function_call_id",
+        "conversation_prefix"
+      ],
+      "notes": "Gemini can use skip_thought_signature_validator for some incompatible model-part replay cases."
+    },
+    "protocol_profile_id": "gemini-generate-content-thought-signature-v1",
+    "replay_contract": {
+      "emitted_in": "response_and_stream",
+      "replayed_in": "next_request_history",
+      "must_replay": true,
+      "scope": [
+        "same_endpoint",
+        "same_model",
+        "same_conversation_prefix",
+        "same_tool_call"
+      ],
+      "native_endpoint_ids": [
+        "aistudio",
+        "vertex",
+        "antigravity",
+        "gemini-cli"
+      ],
+      "foreign_signature_policy": "replace_with_sentinel",
+      "synthetic_replacement": {
+        "allowed": true,
+        "field": "thoughtSignature",
+        "value": "skip_thought_signature_validator",
+        "when": [
+          "first functionCall in a model turn has no replayable provider-native signature",
+          "foreign or malformed signature must be bypassed for Gemini request validation"
+        ]
+      },
+      "tool_pairing": {
+        "required": true,
+        "pairing_rule": "function_call_followed_by_function_response",
+        "call_id_paths": [
+          "$.contents[].parts[].functionCall.id"
+        ],
+        "response_id_paths": [
+          "$.contents[].parts[].functionResponse.id"
+        ],
+        "order_sensitive": true,
+        "signature_required_on": "first_function_call_part"
+      },
+      "notes": "Gemini can preserve provider-native thoughtSignature values, but uses the documented sentinel for some incompatible functionCall replay cases."
+    },
+    "provenance": {
+      "legacy_source_file": "github/pydantic-pydantic-ai/tests/models/cassettes/test_google/test_google_streaming_tool_call_thought_signature.yaml",
+      "legacy_source_line": 87,
+      "legacy_source_name": "test_google_streaming_tool_call_thought_signature",
+      "backend_claim": "aistudio",
+      "backend_confidence": "github_reported",
+      "notes": "Metadata-only import from public pydantic-ai Google AI Studio streaming tool-call cassette. The file records generativelanguage.googleapis.com streamGenerateContent traffic with a tool-call thoughtSignature; raw signature, prompt text, tool arguments, and provider credentials are omitted.",
+      "source_repo": "pydantic/pydantic-ai",
+      "evidence_url": "https://github.com/pydantic/pydantic-ai/blob/5542eee013b1d5aaf77295ecf5f8a9b91401d52b/tests/models/cassettes/test_google/test_google_streaming_tool_call_thought_signature.yaml"
+    },
+    "observed_at": "2026-05-28T01:10:39Z",
+    "redactions": [
+      "request_context",
+      "user_content",
+      "tool_arguments",
+      "provider_key",
+      "project_id",
+      "oauth_token",
+      "raw_thought_signature"
+    ]
+  }
+]

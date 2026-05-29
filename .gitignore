@@ -1,5 +1,8 @@
 .DS_Store
 .env
 *.local.json
+*.pyc
+__pycache__/
 raw/
-
+dist/
+private/

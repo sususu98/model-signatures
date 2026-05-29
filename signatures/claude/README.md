@@ -1,7 +1,13 @@
 # Claude Signatures
 
-Claude signatures are split by source:
+Claude-family observations use Anthropic Messages thinking-block signatures.
 
-- `api`: Claude API observations.
-- `claude-code`: Claude Code client observations.
+Published buckets:
 
+- `anthropic`
+- `aws-bedrock`
+- `azure`
+- `vertex`
+- `claude-code`
+
+Local gateway labels and filename-derived observations are not public Claude endpoint buckets.

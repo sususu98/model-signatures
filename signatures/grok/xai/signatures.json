@@ -1,0 +1,542 @@
+[
+  {
+    "schema_version": "1.0",
+    "model_family": "grok",
+    "endpoint": {
+      "id": "xai",
+      "confidence": "github_reported",
+      "provider": "xai",
+      "product": "xAI Responses",
+      "protocol": "xai-responses"
+    },
+    "model": "grok-4-fast-reasoning",
+    "collection_status": "stable",
+    "signature_source": {
+      "protocol": "xai-responses",
+      "container_type": "reasoning",
+      "container_selector": {
+        "type": "reasoning"
+      },
+      "field": "encrypted_content",
+      "json_path": "$.output[?(@.type=='reasoning')].encrypted_content",
+      "request_replay_json_path": "$.input[?(@.type=='reasoning')].encrypted_content",
+      "provider_term": "reasoning.encrypted_content"
+    },
+    "sample": {
+      "raw_policy": "metadata_only",
+      "sha256": "503fd0d6c5dcc5cc1992550590537e3a9efc6d8f6f3b7bb96b86db6810a0bef8",
+      "length": 1115,
+      "encoding": "base64url",
+      "omitted_reason": "raw encrypted_content is not published"
+    },
+    "classification": {
+      "format": "unknown",
+      "valid_fernet_like": false,
+      "version_byte": "0xa8",
+      "decoded_length": 836,
+      "ciphertext_length": 779,
+      "timestamp_utc": null,
+      "timestamp_beijing": null,
+      "iv_sha256": "05668fe7b771da9ec3e51b6821b35b26ee143aafa787aadd88bbb613ab3fdd45",
+      "hmac_sha256": "81bb0e7e633e8f978c09369b654c85b1889f30d972ae94d25e6a5621f7356730",
+      "valid_outer_format": false
+    },
+    "payload_shape": {
+      "request": {
+        "protocol": "xai-responses",
+        "root_path": "$",
+        "conversation_path": "$.input",
+        "message_paths": [
+          "$.input[]"
+        ],
+        "signature_paths": [
+          "$.input[?(@.type=='reasoning')].encrypted_content"
+        ],
+        "signature_container_paths": [
+          "$.input[?(@.type=='reasoning')]"
+        ],
+        "reasoning_text_paths": [
+          "$.input[?(@.type=='reasoning')].summary[].text"
+        ],
+        "tool_call_paths": [
+          "$.input[?(@.type=='function_call')]"
+        ],
+        "tool_result_paths": [
+          "$.input[?(@.type=='function_call_output')]"
+        ],
+        "id_paths": [
+          "$.input[?(@.type=='function_call')].call_id",
+          "$.input[?(@.type=='function_call_output')].call_id"
+        ],
+        "ordering_invariants": [
+          "reasoning items replay as input items before dependent outputs",
+          "function_call_output uses the prior function_call call_id"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "response": {
+        "protocol": "xai-responses",
+        "root_path": "$",
+        "conversation_path": "$.output",
+        "message_paths": [
+          "$.output[]"
+        ],
+        "signature_paths": [
+          "$.output[?(@.type=='reasoning')].encrypted_content"
+        ],
+        "signature_container_paths": [
+          "$.output[?(@.type=='reasoning')]"
+        ],
+        "reasoning_text_paths": [
+          "$.output[?(@.type=='reasoning')].summary[].text"
+        ],
+        "tool_call_paths": [
+          "$.output[?(@.type=='function_call')]"
+        ],
+        "id_paths": [
+          "$.output[?(@.type=='function_call')].call_id"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "stream": {
+        "protocol": "xai-responses",
+        "root_path": "$",
+        "signature_paths": [
+          "$.item.encrypted_content"
+        ],
+        "reasoning_text_paths": [
+          "$.delta",
+          "$.part.text"
+        ],
+        "stream_events": [
+          "response.output_item.added",
+          "response.reasoning_summary_part.added",
+          "response.reasoning_summary_text.delta",
+          "response.reasoning_summary_part.done",
+          "response.output_item.done"
+        ],
+        "prompt_content_policy": "not_collected"
+      }
+    },
+    "conversion": {
+      "round_trip_required": true,
+      "replay_scope": "same_endpoint",
+      "cross_endpoint_safe": false,
+      "fallback_policy": "drop_block",
+      "cache_key_hints": [
+        "reasoning_item_id",
+        "conversation_thread"
+      ],
+      "notes": "xAI Grok uses a Responses-compatible reasoning surface; collect native samples before assuming OpenAI decryptability semantics."
+    },
+    "protocol_profile_id": "grok-xai-responses-encrypted-content-v0",
+    "replay_contract": {
+      "emitted_in": "response_and_stream",
+      "replayed_in": "next_request_history",
+      "must_replay": true,
+      "scope": [
+        "same_endpoint",
+        "same_auth",
+        "same_session"
+      ],
+      "native_endpoint_ids": [
+        "xai"
+      ],
+      "foreign_signature_policy": "drop_block",
+      "synthetic_replacement": {
+        "allowed": false
+      },
+      "tool_pairing": {
+        "required": true,
+        "pairing_rule": "responses_call_id",
+        "call_id_paths": [
+          "$.input[?(@.type=='function_call')].call_id"
+        ],
+        "response_id_paths": [
+          "$.input[?(@.type=='function_call_output')].call_id"
+        ],
+        "order_sensitive": true,
+        "signature_required_on": "none"
+      },
+      "notes": "xAI/Grok is tracked as Responses-compatible until native encrypted_content samples prove the exact contract."
+    },
+    "provenance": {
+      "legacy_source_file": "github/pydantic-pydantic-ai/tests/models/cassettes/test_xai/test_xai_builtin_web_search_tool_stream.xai.yaml",
+      "legacy_source_line": 34,
+      "legacy_source_name": "test_xai_builtin_web_search_tool_stream.xai.yaml",
+      "backend_claim": "xai",
+      "backend_confidence": "github_reported",
+      "notes": "Metadata-only import from public pydantic-ai xAI cassette. Raw encrypted_content, prompt text, tool arguments, and provider credentials are omitted. Outer format is not assumed to match OpenAI Fernet-like encrypted_content.",
+      "source_repo": "pydantic/pydantic-ai",
+      "evidence_url": "https://github.com/pydantic/pydantic-ai/blob/5542eee013b1d5aaf77295ecf5f8a9b91401d52b/tests/models/cassettes/test_xai/test_xai_builtin_web_search_tool_stream.xai.yaml"
+    },
+    "observed_at": "2026-05-28T01:10:39Z",
+    "redactions": [
+      "request_context",
+      "user_content",
+      "tool_arguments",
+      "provider_key",
+      "raw_encrypted_content"
+    ]
+  },
+  {
+    "schema_version": "1.0",
+    "model_family": "grok",
+    "endpoint": {
+      "id": "xai",
+      "confidence": "github_reported",
+      "provider": "xai",
+      "product": "xAI Responses",
+      "protocol": "xai-responses"
+    },
+    "model": "grok-4-fast-reasoning",
+    "collection_status": "stable",
+    "signature_source": {
+      "protocol": "xai-responses",
+      "container_type": "reasoning",
+      "container_selector": {
+        "type": "reasoning"
+      },
+      "field": "encrypted_content",
+      "json_path": "$.output[?(@.type=='reasoning')].encrypted_content",
+      "request_replay_json_path": "$.input[?(@.type=='reasoning')].encrypted_content",
+      "provider_term": "reasoning.encrypted_content"
+    },
+    "sample": {
+      "raw_policy": "metadata_only",
+      "sha256": "1681485562c8d90a5a95df2ae0d523bcb0ae1f15316f3f7ad1f9284dda85641b",
+      "length": 2880,
+      "encoding": "base64url",
+      "omitted_reason": "raw encrypted_content is not published"
+    },
+    "classification": {
+      "format": "unknown",
+      "valid_fernet_like": false,
+      "version_byte": "0x31",
+      "decoded_length": 2160,
+      "ciphertext_length": 2103,
+      "timestamp_utc": null,
+      "timestamp_beijing": null,
+      "iv_sha256": "8109e7bd95c95cd8229ed6ff4403ce1056863d6fe38228938a9133c49aa029e8",
+      "hmac_sha256": "04a528daa57e5406fedb0dd009f886cbb4829ed9b8683b3a0905ac2cf976b36a",
+      "valid_outer_format": false
+    },
+    "payload_shape": {
+      "request": {
+        "protocol": "xai-responses",
+        "root_path": "$",
+        "conversation_path": "$.input",
+        "message_paths": [
+          "$.input[]"
+        ],
+        "signature_paths": [
+          "$.input[?(@.type=='reasoning')].encrypted_content"
+        ],
+        "signature_container_paths": [
+          "$.input[?(@.type=='reasoning')]"
+        ],
+        "reasoning_text_paths": [
+          "$.input[?(@.type=='reasoning')].summary[].text"
+        ],
+        "tool_call_paths": [
+          "$.input[?(@.type=='function_call')]"
+        ],
+        "tool_result_paths": [
+          "$.input[?(@.type=='function_call_output')]"
+        ],
+        "id_paths": [
+          "$.input[?(@.type=='function_call')].call_id",
+          "$.input[?(@.type=='function_call_output')].call_id"
+        ],
+        "ordering_invariants": [
+          "reasoning items replay as input items before dependent outputs",
+          "function_call_output uses the prior function_call call_id"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "response": {
+        "protocol": "xai-responses",
+        "root_path": "$",
+        "conversation_path": "$.output",
+        "message_paths": [
+          "$.output[]"
+        ],
+        "signature_paths": [
+          "$.output[?(@.type=='reasoning')].encrypted_content"
+        ],
+        "signature_container_paths": [
+          "$.output[?(@.type=='reasoning')]"
+        ],
+        "reasoning_text_paths": [
+          "$.output[?(@.type=='reasoning')].summary[].text"
+        ],
+        "tool_call_paths": [
+          "$.output[?(@.type=='function_call')]"
+        ],
+        "id_paths": [
+          "$.output[?(@.type=='function_call')].call_id"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "stream": {
+        "protocol": "xai-responses",
+        "root_path": "$",
+        "signature_paths": [
+          "$.item.encrypted_content"
+        ],
+        "reasoning_text_paths": [
+          "$.delta",
+          "$.part.text"
+        ],
+        "stream_events": [
+          "response.output_item.added",
+          "response.reasoning_summary_part.added",
+          "response.reasoning_summary_text.delta",
+          "response.reasoning_summary_part.done",
+          "response.output_item.done"
+        ],
+        "prompt_content_policy": "not_collected"
+      }
+    },
+    "conversion": {
+      "round_trip_required": true,
+      "replay_scope": "same_endpoint",
+      "cross_endpoint_safe": false,
+      "fallback_policy": "drop_block",
+      "cache_key_hints": [
+        "reasoning_item_id",
+        "conversation_thread"
+      ],
+      "notes": "xAI Grok uses a Responses-compatible reasoning surface; collect native samples before assuming OpenAI decryptability semantics."
+    },
+    "protocol_profile_id": "grok-xai-responses-encrypted-content-v0",
+    "replay_contract": {
+      "emitted_in": "response_and_stream",
+      "replayed_in": "next_request_history",
+      "must_replay": true,
+      "scope": [
+        "same_endpoint",
+        "same_auth",
+        "same_session"
+      ],
+      "native_endpoint_ids": [
+        "xai"
+      ],
+      "foreign_signature_policy": "drop_block",
+      "synthetic_replacement": {
+        "allowed": false
+      },
+      "tool_pairing": {
+        "required": true,
+        "pairing_rule": "responses_call_id",
+        "call_id_paths": [
+          "$.input[?(@.type=='function_call')].call_id"
+        ],
+        "response_id_paths": [
+          "$.input[?(@.type=='function_call_output')].call_id"
+        ],
+        "order_sensitive": true,
+        "signature_required_on": "none"
+      },
+      "notes": "xAI/Grok is tracked as Responses-compatible until native encrypted_content samples prove the exact contract."
+    },
+    "provenance": {
+      "legacy_source_file": "github/pydantic-pydantic-ai/tests/models/cassettes/test_xai/test_xai_builtin_tools_with_custom_tools.xai.yaml",
+      "legacy_source_line": 50,
+      "legacy_source_name": "test_xai_builtin_tools_with_custom_tools.xai.yaml",
+      "backend_claim": "xai",
+      "backend_confidence": "github_reported",
+      "notes": "Metadata-only import from public pydantic-ai xAI cassette. Raw encrypted_content, prompt text, tool arguments, and provider credentials are omitted. Outer format is not assumed to match OpenAI Fernet-like encrypted_content.",
+      "source_repo": "pydantic/pydantic-ai",
+      "evidence_url": "https://github.com/pydantic/pydantic-ai/blob/5542eee013b1d5aaf77295ecf5f8a9b91401d52b/tests/models/cassettes/test_xai/test_xai_builtin_tools_with_custom_tools.xai.yaml"
+    },
+    "observed_at": "2026-05-28T01:10:39Z",
+    "redactions": [
+      "request_context",
+      "user_content",
+      "tool_arguments",
+      "provider_key",
+      "raw_encrypted_content"
+    ]
+  },
+  {
+    "schema_version": "1.0",
+    "model_family": "grok",
+    "endpoint": {
+      "id": "xai",
+      "confidence": "github_reported",
+      "provider": "xai",
+      "product": "xAI Responses",
+      "protocol": "xai-responses"
+    },
+    "model": "grok-4-fast-non-reasoning",
+    "collection_status": "stable",
+    "signature_source": {
+      "protocol": "xai-responses",
+      "container_type": "reasoning",
+      "container_selector": {
+        "type": "reasoning"
+      },
+      "field": "encrypted_content",
+      "json_path": "$.output[?(@.type=='reasoning')].encrypted_content",
+      "request_replay_json_path": "$.input[?(@.type=='reasoning')].encrypted_content",
+      "provider_term": "reasoning.encrypted_content"
+    },
+    "sample": {
+      "raw_policy": "metadata_only",
+      "sha256": "6282fd39274747357648249a17b9e5fe719fd0b5efa333254820eb0928237a0b",
+      "length": 20251,
+      "encoding": "base64url",
+      "omitted_reason": "raw encrypted_content is not published"
+    },
+    "classification": {
+      "format": "unknown",
+      "valid_fernet_like": false,
+      "version_byte": "0x8a",
+      "decoded_length": 15188,
+      "ciphertext_length": 15131,
+      "timestamp_utc": null,
+      "timestamp_beijing": null,
+      "iv_sha256": "8b98f4b187c9f92159b4799da4e9cdd30401e2b380f2902732664d08869f2a02",
+      "hmac_sha256": "63e0c48129b6f1e12a87b5510c6aa0a03a13a56424cfa975efff9841d46845e5",
+      "valid_outer_format": false
+    },
+    "payload_shape": {
+      "request": {
+        "protocol": "xai-responses",
+        "root_path": "$",
+        "conversation_path": "$.input",
+        "message_paths": [
+          "$.input[]"
+        ],
+        "signature_paths": [
+          "$.input[?(@.type=='reasoning')].encrypted_content"
+        ],
+        "signature_container_paths": [
+          "$.input[?(@.type=='reasoning')]"
+        ],
+        "reasoning_text_paths": [
+          "$.input[?(@.type=='reasoning')].summary[].text"
+        ],
+        "tool_call_paths": [
+          "$.input[?(@.type=='function_call')]"
+        ],
+        "tool_result_paths": [
+          "$.input[?(@.type=='function_call_output')]"
+        ],
+        "id_paths": [
+          "$.input[?(@.type=='function_call')].call_id",
+          "$.input[?(@.type=='function_call_output')].call_id"
+        ],
+        "ordering_invariants": [
+          "reasoning items replay as input items before dependent outputs",
+          "function_call_output uses the prior function_call call_id"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "response": {
+        "protocol": "xai-responses",
+        "root_path": "$",
+        "conversation_path": "$.output",
+        "message_paths": [
+          "$.output[]"
+        ],
+        "signature_paths": [
+          "$.output[?(@.type=='reasoning')].encrypted_content"
+        ],
+        "signature_container_paths": [
+          "$.output[?(@.type=='reasoning')]"
+        ],
+        "reasoning_text_paths": [
+          "$.output[?(@.type=='reasoning')].summary[].text"
+        ],
+        "tool_call_paths": [
+          "$.output[?(@.type=='function_call')]"
+        ],
+        "id_paths": [
+          "$.output[?(@.type=='function_call')].call_id"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "stream": {
+        "protocol": "xai-responses",
+        "root_path": "$",
+        "signature_paths": [
+          "$.item.encrypted_content"
+        ],
+        "reasoning_text_paths": [
+          "$.delta",
+          "$.part.text"
+        ],
+        "stream_events": [
+          "response.output_item.added",
+          "response.reasoning_summary_part.added",
+          "response.reasoning_summary_text.delta",
+          "response.reasoning_summary_part.done",
+          "response.output_item.done"
+        ],
+        "prompt_content_policy": "not_collected"
+      }
+    },
+    "conversion": {
+      "round_trip_required": true,
+      "replay_scope": "same_endpoint",
+      "cross_endpoint_safe": false,
+      "fallback_policy": "drop_block",
+      "cache_key_hints": [
+        "reasoning_item_id",
+        "conversation_thread"
+      ],
+      "notes": "xAI Grok uses a Responses-compatible reasoning surface; collect native samples before assuming OpenAI decryptability semantics."
+    },
+    "protocol_profile_id": "grok-xai-responses-encrypted-content-v0",
+    "replay_contract": {
+      "emitted_in": "response_and_stream",
+      "replayed_in": "next_request_history",
+      "must_replay": true,
+      "scope": [
+        "same_endpoint",
+        "same_auth",
+        "same_session"
+      ],
+      "native_endpoint_ids": [
+        "xai"
+      ],
+      "foreign_signature_policy": "drop_block",
+      "synthetic_replacement": {
+        "allowed": false
+      },
+      "tool_pairing": {
+        "required": true,
+        "pairing_rule": "responses_call_id",
+        "call_id_paths": [
+          "$.input[?(@.type=='function_call')].call_id"
+        ],
+        "response_id_paths": [
+          "$.input[?(@.type=='function_call_output')].call_id"
+        ],
+        "order_sensitive": true,
+        "signature_required_on": "none"
+      },
+      "notes": "xAI/Grok is tracked as Responses-compatible until native encrypted_content samples prove the exact contract."
+    },
+    "provenance": {
+      "legacy_source_file": "github/pydantic-pydantic-ai/tests/models/cassettes/test_xai/test_xai_builtin_multiple_tools.xai.yaml",
+      "legacy_source_line": 60,
+      "legacy_source_name": "test_xai_builtin_multiple_tools.xai.yaml",
+      "backend_claim": "xai",
+      "backend_confidence": "github_reported",
+      "notes": "Metadata-only import from public pydantic-ai xAI cassette. Raw encrypted_content, prompt text, tool arguments, and provider credentials are omitted. Outer format is not assumed to match OpenAI Fernet-like encrypted_content.",
+      "source_repo": "pydantic/pydantic-ai",
+      "evidence_url": "https://github.com/pydantic/pydantic-ai/blob/5542eee013b1d5aaf77295ecf5f8a9b91401d52b/tests/models/cassettes/test_xai/test_xai_builtin_multiple_tools.xai.yaml"
+    },
+    "observed_at": "2026-05-28T01:10:39Z",
+    "redactions": [
+      "request_context",
+      "user_content",
+      "tool_arguments",
+      "provider_key",
+      "raw_encrypted_content"
+    ]
+  }
+]

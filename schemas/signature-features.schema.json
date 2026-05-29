@@ -1,0 +1,186 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/sususu98/model-signatures/schemas/signature-features.schema.json",
+  "title": "Signature Feature Collection",
+  "type": "array",
+  "items": {
+    "$ref": "#/$defs/signature_feature"
+  },
+  "$defs": {
+    "signature_feature": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "model_family",
+        "field",
+        "profile_id",
+        "observable_format",
+        "raw_publication_policy",
+        "must_replay",
+        "portable_across_endpoints",
+        "synthetic_replacement",
+        "observable_variants",
+        "feature_summary"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]*$"
+        },
+        "model_family": {
+          "type": "string",
+          "enum": [
+            "claude",
+            "gpt",
+            "gemini",
+            "grok"
+          ]
+        },
+        "field": {
+          "type": "string",
+          "enum": [
+            "signature",
+            "encrypted_content",
+            "thoughtSignature",
+            "thought_signature"
+          ]
+        },
+        "profile_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "observable_format": {
+          "type": "string",
+          "minLength": 1
+        },
+        "raw_publication_policy": {
+          "type": "string",
+          "enum": [
+            "raw_allowed",
+            "metadata_only",
+            "staging_only"
+          ]
+        },
+        "must_replay": {
+          "type": "boolean"
+        },
+        "portable_across_endpoints": {
+          "type": "boolean"
+        },
+        "synthetic_replacement": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "allowed"
+          ],
+          "properties": {
+            "allowed": {
+              "type": "boolean"
+            },
+            "field": {
+              "type": "string"
+            },
+            "value": {
+              "type": "string"
+            }
+          }
+        },
+        "observable_variants": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/observable_variant"
+          },
+          "minItems": 1
+        },
+        "feature_summary": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      }
+    },
+    "observable_variant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "field",
+        "format",
+        "source_scope",
+        "endpoint_scope",
+        "observed_markers",
+        "replay_implication",
+        "confidence"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]*$"
+        },
+        "field": {
+          "type": "string",
+          "enum": [
+            "signature",
+            "signature_delta",
+            "encrypted_content",
+            "thoughtSignature",
+            "thought_signature"
+          ]
+        },
+        "format": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_scope": {
+          "type": "string",
+          "enum": [
+            "direct_samples",
+            "staging_samples",
+            "public_sdk_evidence",
+            "public_adapter_evidence",
+            "docs_derived"
+          ]
+        },
+        "endpoint_scope": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "observed_markers": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "replay_implication": {
+          "type": "string",
+          "minLength": 1
+        },
+        "confidence": {
+          "type": "string",
+          "enum": [
+            "sample_observed",
+            "sdk_declared",
+            "adapter_observed",
+            "provisional"
+          ]
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

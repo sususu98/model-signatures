@@ -3,13 +3,13 @@
     "schema_version": "1.0",
     "model_family": "claude",
     "endpoint": {
-      "id": "claude-code",
+      "id": "aws-bedrock",
       "confidence": "confirmed",
-      "provider": "anthropic",
-      "product": "Claude Code",
-      "protocol": "anthropic-messages"
+      "provider": "aws",
+      "product": "Amazon Bedrock",
+      "protocol": "anthropic-messages-compatible"
     },
-    "model": "claude-opus-4-5-20251101",
+    "model": "unknown",
     "collection_status": "stable",
     "signature_source": {
       "protocol": "anthropic-messages",
@@ -25,32 +25,27 @@
     },
     "sample": {
       "raw_policy": "metadata_only",
-      "sha256": "1c880587673eb8ef8de26ebaefaaf77a1be0110786be60c6f3daeb4dcbdf43dc",
-      "length": 1028,
+      "sha256": "729befd29cc411f1414be9cb4adfb84ed280275c4a71660c4bfaeb4d9a4116b8",
+      "length": 644,
       "encoding": "base64",
       "omitted_reason": "raw provider-native signature is not published"
     },
     "classification": {
       "format": "protobuf",
-      "encoding_layers": 2,
-      "decoded_length": 771,
-      "protobuf_length": 515,
+      "encoding_layers": 1,
+      "decoded_length": 482,
+      "protobuf_length": 482,
       "top_level_first_byte": "0x12",
-      "envelope_class": "claude_code_thinking_wrapper",
-      "outer_session_id_length": 36,
-      "outer_model_text": "claude-opus-4-5-20251101-thinking",
-      "inner_base64_length": 688,
-      "inner_first_byte": "0x12",
-      "channel_block_length": 70,
+      "channel_block_length": 72,
       "channel_id": 11,
       "routing_class": "routing_class_11",
-      "infra_id": null,
-      "infrastructure_class": "infra_default",
+      "infra_id": 1,
+      "infrastructure_class": "infra_aws",
       "version": 2,
       "ecdsa_length": 64,
       "model_text": null,
       "field7": null,
-      "schema_class": "claude_code_wrapped_compact_schema",
+      "schema_class": "compact_schema",
       "valid_outer_format": true
     },
     "payload_shape": {
@@ -183,30 +178,28 @@
       "notes": "Thinking signatures are provider-native; incompatible foreign signatures should not be replayed as Claude thinking."
     },
     "provenance": {
-      "legacy_source_file": "i7dc-0.25x.json",
-      "legacy_source_line": 23,
-      "legacy_source_name": "i7dc-0.25x",
-      "backend_claim": "claude-code",
+      "legacy_source_file": "signatures/claude/aws-bedrock.txt",
+      "legacy_source_line": 1,
+      "legacy_source_name": "aws-bedrock",
+      "backend_claim": "aws-bedrock",
       "backend_confidence": "confirmed",
-      "notes": "Stable import from CPA-API Claude Code capture. Prompt, user, tool, and local-path content are not copied; only the provider-native thinking signature field is imported."
+      "notes": "Stable import from CPA-API Claude samples. OpenRouter-named legacy files are reduced to the claimed backend endpoint instead of becoming signature buckets."
     },
-    "observed_at": "2026-01-26T06:25:52.819947Z",
+    "observed_at": "2026-02-06T04:58:19.829441Z",
     "redactions": [
       "request_context",
-      "user_content",
-      "tool_arguments",
-      "local_paths"
+      "user_content"
     ]
   },
   {
     "schema_version": "1.0",
     "model_family": "claude",
     "endpoint": {
-      "id": "claude-code",
-      "confidence": "confirmed",
-      "provider": "anthropic",
-      "product": "Claude Code",
-      "protocol": "anthropic-messages"
+      "id": "aws-bedrock",
+      "confidence": "filename_claimed",
+      "provider": "aws",
+      "product": "Amazon Bedrock",
+      "protocol": "anthropic-messages-compatible"
     },
     "model": "unknown",
     "collection_status": "stable",
@@ -224,22 +217,22 @@
     },
     "sample": {
       "raw_policy": "metadata_only",
-      "sha256": "1424ab36fcf88a192c9397c95e0115c763d0a563972089fa19556cef1db2fdb0",
-      "length": 1064,
+      "sha256": "f972f000b5b4a07abf446e782e0cd6241ff21ba400fe2623eb3cff7580b81005",
+      "length": 1280,
       "encoding": "base64",
       "omitted_reason": "raw provider-native signature is not published"
     },
     "classification": {
       "format": "protobuf",
       "encoding_layers": 1,
-      "decoded_length": 797,
-      "protobuf_length": 797,
+      "decoded_length": 960,
+      "protobuf_length": 960,
       "top_level_first_byte": "0x12",
-      "channel_block_length": 70,
-      "channel_id": 8,
-      "routing_class": "routing_class_8",
-      "infra_id": null,
-      "infrastructure_class": "infra_default",
+      "channel_block_length": 72,
+      "channel_id": 11,
+      "routing_class": "routing_class_11",
+      "infra_id": 1,
+      "infrastructure_class": "infra_aws",
       "version": 2,
       "ecdsa_length": 64,
       "model_text": null,
@@ -377,30 +370,28 @@
       "notes": "Thinking signatures are provider-native; incompatible foreign signatures should not be replayed as Claude thinking."
     },
     "provenance": {
-      "source_repo": "anthropics/claude-code",
-      "evidence_url": "https://github.com/anthropics/claude-code/issues/9486",
-      "legacy_source_line": 95,
-      "legacy_source_name": "github-issue-anthropics-claude-code-9486-interleaved-tool-thinking-sample-1",
-      "backend_claim": "claude-code",
-      "backend_confidence": "github_reported",
-      "notes": "Metadata-only import from a public Claude Code issue containing interleaved thinking/tool-use samples. Raw signature and issue prompt/thinking text are intentionally omitted."
+      "legacy_source_file": "signatures/claude/openrouter-aws.txt",
+      "legacy_source_line": 1,
+      "legacy_source_name": "openrouter-aws",
+      "backend_claim": "aws-bedrock",
+      "backend_confidence": "filename_claimed",
+      "notes": "Stable import from CPA-API Claude samples. OpenRouter-named legacy files are reduced to the claimed backend endpoint instead of becoming signature buckets."
     },
-    "observed_at": "2025-10-13T18:42:43Z",
+    "observed_at": "2026-02-06T04:58:19.835322Z",
     "redactions": [
-      "github_issue_body",
-      "user_content",
-      "tool_arguments"
+      "request_context",
+      "user_content"
     ]
   },
   {
     "schema_version": "1.0",
     "model_family": "claude",
     "endpoint": {
-      "id": "claude-code",
+      "id": "aws-bedrock",
       "confidence": "confirmed",
-      "provider": "anthropic",
-      "product": "Claude Code",
-      "protocol": "anthropic-messages"
+      "provider": "aws",
+      "product": "Amazon Bedrock",
+      "protocol": "anthropic-messages-compatible"
     },
     "model": "unknown",
     "collection_status": "stable",
@@ -418,22 +409,22 @@
     },
     "sample": {
       "raw_policy": "metadata_only",
-      "sha256": "0864abfc5c04084b14571e61f15fa623beee350f6247946a6d2525361131fef1",
-      "length": 964,
+      "sha256": "50c75e4c68ea0b61339f378ffe26e746fe8772ff70ce6295a122560714625a37",
+      "length": 364,
       "encoding": "base64",
       "omitted_reason": "raw provider-native signature is not published"
     },
     "classification": {
       "format": "protobuf",
       "encoding_layers": 1,
-      "decoded_length": 721,
-      "protobuf_length": 721,
+      "decoded_length": 273,
+      "protobuf_length": 273,
       "top_level_first_byte": "0x12",
-      "channel_block_length": 70,
-      "channel_id": 8,
-      "routing_class": "routing_class_8",
-      "infra_id": null,
-      "infrastructure_class": "infra_default",
+      "channel_block_length": 72,
+      "channel_id": 12,
+      "routing_class": "routing_class_12",
+      "infra_id": 1,
+      "infrastructure_class": "infra_aws",
       "version": 2,
       "ecdsa_length": 64,
       "model_text": null,
@@ -571,19 +562,17 @@
       "notes": "Thinking signatures are provider-native; incompatible foreign signatures should not be replayed as Claude thinking."
     },
     "provenance": {
-      "source_repo": "anthropics/claude-code",
-      "evidence_url": "https://github.com/anthropics/claude-code/issues/9486",
-      "legacy_source_line": 132,
-      "legacy_source_name": "github-issue-anthropics-claude-code-9486-interleaved-tool-thinking-sample-2",
-      "backend_claim": "claude-code",
-      "backend_confidence": "github_reported",
-      "notes": "Metadata-only import from a public Claude Code issue containing interleaved thinking/tool-use samples. Raw signature and issue prompt/thinking text are intentionally omitted."
+      "legacy_source_file": "SIGNATURE-CHANNEL-SPEC.md",
+      "legacy_source_line": 172,
+      "legacy_source_name": "SIGNATURE-CHANNEL-SPEC",
+      "backend_claim": "aws-bedrock",
+      "backend_confidence": "confirmed",
+      "notes": "Stable import from CPA-API SIGNATURE-CHANNEL-SPEC.md confirmed Amazon Bedrock appendix sample. The importer ignores unconfirmed appendix sections."
     },
-    "observed_at": "2025-10-13T18:42:43Z",
+    "observed_at": "2026-03-30T14:15:38.529303Z",
     "redactions": [
-      "github_issue_body",
-      "user_content",
-      "tool_arguments"
+      "request_context",
+      "user_content"
     ]
   }
 ]

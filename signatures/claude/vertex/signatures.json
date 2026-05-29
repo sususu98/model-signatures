@@ -1,0 +1,5378 @@
+[
+  {
+    "schema_version": "1.0",
+    "model_family": "claude",
+    "endpoint": {
+      "id": "vertex",
+      "confidence": "confirmed",
+      "provider": "google",
+      "product": "Vertex AI",
+      "protocol": "anthropic-messages-compatible"
+    },
+    "model": "unknown",
+    "collection_status": "stable",
+    "signature_source": {
+      "protocol": "anthropic-messages",
+      "container_type": "thinking",
+      "container_selector": {
+        "type": "thinking"
+      },
+      "field": "signature",
+      "stream_field": "signature_delta",
+      "json_path": "$.content[?(@.type=='thinking')].signature",
+      "request_replay_json_path": "$.messages[].content[?(@.type=='thinking')].signature",
+      "provider_term": "thinking block signature"
+    },
+    "sample": {
+      "raw_policy": "metadata_only",
+      "sha256": "7d43d34b192bd2dbe75e0c439b4dfd01b6f672e919903587f3d8a90647dfdd5a",
+      "length": 5128,
+      "encoding": "base64",
+      "omitted_reason": "raw provider-native signature is not published"
+    },
+    "classification": {
+      "format": "protobuf",
+      "encoding_layers": 2,
+      "decoded_length": 3844,
+      "protobuf_length": 2882,
+      "top_level_first_byte": "0x12",
+      "channel_block_length": 72,
+      "channel_id": 11,
+      "routing_class": "routing_class_11",
+      "infra_id": 2,
+      "infrastructure_class": "infra_google",
+      "version": 2,
+      "ecdsa_length": 64,
+      "model_text": null,
+      "field7": null,
+      "schema_class": "compact_schema",
+      "valid_outer_format": true
+    },
+    "payload_shape": {
+      "request": {
+        "protocol": "anthropic-messages",
+        "root_path": "$",
+        "conversation_path": "$.messages",
+        "system_paths": [
+          "$.system"
+        ],
+        "message_paths": [
+          "$.messages[]"
+        ],
+        "signature_paths": [
+          "$.messages[].content[?(@.type=='thinking')].signature"
+        ],
+        "signature_container_paths": [
+          "$.messages[].content[?(@.type=='thinking')]"
+        ],
+        "reasoning_text_paths": [
+          "$.messages[].content[?(@.type=='thinking')].thinking"
+        ],
+        "tool_call_paths": [
+          "$.messages[].content[?(@.type=='tool_use')]"
+        ],
+        "tool_result_paths": [
+          "$.messages[].content[?(@.type=='tool_result')]"
+        ],
+        "id_paths": [
+          "$.messages[].content[?(@.type=='tool_use')].id",
+          "$.messages[].content[?(@.type=='tool_result')].tool_use_id"
+        ],
+        "related_paths": [
+          "$.thinking",
+          "$.thinking.display",
+          "$.thinking.budget_tokens"
+        ],
+        "ordering_invariants": [
+          "assistant thinking blocks replay with their original signature",
+          "tool_result blocks reference prior tool_use ids",
+          "thinking display controls visible thinking text and must be tracked separately from signature replay"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "response": {
+        "protocol": "anthropic-messages",
+        "root_path": "$",
+        "signature_paths": [
+          "$.content[?(@.type=='thinking')].signature"
+        ],
+        "signature_container_paths": [
+          "$.content[?(@.type=='thinking')]"
+        ],
+        "reasoning_text_paths": [
+          "$.content[?(@.type=='thinking')].thinking"
+        ],
+        "related_paths": [
+          "$.content[?(@.type=='thinking')].signature",
+          "$.content[?(@.type=='thinking')].thinking"
+        ],
+        "tool_call_paths": [
+          "$.content[?(@.type=='tool_use')]"
+        ],
+        "id_paths": [
+          "$.content[?(@.type=='tool_use')].id"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "stream": {
+        "protocol": "anthropic-messages",
+        "signature_paths": [
+          "$.delta.signature"
+        ],
+        "reasoning_text_paths": [
+          "$.delta.thinking"
+        ],
+        "stream_events": [
+          "content_block_start",
+          "content_block_delta:thinking_delta",
+          "content_block_delta:signature_delta",
+          "content_block_stop"
+        ],
+        "prompt_content_policy": "not_collected"
+      }
+    },
+    "conversion": {
+      "round_trip_required": true,
+      "replay_scope": "same_endpoint",
+      "cross_endpoint_safe": false,
+      "fallback_policy": "drop_block",
+      "cache_key_hints": [
+        "thinking_text",
+        "conversation_prefix"
+      ],
+      "notes": "Claude thinking block signatures cannot be synthesized for another endpoint."
+    },
+    "protocol_profile_id": "claude-anthropic-messages-thinking-v1",
+    "replay_contract": {
+      "emitted_in": "response_and_stream",
+      "replayed_in": "next_request_history",
+      "must_replay": true,
+      "scope": [
+        "same_endpoint",
+        "same_model",
+        "same_conversation_prefix"
+      ],
+      "native_endpoint_ids": [
+        "anthropic",
+        "aws-bedrock",
+        "azure",
+        "vertex",
+        "claude-code"
+      ],
+      "foreign_signature_policy": "drop_block",
+      "synthetic_replacement": {
+        "allowed": false
+      },
+      "tool_pairing": {
+        "required": true,
+        "pairing_rule": "tool_use_followed_by_tool_result",
+        "call_id_paths": [
+          "$.messages[].content[?(@.type=='tool_use')].id"
+        ],
+        "response_id_paths": [
+          "$.messages[].content[?(@.type=='tool_result')].tool_use_id"
+        ],
+        "order_sensitive": true,
+        "signature_required_on": "none"
+      },
+      "notes": "Thinking signatures are provider-native; incompatible foreign signatures should not be replayed as Claude thinking."
+    },
+    "provenance": {
+      "legacy_source_file": "signatures/claude/google-vertex.txt",
+      "legacy_source_line": 1,
+      "legacy_source_name": "google-vertex",
+      "backend_claim": "vertex",
+      "backend_confidence": "confirmed",
+      "notes": "Stable import from CPA-API Claude samples. OpenRouter-named legacy files are reduced to the claimed backend endpoint instead of becoming signature buckets."
+    },
+    "observed_at": "2026-02-06T04:58:19.827855Z",
+    "redactions": [
+      "request_context",
+      "user_content"
+    ]
+  },
+  {
+    "schema_version": "1.0",
+    "model_family": "claude",
+    "endpoint": {
+      "id": "vertex",
+      "confidence": "confirmed",
+      "provider": "google",
+      "product": "Vertex AI",
+      "protocol": "anthropic-messages-compatible"
+    },
+    "model": "unknown",
+    "collection_status": "stable",
+    "signature_source": {
+      "protocol": "anthropic-messages",
+      "container_type": "thinking",
+      "container_selector": {
+        "type": "thinking"
+      },
+      "field": "signature",
+      "stream_field": "signature_delta",
+      "json_path": "$.content[?(@.type=='thinking')].signature",
+      "request_replay_json_path": "$.messages[].content[?(@.type=='thinking')].signature",
+      "provider_term": "thinking block signature"
+    },
+    "sample": {
+      "raw_policy": "metadata_only",
+      "sha256": "a6489ffce494ef165588fb399cc476624a7ed6791c82934f264a4428f939f424",
+      "length": 8432,
+      "encoding": "base64",
+      "omitted_reason": "raw provider-native signature is not published"
+    },
+    "classification": {
+      "format": "protobuf",
+      "encoding_layers": 2,
+      "decoded_length": 6324,
+      "protobuf_length": 4743,
+      "top_level_first_byte": "0x12",
+      "channel_block_length": 72,
+      "channel_id": 11,
+      "routing_class": "routing_class_11",
+      "infra_id": 2,
+      "infrastructure_class": "infra_google",
+      "version": 2,
+      "ecdsa_length": 64,
+      "model_text": null,
+      "field7": null,
+      "schema_class": "compact_schema",
+      "valid_outer_format": true
+    },
+    "payload_shape": {
+      "request": {
+        "protocol": "anthropic-messages",
+        "root_path": "$",
+        "conversation_path": "$.messages",
+        "system_paths": [
+          "$.system"
+        ],
+        "message_paths": [
+          "$.messages[]"
+        ],
+        "signature_paths": [
+          "$.messages[].content[?(@.type=='thinking')].signature"
+        ],
+        "signature_container_paths": [
+          "$.messages[].content[?(@.type=='thinking')]"
+        ],
+        "reasoning_text_paths": [
+          "$.messages[].content[?(@.type=='thinking')].thinking"
+        ],
+        "tool_call_paths": [
+          "$.messages[].content[?(@.type=='tool_use')]"
+        ],
+        "tool_result_paths": [
+          "$.messages[].content[?(@.type=='tool_result')]"
+        ],
+        "id_paths": [
+          "$.messages[].content[?(@.type=='tool_use')].id",
+          "$.messages[].content[?(@.type=='tool_result')].tool_use_id"
+        ],
+        "related_paths": [
+          "$.thinking",
+          "$.thinking.display",
+          "$.thinking.budget_tokens"
+        ],
+        "ordering_invariants": [
+          "assistant thinking blocks replay with their original signature",
+          "tool_result blocks reference prior tool_use ids",
+          "thinking display controls visible thinking text and must be tracked separately from signature replay"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "response": {
+        "protocol": "anthropic-messages",
+        "root_path": "$",
+        "signature_paths": [
+          "$.content[?(@.type=='thinking')].signature"
+        ],
+        "signature_container_paths": [
+          "$.content[?(@.type=='thinking')]"
+        ],
+        "reasoning_text_paths": [
+          "$.content[?(@.type=='thinking')].thinking"
+        ],
+        "related_paths": [
+          "$.content[?(@.type=='thinking')].signature",
+          "$.content[?(@.type=='thinking')].thinking"
+        ],
+        "tool_call_paths": [
+          "$.content[?(@.type=='tool_use')]"
+        ],
+        "id_paths": [
+          "$.content[?(@.type=='tool_use')].id"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "stream": {
+        "protocol": "anthropic-messages",
+        "signature_paths": [
+          "$.delta.signature"
+        ],
+        "reasoning_text_paths": [
+          "$.delta.thinking"
+        ],
+        "stream_events": [
+          "content_block_start",
+          "content_block_delta:thinking_delta",
+          "content_block_delta:signature_delta",
+          "content_block_stop"
+        ],
+        "prompt_content_policy": "not_collected"
+      }
+    },
+    "conversion": {
+      "round_trip_required": true,
+      "replay_scope": "same_endpoint",
+      "cross_endpoint_safe": false,
+      "fallback_policy": "drop_block",
+      "cache_key_hints": [
+        "thinking_text",
+        "conversation_prefix"
+      ],
+      "notes": "Claude thinking block signatures cannot be synthesized for another endpoint."
+    },
+    "protocol_profile_id": "claude-anthropic-messages-thinking-v1",
+    "replay_contract": {
+      "emitted_in": "response_and_stream",
+      "replayed_in": "next_request_history",
+      "must_replay": true,
+      "scope": [
+        "same_endpoint",
+        "same_model",
+        "same_conversation_prefix"
+      ],
+      "native_endpoint_ids": [
+        "anthropic",
+        "aws-bedrock",
+        "azure",
+        "vertex",
+        "claude-code"
+      ],
+      "foreign_signature_policy": "drop_block",
+      "synthetic_replacement": {
+        "allowed": false
+      },
+      "tool_pairing": {
+        "required": true,
+        "pairing_rule": "tool_use_followed_by_tool_result",
+        "call_id_paths": [
+          "$.messages[].content[?(@.type=='tool_use')].id"
+        ],
+        "response_id_paths": [
+          "$.messages[].content[?(@.type=='tool_result')].tool_use_id"
+        ],
+        "order_sensitive": true,
+        "signature_required_on": "none"
+      },
+      "notes": "Thinking signatures are provider-native; incompatible foreign signatures should not be replayed as Claude thinking."
+    },
+    "provenance": {
+      "legacy_source_file": "signatures/claude/google-vertex.txt",
+      "legacy_source_line": 2,
+      "legacy_source_name": "google-vertex",
+      "backend_claim": "vertex",
+      "backend_confidence": "confirmed",
+      "notes": "Stable import from CPA-API Claude samples. OpenRouter-named legacy files are reduced to the claimed backend endpoint instead of becoming signature buckets."
+    },
+    "observed_at": "2026-02-06T04:58:19.827855Z",
+    "redactions": [
+      "request_context",
+      "user_content"
+    ]
+  },
+  {
+    "schema_version": "1.0",
+    "model_family": "claude",
+    "endpoint": {
+      "id": "vertex",
+      "confidence": "confirmed",
+      "provider": "google",
+      "product": "Vertex AI",
+      "protocol": "anthropic-messages-compatible"
+    },
+    "model": "unknown",
+    "collection_status": "stable",
+    "signature_source": {
+      "protocol": "anthropic-messages",
+      "container_type": "thinking",
+      "container_selector": {
+        "type": "thinking"
+      },
+      "field": "signature",
+      "stream_field": "signature_delta",
+      "json_path": "$.content[?(@.type=='thinking')].signature",
+      "request_replay_json_path": "$.messages[].content[?(@.type=='thinking')].signature",
+      "provider_term": "thinking block signature"
+    },
+    "sample": {
+      "raw_policy": "metadata_only",
+      "sha256": "1c56fce890c7883519df92493e6b30ee182bf7f652901c32ae17efd2394d61d6",
+      "length": 4588,
+      "encoding": "base64",
+      "omitted_reason": "raw provider-native signature is not published"
+    },
+    "classification": {
+      "format": "protobuf",
+      "encoding_layers": 2,
+      "decoded_length": 3440,
+      "protobuf_length": 2578,
+      "top_level_first_byte": "0x12",
+      "channel_block_length": 72,
+      "channel_id": 11,
+      "routing_class": "routing_class_11",
+      "infra_id": 2,
+      "infrastructure_class": "infra_google",
+      "version": 2,
+      "ecdsa_length": 64,
+      "model_text": null,
+      "field7": null,
+      "schema_class": "compact_schema",
+      "valid_outer_format": true
+    },
+    "payload_shape": {
+      "request": {
+        "protocol": "anthropic-messages",
+        "root_path": "$",
+        "conversation_path": "$.messages",
+        "system_paths": [
+          "$.system"
+        ],
+        "message_paths": [
+          "$.messages[]"
+        ],
+        "signature_paths": [
+          "$.messages[].content[?(@.type=='thinking')].signature"
+        ],
+        "signature_container_paths": [
+          "$.messages[].content[?(@.type=='thinking')]"
+        ],
+        "reasoning_text_paths": [
+          "$.messages[].content[?(@.type=='thinking')].thinking"
+        ],
+        "tool_call_paths": [
+          "$.messages[].content[?(@.type=='tool_use')]"
+        ],
+        "tool_result_paths": [
+          "$.messages[].content[?(@.type=='tool_result')]"
+        ],
+        "id_paths": [
+          "$.messages[].content[?(@.type=='tool_use')].id",
+          "$.messages[].content[?(@.type=='tool_result')].tool_use_id"
+        ],
+        "related_paths": [
+          "$.thinking",
+          "$.thinking.display",
+          "$.thinking.budget_tokens"
+        ],
+        "ordering_invariants": [
+          "assistant thinking blocks replay with their original signature",
+          "tool_result blocks reference prior tool_use ids",
+          "thinking display controls visible thinking text and must be tracked separately from signature replay"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "response": {
+        "protocol": "anthropic-messages",
+        "root_path": "$",
+        "signature_paths": [
+          "$.content[?(@.type=='thinking')].signature"
+        ],
+        "signature_container_paths": [
+          "$.content[?(@.type=='thinking')]"
+        ],
+        "reasoning_text_paths": [
+          "$.content[?(@.type=='thinking')].thinking"
+        ],
+        "related_paths": [
+          "$.content[?(@.type=='thinking')].signature",
+          "$.content[?(@.type=='thinking')].thinking"
+        ],
+        "tool_call_paths": [
+          "$.content[?(@.type=='tool_use')]"
+        ],
+        "id_paths": [
+          "$.content[?(@.type=='tool_use')].id"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "stream": {
+        "protocol": "anthropic-messages",
+        "signature_paths": [
+          "$.delta.signature"
+        ],
+        "reasoning_text_paths": [
+          "$.delta.thinking"
+        ],
+        "stream_events": [
+          "content_block_start",
+          "content_block_delta:thinking_delta",
+          "content_block_delta:signature_delta",
+          "content_block_stop"
+        ],
+        "prompt_content_policy": "not_collected"
+      }
+    },
+    "conversion": {
+      "round_trip_required": true,
+      "replay_scope": "same_endpoint",
+      "cross_endpoint_safe": false,
+      "fallback_policy": "drop_block",
+      "cache_key_hints": [
+        "thinking_text",
+        "conversation_prefix"
+      ],
+      "notes": "Claude thinking block signatures cannot be synthesized for another endpoint."
+    },
+    "protocol_profile_id": "claude-anthropic-messages-thinking-v1",
+    "replay_contract": {
+      "emitted_in": "response_and_stream",
+      "replayed_in": "next_request_history",
+      "must_replay": true,
+      "scope": [
+        "same_endpoint",
+        "same_model",
+        "same_conversation_prefix"
+      ],
+      "native_endpoint_ids": [
+        "anthropic",
+        "aws-bedrock",
+        "azure",
+        "vertex",
+        "claude-code"
+      ],
+      "foreign_signature_policy": "drop_block",
+      "synthetic_replacement": {
+        "allowed": false
+      },
+      "tool_pairing": {
+        "required": true,
+        "pairing_rule": "tool_use_followed_by_tool_result",
+        "call_id_paths": [
+          "$.messages[].content[?(@.type=='tool_use')].id"
+        ],
+        "response_id_paths": [
+          "$.messages[].content[?(@.type=='tool_result')].tool_use_id"
+        ],
+        "order_sensitive": true,
+        "signature_required_on": "none"
+      },
+      "notes": "Thinking signatures are provider-native; incompatible foreign signatures should not be replayed as Claude thinking."
+    },
+    "provenance": {
+      "legacy_source_file": "signatures/claude/google-vertex.txt",
+      "legacy_source_line": 3,
+      "legacy_source_name": "google-vertex",
+      "backend_claim": "vertex",
+      "backend_confidence": "confirmed",
+      "notes": "Stable import from CPA-API Claude samples. OpenRouter-named legacy files are reduced to the claimed backend endpoint instead of becoming signature buckets."
+    },
+    "observed_at": "2026-02-06T04:58:19.827855Z",
+    "redactions": [
+      "request_context",
+      "user_content"
+    ]
+  },
+  {
+    "schema_version": "1.0",
+    "model_family": "claude",
+    "endpoint": {
+      "id": "vertex",
+      "confidence": "confirmed",
+      "provider": "google",
+      "product": "Vertex AI",
+      "protocol": "anthropic-messages-compatible"
+    },
+    "model": "unknown",
+    "collection_status": "stable",
+    "signature_source": {
+      "protocol": "anthropic-messages",
+      "container_type": "thinking",
+      "container_selector": {
+        "type": "thinking"
+      },
+      "field": "signature",
+      "stream_field": "signature_delta",
+      "json_path": "$.content[?(@.type=='thinking')].signature",
+      "request_replay_json_path": "$.messages[].content[?(@.type=='thinking')].signature",
+      "provider_term": "thinking block signature"
+    },
+    "sample": {
+      "raw_policy": "metadata_only",
+      "sha256": "6ec4e453a638fa6bc8bc15dce760df9524c410b4364a893f43cdd2e34a446f5d",
+      "length": 2432,
+      "encoding": "base64",
+      "omitted_reason": "raw provider-native signature is not published"
+    },
+    "classification": {
+      "format": "protobuf",
+      "encoding_layers": 2,
+      "decoded_length": 1824,
+      "protobuf_length": 1367,
+      "top_level_first_byte": "0x12",
+      "channel_block_length": 72,
+      "channel_id": 11,
+      "routing_class": "routing_class_11",
+      "infra_id": 2,
+      "infrastructure_class": "infra_google",
+      "version": 2,
+      "ecdsa_length": 64,
+      "model_text": null,
+      "field7": null,
+      "schema_class": "compact_schema",
+      "valid_outer_format": true
+    },
+    "payload_shape": {
+      "request": {
+        "protocol": "anthropic-messages",
+        "root_path": "$",
+        "conversation_path": "$.messages",
+        "system_paths": [
+          "$.system"
+        ],
+        "message_paths": [
+          "$.messages[]"
+        ],
+        "signature_paths": [
+          "$.messages[].content[?(@.type=='thinking')].signature"
+        ],
+        "signature_container_paths": [
+          "$.messages[].content[?(@.type=='thinking')]"
+        ],
+        "reasoning_text_paths": [
+          "$.messages[].content[?(@.type=='thinking')].thinking"
+        ],
+        "tool_call_paths": [
+          "$.messages[].content[?(@.type=='tool_use')]"
+        ],
+        "tool_result_paths": [
+          "$.messages[].content[?(@.type=='tool_result')]"
+        ],
+        "id_paths": [
+          "$.messages[].content[?(@.type=='tool_use')].id",
+          "$.messages[].content[?(@.type=='tool_result')].tool_use_id"
+        ],
+        "related_paths": [
+          "$.thinking",
+          "$.thinking.display",
+          "$.thinking.budget_tokens"
+        ],
+        "ordering_invariants": [
+          "assistant thinking blocks replay with their original signature",
+          "tool_result blocks reference prior tool_use ids",
+          "thinking display controls visible thinking text and must be tracked separately from signature replay"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "response": {
+        "protocol": "anthropic-messages",
+        "root_path": "$",
+        "signature_paths": [
+          "$.content[?(@.type=='thinking')].signature"
+        ],
+        "signature_container_paths": [
+          "$.content[?(@.type=='thinking')]"
+        ],
+        "reasoning_text_paths": [
+          "$.content[?(@.type=='thinking')].thinking"
+        ],
+        "related_paths": [
+          "$.content[?(@.type=='thinking')].signature",
+          "$.content[?(@.type=='thinking')].thinking"
+        ],
+        "tool_call_paths": [
+          "$.content[?(@.type=='tool_use')]"
+        ],
+        "id_paths": [
+          "$.content[?(@.type=='tool_use')].id"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "stream": {
+        "protocol": "anthropic-messages",
+        "signature_paths": [
+          "$.delta.signature"
+        ],
+        "reasoning_text_paths": [
+          "$.delta.thinking"
+        ],
+        "stream_events": [
+          "content_block_start",
+          "content_block_delta:thinking_delta",
+          "content_block_delta:signature_delta",
+          "content_block_stop"
+        ],
+        "prompt_content_policy": "not_collected"
+      }
+    },
+    "conversion": {
+      "round_trip_required": true,
+      "replay_scope": "same_endpoint",
+      "cross_endpoint_safe": false,
+      "fallback_policy": "drop_block",
+      "cache_key_hints": [
+        "thinking_text",
+        "conversation_prefix"
+      ],
+      "notes": "Claude thinking block signatures cannot be synthesized for another endpoint."
+    },
+    "protocol_profile_id": "claude-anthropic-messages-thinking-v1",
+    "replay_contract": {
+      "emitted_in": "response_and_stream",
+      "replayed_in": "next_request_history",
+      "must_replay": true,
+      "scope": [
+        "same_endpoint",
+        "same_model",
+        "same_conversation_prefix"
+      ],
+      "native_endpoint_ids": [
+        "anthropic",
+        "aws-bedrock",
+        "azure",
+        "vertex",
+        "claude-code"
+      ],
+      "foreign_signature_policy": "drop_block",
+      "synthetic_replacement": {
+        "allowed": false
+      },
+      "tool_pairing": {
+        "required": true,
+        "pairing_rule": "tool_use_followed_by_tool_result",
+        "call_id_paths": [
+          "$.messages[].content[?(@.type=='tool_use')].id"
+        ],
+        "response_id_paths": [
+          "$.messages[].content[?(@.type=='tool_result')].tool_use_id"
+        ],
+        "order_sensitive": true,
+        "signature_required_on": "none"
+      },
+      "notes": "Thinking signatures are provider-native; incompatible foreign signatures should not be replayed as Claude thinking."
+    },
+    "provenance": {
+      "legacy_source_file": "signatures/claude/google-vertex.txt",
+      "legacy_source_line": 4,
+      "legacy_source_name": "google-vertex",
+      "backend_claim": "vertex",
+      "backend_confidence": "confirmed",
+      "notes": "Stable import from CPA-API Claude samples. OpenRouter-named legacy files are reduced to the claimed backend endpoint instead of becoming signature buckets."
+    },
+    "observed_at": "2026-02-06T04:58:19.827855Z",
+    "redactions": [
+      "request_context",
+      "user_content"
+    ]
+  },
+  {
+    "schema_version": "1.0",
+    "model_family": "claude",
+    "endpoint": {
+      "id": "vertex",
+      "confidence": "confirmed",
+      "provider": "google",
+      "product": "Vertex AI",
+      "protocol": "anthropic-messages-compatible"
+    },
+    "model": "unknown",
+    "collection_status": "stable",
+    "signature_source": {
+      "protocol": "anthropic-messages",
+      "container_type": "thinking",
+      "container_selector": {
+        "type": "thinking"
+      },
+      "field": "signature",
+      "stream_field": "signature_delta",
+      "json_path": "$.content[?(@.type=='thinking')].signature",
+      "request_replay_json_path": "$.messages[].content[?(@.type=='thinking')].signature",
+      "provider_term": "thinking block signature"
+    },
+    "sample": {
+      "raw_policy": "metadata_only",
+      "sha256": "23919cdb32d61ddd52e70164c1c494f071bd6ca1e2646c513bd8e033a2d70028",
+      "length": 6112,
+      "encoding": "base64",
+      "omitted_reason": "raw provider-native signature is not published"
+    },
+    "classification": {
+      "format": "protobuf",
+      "encoding_layers": 2,
+      "decoded_length": 4584,
+      "protobuf_length": 3438,
+      "top_level_first_byte": "0x12",
+      "channel_block_length": 72,
+      "channel_id": 11,
+      "routing_class": "routing_class_11",
+      "infra_id": 2,
+      "infrastructure_class": "infra_google",
+      "version": 2,
+      "ecdsa_length": 64,
+      "model_text": null,
+      "field7": null,
+      "schema_class": "compact_schema",
+      "valid_outer_format": true
+    },
+    "payload_shape": {
+      "request": {
+        "protocol": "anthropic-messages",
+        "root_path": "$",
+        "conversation_path": "$.messages",
+        "system_paths": [
+          "$.system"
+        ],
+        "message_paths": [
+          "$.messages[]"
+        ],
+        "signature_paths": [
+          "$.messages[].content[?(@.type=='thinking')].signature"
+        ],
+        "signature_container_paths": [
+          "$.messages[].content[?(@.type=='thinking')]"
+        ],
+        "reasoning_text_paths": [
+          "$.messages[].content[?(@.type=='thinking')].thinking"
+        ],
+        "tool_call_paths": [
+          "$.messages[].content[?(@.type=='tool_use')]"
+        ],
+        "tool_result_paths": [
+          "$.messages[].content[?(@.type=='tool_result')]"
+        ],
+        "id_paths": [
+          "$.messages[].content[?(@.type=='tool_use')].id",
+          "$.messages[].content[?(@.type=='tool_result')].tool_use_id"
+        ],
+        "related_paths": [
+          "$.thinking",
+          "$.thinking.display",
+          "$.thinking.budget_tokens"
+        ],
+        "ordering_invariants": [
+          "assistant thinking blocks replay with their original signature",
+          "tool_result blocks reference prior tool_use ids",
+          "thinking display controls visible thinking text and must be tracked separately from signature replay"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "response": {
+        "protocol": "anthropic-messages",
+        "root_path": "$",
+        "signature_paths": [
+          "$.content[?(@.type=='thinking')].signature"
+        ],
+        "signature_container_paths": [
+          "$.content[?(@.type=='thinking')]"
+        ],
+        "reasoning_text_paths": [
+          "$.content[?(@.type=='thinking')].thinking"
+        ],
+        "related_paths": [
+          "$.content[?(@.type=='thinking')].signature",
+          "$.content[?(@.type=='thinking')].thinking"
+        ],
+        "tool_call_paths": [
+          "$.content[?(@.type=='tool_use')]"
+        ],
+        "id_paths": [
+          "$.content[?(@.type=='tool_use')].id"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "stream": {
+        "protocol": "anthropic-messages",
+        "signature_paths": [
+          "$.delta.signature"
+        ],
+        "reasoning_text_paths": [
+          "$.delta.thinking"
+        ],
+        "stream_events": [
+          "content_block_start",
+          "content_block_delta:thinking_delta",
+          "content_block_delta:signature_delta",
+          "content_block_stop"
+        ],
+        "prompt_content_policy": "not_collected"
+      }
+    },
+    "conversion": {
+      "round_trip_required": true,
+      "replay_scope": "same_endpoint",
+      "cross_endpoint_safe": false,
+      "fallback_policy": "drop_block",
+      "cache_key_hints": [
+        "thinking_text",
+        "conversation_prefix"
+      ],
+      "notes": "Claude thinking block signatures cannot be synthesized for another endpoint."
+    },
+    "protocol_profile_id": "claude-anthropic-messages-thinking-v1",
+    "replay_contract": {
+      "emitted_in": "response_and_stream",
+      "replayed_in": "next_request_history",
+      "must_replay": true,
+      "scope": [
+        "same_endpoint",
+        "same_model",
+        "same_conversation_prefix"
+      ],
+      "native_endpoint_ids": [
+        "anthropic",
+        "aws-bedrock",
+        "azure",
+        "vertex",
+        "claude-code"
+      ],
+      "foreign_signature_policy": "drop_block",
+      "synthetic_replacement": {
+        "allowed": false
+      },
+      "tool_pairing": {
+        "required": true,
+        "pairing_rule": "tool_use_followed_by_tool_result",
+        "call_id_paths": [
+          "$.messages[].content[?(@.type=='tool_use')].id"
+        ],
+        "response_id_paths": [
+          "$.messages[].content[?(@.type=='tool_result')].tool_use_id"
+        ],
+        "order_sensitive": true,
+        "signature_required_on": "none"
+      },
+      "notes": "Thinking signatures are provider-native; incompatible foreign signatures should not be replayed as Claude thinking."
+    },
+    "provenance": {
+      "legacy_source_file": "signatures/claude/google-vertex.txt",
+      "legacy_source_line": 5,
+      "legacy_source_name": "google-vertex",
+      "backend_claim": "vertex",
+      "backend_confidence": "confirmed",
+      "notes": "Stable import from CPA-API Claude samples. OpenRouter-named legacy files are reduced to the claimed backend endpoint instead of becoming signature buckets."
+    },
+    "observed_at": "2026-02-06T04:58:19.827855Z",
+    "redactions": [
+      "request_context",
+      "user_content"
+    ]
+  },
+  {
+    "schema_version": "1.0",
+    "model_family": "claude",
+    "endpoint": {
+      "id": "vertex",
+      "confidence": "confirmed",
+      "provider": "google",
+      "product": "Vertex AI",
+      "protocol": "anthropic-messages-compatible"
+    },
+    "model": "unknown",
+    "collection_status": "stable",
+    "signature_source": {
+      "protocol": "anthropic-messages",
+      "container_type": "thinking",
+      "container_selector": {
+        "type": "thinking"
+      },
+      "field": "signature",
+      "stream_field": "signature_delta",
+      "json_path": "$.content[?(@.type=='thinking')].signature",
+      "request_replay_json_path": "$.messages[].content[?(@.type=='thinking')].signature",
+      "provider_term": "thinking block signature"
+    },
+    "sample": {
+      "raw_policy": "metadata_only",
+      "sha256": "4bbe4a1b222c770d39766107570c9549cce584b485196b7922d5fddf80c541ba",
+      "length": 796,
+      "encoding": "base64",
+      "omitted_reason": "raw provider-native signature is not published"
+    },
+    "classification": {
+      "format": "protobuf",
+      "encoding_layers": 2,
+      "decoded_length": 596,
+      "protobuf_length": 445,
+      "top_level_first_byte": "0x12",
+      "channel_block_length": 72,
+      "channel_id": 11,
+      "routing_class": "routing_class_11",
+      "infra_id": 2,
+      "infrastructure_class": "infra_google",
+      "version": 2,
+      "ecdsa_length": 64,
+      "model_text": null,
+      "field7": null,
+      "schema_class": "compact_schema",
+      "valid_outer_format": true
+    },
+    "payload_shape": {
+      "request": {
+        "protocol": "anthropic-messages",
+        "root_path": "$",
+        "conversation_path": "$.messages",
+        "system_paths": [
+          "$.system"
+        ],
+        "message_paths": [
+          "$.messages[]"
+        ],
+        "signature_paths": [
+          "$.messages[].content[?(@.type=='thinking')].signature"
+        ],
+        "signature_container_paths": [
+          "$.messages[].content[?(@.type=='thinking')]"
+        ],
+        "reasoning_text_paths": [
+          "$.messages[].content[?(@.type=='thinking')].thinking"
+        ],
+        "tool_call_paths": [
+          "$.messages[].content[?(@.type=='tool_use')]"
+        ],
+        "tool_result_paths": [
+          "$.messages[].content[?(@.type=='tool_result')]"
+        ],
+        "id_paths": [
+          "$.messages[].content[?(@.type=='tool_use')].id",
+          "$.messages[].content[?(@.type=='tool_result')].tool_use_id"
+        ],
+        "related_paths": [
+          "$.thinking",
+          "$.thinking.display",
+          "$.thinking.budget_tokens"
+        ],
+        "ordering_invariants": [
+          "assistant thinking blocks replay with their original signature",
+          "tool_result blocks reference prior tool_use ids",
+          "thinking display controls visible thinking text and must be tracked separately from signature replay"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "response": {
+        "protocol": "anthropic-messages",
+        "root_path": "$",
+        "signature_paths": [
+          "$.content[?(@.type=='thinking')].signature"
+        ],
+        "signature_container_paths": [
+          "$.content[?(@.type=='thinking')]"
+        ],
+        "reasoning_text_paths": [
+          "$.content[?(@.type=='thinking')].thinking"
+        ],
+        "related_paths": [
+          "$.content[?(@.type=='thinking')].signature",
+          "$.content[?(@.type=='thinking')].thinking"
+        ],
+        "tool_call_paths": [
+          "$.content[?(@.type=='tool_use')]"
+        ],
+        "id_paths": [
+          "$.content[?(@.type=='tool_use')].id"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "stream": {
+        "protocol": "anthropic-messages",
+        "signature_paths": [
+          "$.delta.signature"
+        ],
+        "reasoning_text_paths": [
+          "$.delta.thinking"
+        ],
+        "stream_events": [
+          "content_block_start",
+          "content_block_delta:thinking_delta",
+          "content_block_delta:signature_delta",
+          "content_block_stop"
+        ],
+        "prompt_content_policy": "not_collected"
+      }
+    },
+    "conversion": {
+      "round_trip_required": true,
+      "replay_scope": "same_endpoint",
+      "cross_endpoint_safe": false,
+      "fallback_policy": "drop_block",
+      "cache_key_hints": [
+        "thinking_text",
+        "conversation_prefix"
+      ],
+      "notes": "Claude thinking block signatures cannot be synthesized for another endpoint."
+    },
+    "protocol_profile_id": "claude-anthropic-messages-thinking-v1",
+    "replay_contract": {
+      "emitted_in": "response_and_stream",
+      "replayed_in": "next_request_history",
+      "must_replay": true,
+      "scope": [
+        "same_endpoint",
+        "same_model",
+        "same_conversation_prefix"
+      ],
+      "native_endpoint_ids": [
+        "anthropic",
+        "aws-bedrock",
+        "azure",
+        "vertex",
+        "claude-code"
+      ],
+      "foreign_signature_policy": "drop_block",
+      "synthetic_replacement": {
+        "allowed": false
+      },
+      "tool_pairing": {
+        "required": true,
+        "pairing_rule": "tool_use_followed_by_tool_result",
+        "call_id_paths": [
+          "$.messages[].content[?(@.type=='tool_use')].id"
+        ],
+        "response_id_paths": [
+          "$.messages[].content[?(@.type=='tool_result')].tool_use_id"
+        ],
+        "order_sensitive": true,
+        "signature_required_on": "none"
+      },
+      "notes": "Thinking signatures are provider-native; incompatible foreign signatures should not be replayed as Claude thinking."
+    },
+    "provenance": {
+      "legacy_source_file": "signatures/claude/google-vertex.txt",
+      "legacy_source_line": 6,
+      "legacy_source_name": "google-vertex",
+      "backend_claim": "vertex",
+      "backend_confidence": "confirmed",
+      "notes": "Stable import from CPA-API Claude samples. OpenRouter-named legacy files are reduced to the claimed backend endpoint instead of becoming signature buckets."
+    },
+    "observed_at": "2026-02-06T04:58:19.827855Z",
+    "redactions": [
+      "request_context",
+      "user_content"
+    ]
+  },
+  {
+    "schema_version": "1.0",
+    "model_family": "claude",
+    "endpoint": {
+      "id": "vertex",
+      "confidence": "confirmed",
+      "provider": "google",
+      "product": "Vertex AI",
+      "protocol": "anthropic-messages-compatible"
+    },
+    "model": "unknown",
+    "collection_status": "stable",
+    "signature_source": {
+      "protocol": "anthropic-messages",
+      "container_type": "thinking",
+      "container_selector": {
+        "type": "thinking"
+      },
+      "field": "signature",
+      "stream_field": "signature_delta",
+      "json_path": "$.content[?(@.type=='thinking')].signature",
+      "request_replay_json_path": "$.messages[].content[?(@.type=='thinking')].signature",
+      "provider_term": "thinking block signature"
+    },
+    "sample": {
+      "raw_policy": "metadata_only",
+      "sha256": "023c17b2456cb9aa36819a86dc8fda5e8208e56a68cbd3856b944619f6fa294d",
+      "length": 4428,
+      "encoding": "base64",
+      "omitted_reason": "raw provider-native signature is not published"
+    },
+    "classification": {
+      "format": "protobuf",
+      "encoding_layers": 2,
+      "decoded_length": 3320,
+      "protobuf_length": 2489,
+      "top_level_first_byte": "0x12",
+      "channel_block_length": 72,
+      "channel_id": 11,
+      "routing_class": "routing_class_11",
+      "infra_id": 2,
+      "infrastructure_class": "infra_google",
+      "version": 2,
+      "ecdsa_length": 64,
+      "model_text": null,
+      "field7": null,
+      "schema_class": "compact_schema",
+      "valid_outer_format": true
+    },
+    "payload_shape": {
+      "request": {
+        "protocol": "anthropic-messages",
+        "root_path": "$",
+        "conversation_path": "$.messages",
+        "system_paths": [
+          "$.system"
+        ],
+        "message_paths": [
+          "$.messages[]"
+        ],
+        "signature_paths": [
+          "$.messages[].content[?(@.type=='thinking')].signature"
+        ],
+        "signature_container_paths": [
+          "$.messages[].content[?(@.type=='thinking')]"
+        ],
+        "reasoning_text_paths": [
+          "$.messages[].content[?(@.type=='thinking')].thinking"
+        ],
+        "tool_call_paths": [
+          "$.messages[].content[?(@.type=='tool_use')]"
+        ],
+        "tool_result_paths": [
+          "$.messages[].content[?(@.type=='tool_result')]"
+        ],
+        "id_paths": [
+          "$.messages[].content[?(@.type=='tool_use')].id",
+          "$.messages[].content[?(@.type=='tool_result')].tool_use_id"
+        ],
+        "related_paths": [
+          "$.thinking",
+          "$.thinking.display",
+          "$.thinking.budget_tokens"
+        ],
+        "ordering_invariants": [
+          "assistant thinking blocks replay with their original signature",
+          "tool_result blocks reference prior tool_use ids",
+          "thinking display controls visible thinking text and must be tracked separately from signature replay"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "response": {
+        "protocol": "anthropic-messages",
+        "root_path": "$",
+        "signature_paths": [
+          "$.content[?(@.type=='thinking')].signature"
+        ],
+        "signature_container_paths": [
+          "$.content[?(@.type=='thinking')]"
+        ],
+        "reasoning_text_paths": [
+          "$.content[?(@.type=='thinking')].thinking"
+        ],
+        "related_paths": [
+          "$.content[?(@.type=='thinking')].signature",
+          "$.content[?(@.type=='thinking')].thinking"
+        ],
+        "tool_call_paths": [
+          "$.content[?(@.type=='tool_use')]"
+        ],
+        "id_paths": [
+          "$.content[?(@.type=='tool_use')].id"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "stream": {
+        "protocol": "anthropic-messages",
+        "signature_paths": [
+          "$.delta.signature"
+        ],
+        "reasoning_text_paths": [
+          "$.delta.thinking"
+        ],
+        "stream_events": [
+          "content_block_start",
+          "content_block_delta:thinking_delta",
+          "content_block_delta:signature_delta",
+          "content_block_stop"
+        ],
+        "prompt_content_policy": "not_collected"
+      }
+    },
+    "conversion": {
+      "round_trip_required": true,
+      "replay_scope": "same_endpoint",
+      "cross_endpoint_safe": false,
+      "fallback_policy": "drop_block",
+      "cache_key_hints": [
+        "thinking_text",
+        "conversation_prefix"
+      ],
+      "notes": "Claude thinking block signatures cannot be synthesized for another endpoint."
+    },
+    "protocol_profile_id": "claude-anthropic-messages-thinking-v1",
+    "replay_contract": {
+      "emitted_in": "response_and_stream",
+      "replayed_in": "next_request_history",
+      "must_replay": true,
+      "scope": [
+        "same_endpoint",
+        "same_model",
+        "same_conversation_prefix"
+      ],
+      "native_endpoint_ids": [
+        "anthropic",
+        "aws-bedrock",
+        "azure",
+        "vertex",
+        "claude-code"
+      ],
+      "foreign_signature_policy": "drop_block",
+      "synthetic_replacement": {
+        "allowed": false
+      },
+      "tool_pairing": {
+        "required": true,
+        "pairing_rule": "tool_use_followed_by_tool_result",
+        "call_id_paths": [
+          "$.messages[].content[?(@.type=='tool_use')].id"
+        ],
+        "response_id_paths": [
+          "$.messages[].content[?(@.type=='tool_result')].tool_use_id"
+        ],
+        "order_sensitive": true,
+        "signature_required_on": "none"
+      },
+      "notes": "Thinking signatures are provider-native; incompatible foreign signatures should not be replayed as Claude thinking."
+    },
+    "provenance": {
+      "legacy_source_file": "signatures/claude/google-vertex.txt",
+      "legacy_source_line": 7,
+      "legacy_source_name": "google-vertex",
+      "backend_claim": "vertex",
+      "backend_confidence": "confirmed",
+      "notes": "Stable import from CPA-API Claude samples. OpenRouter-named legacy files are reduced to the claimed backend endpoint instead of becoming signature buckets."
+    },
+    "observed_at": "2026-02-06T04:58:19.827855Z",
+    "redactions": [
+      "request_context",
+      "user_content"
+    ]
+  },
+  {
+    "schema_version": "1.0",
+    "model_family": "claude",
+    "endpoint": {
+      "id": "vertex",
+      "confidence": "confirmed",
+      "provider": "google",
+      "product": "Vertex AI",
+      "protocol": "anthropic-messages-compatible"
+    },
+    "model": "unknown",
+    "collection_status": "stable",
+    "signature_source": {
+      "protocol": "anthropic-messages",
+      "container_type": "thinking",
+      "container_selector": {
+        "type": "thinking"
+      },
+      "field": "signature",
+      "stream_field": "signature_delta",
+      "json_path": "$.content[?(@.type=='thinking')].signature",
+      "request_replay_json_path": "$.messages[].content[?(@.type=='thinking')].signature",
+      "provider_term": "thinking block signature"
+    },
+    "sample": {
+      "raw_policy": "metadata_only",
+      "sha256": "205b230cad01b2a3fcbccc98c6b68ba6c8af58bb2c768312b22c6cb8062e2f66",
+      "length": 1020,
+      "encoding": "base64",
+      "omitted_reason": "raw provider-native signature is not published"
+    },
+    "classification": {
+      "format": "protobuf",
+      "encoding_layers": 2,
+      "decoded_length": 764,
+      "protobuf_length": 572,
+      "top_level_first_byte": "0x12",
+      "channel_block_length": 72,
+      "channel_id": 11,
+      "routing_class": "routing_class_11",
+      "infra_id": 2,
+      "infrastructure_class": "infra_google",
+      "version": 2,
+      "ecdsa_length": 64,
+      "model_text": null,
+      "field7": null,
+      "schema_class": "compact_schema",
+      "valid_outer_format": true
+    },
+    "payload_shape": {
+      "request": {
+        "protocol": "anthropic-messages",
+        "root_path": "$",
+        "conversation_path": "$.messages",
+        "system_paths": [
+          "$.system"
+        ],
+        "message_paths": [
+          "$.messages[]"
+        ],
+        "signature_paths": [
+          "$.messages[].content[?(@.type=='thinking')].signature"
+        ],
+        "signature_container_paths": [
+          "$.messages[].content[?(@.type=='thinking')]"
+        ],
+        "reasoning_text_paths": [
+          "$.messages[].content[?(@.type=='thinking')].thinking"
+        ],
+        "tool_call_paths": [
+          "$.messages[].content[?(@.type=='tool_use')]"
+        ],
+        "tool_result_paths": [
+          "$.messages[].content[?(@.type=='tool_result')]"
+        ],
+        "id_paths": [
+          "$.messages[].content[?(@.type=='tool_use')].id",
+          "$.messages[].content[?(@.type=='tool_result')].tool_use_id"
+        ],
+        "related_paths": [
+          "$.thinking",
+          "$.thinking.display",
+          "$.thinking.budget_tokens"
+        ],
+        "ordering_invariants": [
+          "assistant thinking blocks replay with their original signature",
+          "tool_result blocks reference prior tool_use ids",
+          "thinking display controls visible thinking text and must be tracked separately from signature replay"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "response": {
+        "protocol": "anthropic-messages",
+        "root_path": "$",
+        "signature_paths": [
+          "$.content[?(@.type=='thinking')].signature"
+        ],
+        "signature_container_paths": [
+          "$.content[?(@.type=='thinking')]"
+        ],
+        "reasoning_text_paths": [
+          "$.content[?(@.type=='thinking')].thinking"
+        ],
+        "related_paths": [
+          "$.content[?(@.type=='thinking')].signature",
+          "$.content[?(@.type=='thinking')].thinking"
+        ],
+        "tool_call_paths": [
+          "$.content[?(@.type=='tool_use')]"
+        ],
+        "id_paths": [
+          "$.content[?(@.type=='tool_use')].id"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "stream": {
+        "protocol": "anthropic-messages",
+        "signature_paths": [
+          "$.delta.signature"
+        ],
+        "reasoning_text_paths": [
+          "$.delta.thinking"
+        ],
+        "stream_events": [
+          "content_block_start",
+          "content_block_delta:thinking_delta",
+          "content_block_delta:signature_delta",
+          "content_block_stop"
+        ],
+        "prompt_content_policy": "not_collected"
+      }
+    },
+    "conversion": {
+      "round_trip_required": true,
+      "replay_scope": "same_endpoint",
+      "cross_endpoint_safe": false,
+      "fallback_policy": "drop_block",
+      "cache_key_hints": [
+        "thinking_text",
+        "conversation_prefix"
+      ],
+      "notes": "Claude thinking block signatures cannot be synthesized for another endpoint."
+    },
+    "protocol_profile_id": "claude-anthropic-messages-thinking-v1",
+    "replay_contract": {
+      "emitted_in": "response_and_stream",
+      "replayed_in": "next_request_history",
+      "must_replay": true,
+      "scope": [
+        "same_endpoint",
+        "same_model",
+        "same_conversation_prefix"
+      ],
+      "native_endpoint_ids": [
+        "anthropic",
+        "aws-bedrock",
+        "azure",
+        "vertex",
+        "claude-code"
+      ],
+      "foreign_signature_policy": "drop_block",
+      "synthetic_replacement": {
+        "allowed": false
+      },
+      "tool_pairing": {
+        "required": true,
+        "pairing_rule": "tool_use_followed_by_tool_result",
+        "call_id_paths": [
+          "$.messages[].content[?(@.type=='tool_use')].id"
+        ],
+        "response_id_paths": [
+          "$.messages[].content[?(@.type=='tool_result')].tool_use_id"
+        ],
+        "order_sensitive": true,
+        "signature_required_on": "none"
+      },
+      "notes": "Thinking signatures are provider-native; incompatible foreign signatures should not be replayed as Claude thinking."
+    },
+    "provenance": {
+      "legacy_source_file": "signatures/claude/google-vertex.txt",
+      "legacy_source_line": 8,
+      "legacy_source_name": "google-vertex",
+      "backend_claim": "vertex",
+      "backend_confidence": "confirmed",
+      "notes": "Stable import from CPA-API Claude samples. OpenRouter-named legacy files are reduced to the claimed backend endpoint instead of becoming signature buckets."
+    },
+    "observed_at": "2026-02-06T04:58:19.827855Z",
+    "redactions": [
+      "request_context",
+      "user_content"
+    ]
+  },
+  {
+    "schema_version": "1.0",
+    "model_family": "claude",
+    "endpoint": {
+      "id": "vertex",
+      "confidence": "confirmed",
+      "provider": "google",
+      "product": "Vertex AI",
+      "protocol": "anthropic-messages-compatible"
+    },
+    "model": "unknown",
+    "collection_status": "stable",
+    "signature_source": {
+      "protocol": "anthropic-messages",
+      "container_type": "thinking",
+      "container_selector": {
+        "type": "thinking"
+      },
+      "field": "signature",
+      "stream_field": "signature_delta",
+      "json_path": "$.content[?(@.type=='thinking')].signature",
+      "request_replay_json_path": "$.messages[].content[?(@.type=='thinking')].signature",
+      "provider_term": "thinking block signature"
+    },
+    "sample": {
+      "raw_policy": "metadata_only",
+      "sha256": "db4f8c43fadcae4f4278db905543ffd77bde272bdf57006019cd97ba20c1ee56",
+      "length": 5200,
+      "encoding": "base64",
+      "omitted_reason": "raw provider-native signature is not published"
+    },
+    "classification": {
+      "format": "protobuf",
+      "encoding_layers": 2,
+      "decoded_length": 3900,
+      "protobuf_length": 2923,
+      "top_level_first_byte": "0x12",
+      "channel_block_length": 72,
+      "channel_id": 11,
+      "routing_class": "routing_class_11",
+      "infra_id": 2,
+      "infrastructure_class": "infra_google",
+      "version": 2,
+      "ecdsa_length": 64,
+      "model_text": null,
+      "field7": null,
+      "schema_class": "compact_schema",
+      "valid_outer_format": true
+    },
+    "payload_shape": {
+      "request": {
+        "protocol": "anthropic-messages",
+        "root_path": "$",
+        "conversation_path": "$.messages",
+        "system_paths": [
+          "$.system"
+        ],
+        "message_paths": [
+          "$.messages[]"
+        ],
+        "signature_paths": [
+          "$.messages[].content[?(@.type=='thinking')].signature"
+        ],
+        "signature_container_paths": [
+          "$.messages[].content[?(@.type=='thinking')]"
+        ],
+        "reasoning_text_paths": [
+          "$.messages[].content[?(@.type=='thinking')].thinking"
+        ],
+        "tool_call_paths": [
+          "$.messages[].content[?(@.type=='tool_use')]"
+        ],
+        "tool_result_paths": [
+          "$.messages[].content[?(@.type=='tool_result')]"
+        ],
+        "id_paths": [
+          "$.messages[].content[?(@.type=='tool_use')].id",
+          "$.messages[].content[?(@.type=='tool_result')].tool_use_id"
+        ],
+        "related_paths": [
+          "$.thinking",
+          "$.thinking.display",
+          "$.thinking.budget_tokens"
+        ],
+        "ordering_invariants": [
+          "assistant thinking blocks replay with their original signature",
+          "tool_result blocks reference prior tool_use ids",
+          "thinking display controls visible thinking text and must be tracked separately from signature replay"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "response": {
+        "protocol": "anthropic-messages",
+        "root_path": "$",
+        "signature_paths": [
+          "$.content[?(@.type=='thinking')].signature"
+        ],
+        "signature_container_paths": [
+          "$.content[?(@.type=='thinking')]"
+        ],
+        "reasoning_text_paths": [
+          "$.content[?(@.type=='thinking')].thinking"
+        ],
+        "related_paths": [
+          "$.content[?(@.type=='thinking')].signature",
+          "$.content[?(@.type=='thinking')].thinking"
+        ],
+        "tool_call_paths": [
+          "$.content[?(@.type=='tool_use')]"
+        ],
+        "id_paths": [
+          "$.content[?(@.type=='tool_use')].id"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "stream": {
+        "protocol": "anthropic-messages",
+        "signature_paths": [
+          "$.delta.signature"
+        ],
+        "reasoning_text_paths": [
+          "$.delta.thinking"
+        ],
+        "stream_events": [
+          "content_block_start",
+          "content_block_delta:thinking_delta",
+          "content_block_delta:signature_delta",
+          "content_block_stop"
+        ],
+        "prompt_content_policy": "not_collected"
+      }
+    },
+    "conversion": {
+      "round_trip_required": true,
+      "replay_scope": "same_endpoint",
+      "cross_endpoint_safe": false,
+      "fallback_policy": "drop_block",
+      "cache_key_hints": [
+        "thinking_text",
+        "conversation_prefix"
+      ],
+      "notes": "Claude thinking block signatures cannot be synthesized for another endpoint."
+    },
+    "protocol_profile_id": "claude-anthropic-messages-thinking-v1",
+    "replay_contract": {
+      "emitted_in": "response_and_stream",
+      "replayed_in": "next_request_history",
+      "must_replay": true,
+      "scope": [
+        "same_endpoint",
+        "same_model",
+        "same_conversation_prefix"
+      ],
+      "native_endpoint_ids": [
+        "anthropic",
+        "aws-bedrock",
+        "azure",
+        "vertex",
+        "claude-code"
+      ],
+      "foreign_signature_policy": "drop_block",
+      "synthetic_replacement": {
+        "allowed": false
+      },
+      "tool_pairing": {
+        "required": true,
+        "pairing_rule": "tool_use_followed_by_tool_result",
+        "call_id_paths": [
+          "$.messages[].content[?(@.type=='tool_use')].id"
+        ],
+        "response_id_paths": [
+          "$.messages[].content[?(@.type=='tool_result')].tool_use_id"
+        ],
+        "order_sensitive": true,
+        "signature_required_on": "none"
+      },
+      "notes": "Thinking signatures are provider-native; incompatible foreign signatures should not be replayed as Claude thinking."
+    },
+    "provenance": {
+      "legacy_source_file": "signatures/claude/google-vertex.txt",
+      "legacy_source_line": 9,
+      "legacy_source_name": "google-vertex",
+      "backend_claim": "vertex",
+      "backend_confidence": "confirmed",
+      "notes": "Stable import from CPA-API Claude samples. OpenRouter-named legacy files are reduced to the claimed backend endpoint instead of becoming signature buckets."
+    },
+    "observed_at": "2026-02-06T04:58:19.827855Z",
+    "redactions": [
+      "request_context",
+      "user_content"
+    ]
+  },
+  {
+    "schema_version": "1.0",
+    "model_family": "claude",
+    "endpoint": {
+      "id": "vertex",
+      "confidence": "confirmed",
+      "provider": "google",
+      "product": "Vertex AI",
+      "protocol": "anthropic-messages-compatible"
+    },
+    "model": "unknown",
+    "collection_status": "stable",
+    "signature_source": {
+      "protocol": "anthropic-messages",
+      "container_type": "thinking",
+      "container_selector": {
+        "type": "thinking"
+      },
+      "field": "signature",
+      "stream_field": "signature_delta",
+      "json_path": "$.content[?(@.type=='thinking')].signature",
+      "request_replay_json_path": "$.messages[].content[?(@.type=='thinking')].signature",
+      "provider_term": "thinking block signature"
+    },
+    "sample": {
+      "raw_policy": "metadata_only",
+      "sha256": "0507df3044d96fe8ecead25328f7946658bc07648feb5bcd8df074b243493ad3",
+      "length": 1672,
+      "encoding": "base64",
+      "omitted_reason": "raw provider-native signature is not published"
+    },
+    "classification": {
+      "format": "protobuf",
+      "encoding_layers": 2,
+      "decoded_length": 1252,
+      "protobuf_length": 937,
+      "top_level_first_byte": "0x12",
+      "channel_block_length": 72,
+      "channel_id": 11,
+      "routing_class": "routing_class_11",
+      "infra_id": 2,
+      "infrastructure_class": "infra_google",
+      "version": 2,
+      "ecdsa_length": 64,
+      "model_text": null,
+      "field7": null,
+      "schema_class": "compact_schema",
+      "valid_outer_format": true
+    },
+    "payload_shape": {
+      "request": {
+        "protocol": "anthropic-messages",
+        "root_path": "$",
+        "conversation_path": "$.messages",
+        "system_paths": [
+          "$.system"
+        ],
+        "message_paths": [
+          "$.messages[]"
+        ],
+        "signature_paths": [
+          "$.messages[].content[?(@.type=='thinking')].signature"
+        ],
+        "signature_container_paths": [
+          "$.messages[].content[?(@.type=='thinking')]"
+        ],
+        "reasoning_text_paths": [
+          "$.messages[].content[?(@.type=='thinking')].thinking"
+        ],
+        "tool_call_paths": [
+          "$.messages[].content[?(@.type=='tool_use')]"
+        ],
+        "tool_result_paths": [
+          "$.messages[].content[?(@.type=='tool_result')]"
+        ],
+        "id_paths": [
+          "$.messages[].content[?(@.type=='tool_use')].id",
+          "$.messages[].content[?(@.type=='tool_result')].tool_use_id"
+        ],
+        "related_paths": [
+          "$.thinking",
+          "$.thinking.display",
+          "$.thinking.budget_tokens"
+        ],
+        "ordering_invariants": [
+          "assistant thinking blocks replay with their original signature",
+          "tool_result blocks reference prior tool_use ids",
+          "thinking display controls visible thinking text and must be tracked separately from signature replay"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "response": {
+        "protocol": "anthropic-messages",
+        "root_path": "$",
+        "signature_paths": [
+          "$.content[?(@.type=='thinking')].signature"
+        ],
+        "signature_container_paths": [
+          "$.content[?(@.type=='thinking')]"
+        ],
+        "reasoning_text_paths": [
+          "$.content[?(@.type=='thinking')].thinking"
+        ],
+        "related_paths": [
+          "$.content[?(@.type=='thinking')].signature",
+          "$.content[?(@.type=='thinking')].thinking"
+        ],
+        "tool_call_paths": [
+          "$.content[?(@.type=='tool_use')]"
+        ],
+        "id_paths": [
+          "$.content[?(@.type=='tool_use')].id"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "stream": {
+        "protocol": "anthropic-messages",
+        "signature_paths": [
+          "$.delta.signature"
+        ],
+        "reasoning_text_paths": [
+          "$.delta.thinking"
+        ],
+        "stream_events": [
+          "content_block_start",
+          "content_block_delta:thinking_delta",
+          "content_block_delta:signature_delta",
+          "content_block_stop"
+        ],
+        "prompt_content_policy": "not_collected"
+      }
+    },
+    "conversion": {
+      "round_trip_required": true,
+      "replay_scope": "same_endpoint",
+      "cross_endpoint_safe": false,
+      "fallback_policy": "drop_block",
+      "cache_key_hints": [
+        "thinking_text",
+        "conversation_prefix"
+      ],
+      "notes": "Claude thinking block signatures cannot be synthesized for another endpoint."
+    },
+    "protocol_profile_id": "claude-anthropic-messages-thinking-v1",
+    "replay_contract": {
+      "emitted_in": "response_and_stream",
+      "replayed_in": "next_request_history",
+      "must_replay": true,
+      "scope": [
+        "same_endpoint",
+        "same_model",
+        "same_conversation_prefix"
+      ],
+      "native_endpoint_ids": [
+        "anthropic",
+        "aws-bedrock",
+        "azure",
+        "vertex",
+        "claude-code"
+      ],
+      "foreign_signature_policy": "drop_block",
+      "synthetic_replacement": {
+        "allowed": false
+      },
+      "tool_pairing": {
+        "required": true,
+        "pairing_rule": "tool_use_followed_by_tool_result",
+        "call_id_paths": [
+          "$.messages[].content[?(@.type=='tool_use')].id"
+        ],
+        "response_id_paths": [
+          "$.messages[].content[?(@.type=='tool_result')].tool_use_id"
+        ],
+        "order_sensitive": true,
+        "signature_required_on": "none"
+      },
+      "notes": "Thinking signatures are provider-native; incompatible foreign signatures should not be replayed as Claude thinking."
+    },
+    "provenance": {
+      "legacy_source_file": "signatures/claude/google-vertex.txt",
+      "legacy_source_line": 10,
+      "legacy_source_name": "google-vertex",
+      "backend_claim": "vertex",
+      "backend_confidence": "confirmed",
+      "notes": "Stable import from CPA-API Claude samples. OpenRouter-named legacy files are reduced to the claimed backend endpoint instead of becoming signature buckets."
+    },
+    "observed_at": "2026-02-06T04:58:19.827855Z",
+    "redactions": [
+      "request_context",
+      "user_content"
+    ]
+  },
+  {
+    "schema_version": "1.0",
+    "model_family": "claude",
+    "endpoint": {
+      "id": "vertex",
+      "confidence": "confirmed",
+      "provider": "google",
+      "product": "Vertex AI",
+      "protocol": "anthropic-messages-compatible"
+    },
+    "model": "unknown",
+    "collection_status": "stable",
+    "signature_source": {
+      "protocol": "anthropic-messages",
+      "container_type": "thinking",
+      "container_selector": {
+        "type": "thinking"
+      },
+      "field": "signature",
+      "stream_field": "signature_delta",
+      "json_path": "$.content[?(@.type=='thinking')].signature",
+      "request_replay_json_path": "$.messages[].content[?(@.type=='thinking')].signature",
+      "provider_term": "thinking block signature"
+    },
+    "sample": {
+      "raw_policy": "metadata_only",
+      "sha256": "d35ca7048e4162d362e27d08d48492f1abedfe74ae9c8abb3ea41cc27c57d8dd",
+      "length": 1456,
+      "encoding": "base64",
+      "omitted_reason": "raw provider-native signature is not published"
+    },
+    "classification": {
+      "format": "protobuf",
+      "encoding_layers": 2,
+      "decoded_length": 1092,
+      "protobuf_length": 817,
+      "top_level_first_byte": "0x12",
+      "channel_block_length": 72,
+      "channel_id": 11,
+      "routing_class": "routing_class_11",
+      "infra_id": 2,
+      "infrastructure_class": "infra_google",
+      "version": 2,
+      "ecdsa_length": 64,
+      "model_text": null,
+      "field7": null,
+      "schema_class": "compact_schema",
+      "valid_outer_format": true
+    },
+    "payload_shape": {
+      "request": {
+        "protocol": "anthropic-messages",
+        "root_path": "$",
+        "conversation_path": "$.messages",
+        "system_paths": [
+          "$.system"
+        ],
+        "message_paths": [
+          "$.messages[]"
+        ],
+        "signature_paths": [
+          "$.messages[].content[?(@.type=='thinking')].signature"
+        ],
+        "signature_container_paths": [
+          "$.messages[].content[?(@.type=='thinking')]"
+        ],
+        "reasoning_text_paths": [
+          "$.messages[].content[?(@.type=='thinking')].thinking"
+        ],
+        "tool_call_paths": [
+          "$.messages[].content[?(@.type=='tool_use')]"
+        ],
+        "tool_result_paths": [
+          "$.messages[].content[?(@.type=='tool_result')]"
+        ],
+        "id_paths": [
+          "$.messages[].content[?(@.type=='tool_use')].id",
+          "$.messages[].content[?(@.type=='tool_result')].tool_use_id"
+        ],
+        "related_paths": [
+          "$.thinking",
+          "$.thinking.display",
+          "$.thinking.budget_tokens"
+        ],
+        "ordering_invariants": [
+          "assistant thinking blocks replay with their original signature",
+          "tool_result blocks reference prior tool_use ids",
+          "thinking display controls visible thinking text and must be tracked separately from signature replay"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "response": {
+        "protocol": "anthropic-messages",
+        "root_path": "$",
+        "signature_paths": [
+          "$.content[?(@.type=='thinking')].signature"
+        ],
+        "signature_container_paths": [
+          "$.content[?(@.type=='thinking')]"
+        ],
+        "reasoning_text_paths": [
+          "$.content[?(@.type=='thinking')].thinking"
+        ],
+        "related_paths": [
+          "$.content[?(@.type=='thinking')].signature",
+          "$.content[?(@.type=='thinking')].thinking"
+        ],
+        "tool_call_paths": [
+          "$.content[?(@.type=='tool_use')]"
+        ],
+        "id_paths": [
+          "$.content[?(@.type=='tool_use')].id"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "stream": {
+        "protocol": "anthropic-messages",
+        "signature_paths": [
+          "$.delta.signature"
+        ],
+        "reasoning_text_paths": [
+          "$.delta.thinking"
+        ],
+        "stream_events": [
+          "content_block_start",
+          "content_block_delta:thinking_delta",
+          "content_block_delta:signature_delta",
+          "content_block_stop"
+        ],
+        "prompt_content_policy": "not_collected"
+      }
+    },
+    "conversion": {
+      "round_trip_required": true,
+      "replay_scope": "same_endpoint",
+      "cross_endpoint_safe": false,
+      "fallback_policy": "drop_block",
+      "cache_key_hints": [
+        "thinking_text",
+        "conversation_prefix"
+      ],
+      "notes": "Claude thinking block signatures cannot be synthesized for another endpoint."
+    },
+    "protocol_profile_id": "claude-anthropic-messages-thinking-v1",
+    "replay_contract": {
+      "emitted_in": "response_and_stream",
+      "replayed_in": "next_request_history",
+      "must_replay": true,
+      "scope": [
+        "same_endpoint",
+        "same_model",
+        "same_conversation_prefix"
+      ],
+      "native_endpoint_ids": [
+        "anthropic",
+        "aws-bedrock",
+        "azure",
+        "vertex",
+        "claude-code"
+      ],
+      "foreign_signature_policy": "drop_block",
+      "synthetic_replacement": {
+        "allowed": false
+      },
+      "tool_pairing": {
+        "required": true,
+        "pairing_rule": "tool_use_followed_by_tool_result",
+        "call_id_paths": [
+          "$.messages[].content[?(@.type=='tool_use')].id"
+        ],
+        "response_id_paths": [
+          "$.messages[].content[?(@.type=='tool_result')].tool_use_id"
+        ],
+        "order_sensitive": true,
+        "signature_required_on": "none"
+      },
+      "notes": "Thinking signatures are provider-native; incompatible foreign signatures should not be replayed as Claude thinking."
+    },
+    "provenance": {
+      "legacy_source_file": "signatures/claude/google-vertex.txt",
+      "legacy_source_line": 11,
+      "legacy_source_name": "google-vertex",
+      "backend_claim": "vertex",
+      "backend_confidence": "confirmed",
+      "notes": "Stable import from CPA-API Claude samples. OpenRouter-named legacy files are reduced to the claimed backend endpoint instead of becoming signature buckets."
+    },
+    "observed_at": "2026-02-06T04:58:19.827855Z",
+    "redactions": [
+      "request_context",
+      "user_content"
+    ]
+  },
+  {
+    "schema_version": "1.0",
+    "model_family": "claude",
+    "endpoint": {
+      "id": "vertex",
+      "confidence": "confirmed",
+      "provider": "google",
+      "product": "Vertex AI",
+      "protocol": "anthropic-messages-compatible"
+    },
+    "model": "unknown",
+    "collection_status": "stable",
+    "signature_source": {
+      "protocol": "anthropic-messages",
+      "container_type": "thinking",
+      "container_selector": {
+        "type": "thinking"
+      },
+      "field": "signature",
+      "stream_field": "signature_delta",
+      "json_path": "$.content[?(@.type=='thinking')].signature",
+      "request_replay_json_path": "$.messages[].content[?(@.type=='thinking')].signature",
+      "provider_term": "thinking block signature"
+    },
+    "sample": {
+      "raw_policy": "metadata_only",
+      "sha256": "ac78fdfc0cbae1a86df83a5060695eb8f80c39bd5abb26dc04e79513c2f44b8d",
+      "length": 2316,
+      "encoding": "base64",
+      "omitted_reason": "raw provider-native signature is not published"
+    },
+    "classification": {
+      "format": "protobuf",
+      "encoding_layers": 2,
+      "decoded_length": 1736,
+      "protobuf_length": 1300,
+      "top_level_first_byte": "0x12",
+      "channel_block_length": 72,
+      "channel_id": 11,
+      "routing_class": "routing_class_11",
+      "infra_id": 2,
+      "infrastructure_class": "infra_google",
+      "version": 2,
+      "ecdsa_length": 64,
+      "model_text": null,
+      "field7": null,
+      "schema_class": "compact_schema",
+      "valid_outer_format": true
+    },
+    "payload_shape": {
+      "request": {
+        "protocol": "anthropic-messages",
+        "root_path": "$",
+        "conversation_path": "$.messages",
+        "system_paths": [
+          "$.system"
+        ],
+        "message_paths": [
+          "$.messages[]"
+        ],
+        "signature_paths": [
+          "$.messages[].content[?(@.type=='thinking')].signature"
+        ],
+        "signature_container_paths": [
+          "$.messages[].content[?(@.type=='thinking')]"
+        ],
+        "reasoning_text_paths": [
+          "$.messages[].content[?(@.type=='thinking')].thinking"
+        ],
+        "tool_call_paths": [
+          "$.messages[].content[?(@.type=='tool_use')]"
+        ],
+        "tool_result_paths": [
+          "$.messages[].content[?(@.type=='tool_result')]"
+        ],
+        "id_paths": [
+          "$.messages[].content[?(@.type=='tool_use')].id",
+          "$.messages[].content[?(@.type=='tool_result')].tool_use_id"
+        ],
+        "related_paths": [
+          "$.thinking",
+          "$.thinking.display",
+          "$.thinking.budget_tokens"
+        ],
+        "ordering_invariants": [
+          "assistant thinking blocks replay with their original signature",
+          "tool_result blocks reference prior tool_use ids",
+          "thinking display controls visible thinking text and must be tracked separately from signature replay"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "response": {
+        "protocol": "anthropic-messages",
+        "root_path": "$",
+        "signature_paths": [
+          "$.content[?(@.type=='thinking')].signature"
+        ],
+        "signature_container_paths": [
+          "$.content[?(@.type=='thinking')]"
+        ],
+        "reasoning_text_paths": [
+          "$.content[?(@.type=='thinking')].thinking"
+        ],
+        "related_paths": [
+          "$.content[?(@.type=='thinking')].signature",
+          "$.content[?(@.type=='thinking')].thinking"
+        ],
+        "tool_call_paths": [
+          "$.content[?(@.type=='tool_use')]"
+        ],
+        "id_paths": [
+          "$.content[?(@.type=='tool_use')].id"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "stream": {
+        "protocol": "anthropic-messages",
+        "signature_paths": [
+          "$.delta.signature"
+        ],
+        "reasoning_text_paths": [
+          "$.delta.thinking"
+        ],
+        "stream_events": [
+          "content_block_start",
+          "content_block_delta:thinking_delta",
+          "content_block_delta:signature_delta",
+          "content_block_stop"
+        ],
+        "prompt_content_policy": "not_collected"
+      }
+    },
+    "conversion": {
+      "round_trip_required": true,
+      "replay_scope": "same_endpoint",
+      "cross_endpoint_safe": false,
+      "fallback_policy": "drop_block",
+      "cache_key_hints": [
+        "thinking_text",
+        "conversation_prefix"
+      ],
+      "notes": "Claude thinking block signatures cannot be synthesized for another endpoint."
+    },
+    "protocol_profile_id": "claude-anthropic-messages-thinking-v1",
+    "replay_contract": {
+      "emitted_in": "response_and_stream",
+      "replayed_in": "next_request_history",
+      "must_replay": true,
+      "scope": [
+        "same_endpoint",
+        "same_model",
+        "same_conversation_prefix"
+      ],
+      "native_endpoint_ids": [
+        "anthropic",
+        "aws-bedrock",
+        "azure",
+        "vertex",
+        "claude-code"
+      ],
+      "foreign_signature_policy": "drop_block",
+      "synthetic_replacement": {
+        "allowed": false
+      },
+      "tool_pairing": {
+        "required": true,
+        "pairing_rule": "tool_use_followed_by_tool_result",
+        "call_id_paths": [
+          "$.messages[].content[?(@.type=='tool_use')].id"
+        ],
+        "response_id_paths": [
+          "$.messages[].content[?(@.type=='tool_result')].tool_use_id"
+        ],
+        "order_sensitive": true,
+        "signature_required_on": "none"
+      },
+      "notes": "Thinking signatures are provider-native; incompatible foreign signatures should not be replayed as Claude thinking."
+    },
+    "provenance": {
+      "legacy_source_file": "signatures/claude/google-vertex.txt",
+      "legacy_source_line": 12,
+      "legacy_source_name": "google-vertex",
+      "backend_claim": "vertex",
+      "backend_confidence": "confirmed",
+      "notes": "Stable import from CPA-API Claude samples. OpenRouter-named legacy files are reduced to the claimed backend endpoint instead of becoming signature buckets."
+    },
+    "observed_at": "2026-02-06T04:58:19.827855Z",
+    "redactions": [
+      "request_context",
+      "user_content"
+    ]
+  },
+  {
+    "schema_version": "1.0",
+    "model_family": "claude",
+    "endpoint": {
+      "id": "vertex",
+      "confidence": "confirmed",
+      "provider": "google",
+      "product": "Vertex AI",
+      "protocol": "anthropic-messages-compatible"
+    },
+    "model": "unknown",
+    "collection_status": "stable",
+    "signature_source": {
+      "protocol": "anthropic-messages",
+      "container_type": "thinking",
+      "container_selector": {
+        "type": "thinking"
+      },
+      "field": "signature",
+      "stream_field": "signature_delta",
+      "json_path": "$.content[?(@.type=='thinking')].signature",
+      "request_replay_json_path": "$.messages[].content[?(@.type=='thinking')].signature",
+      "provider_term": "thinking block signature"
+    },
+    "sample": {
+      "raw_policy": "metadata_only",
+      "sha256": "4a0b9833d28b60b052b2d7084069ddbef65fbf25f239fe507e35e2165c958a0e",
+      "length": 1656,
+      "encoding": "base64",
+      "omitted_reason": "raw provider-native signature is not published"
+    },
+    "classification": {
+      "format": "protobuf",
+      "encoding_layers": 2,
+      "decoded_length": 1240,
+      "protobuf_length": 928,
+      "top_level_first_byte": "0x12",
+      "channel_block_length": 72,
+      "channel_id": 11,
+      "routing_class": "routing_class_11",
+      "infra_id": 2,
+      "infrastructure_class": "infra_google",
+      "version": 2,
+      "ecdsa_length": 64,
+      "model_text": null,
+      "field7": null,
+      "schema_class": "compact_schema",
+      "valid_outer_format": true
+    },
+    "payload_shape": {
+      "request": {
+        "protocol": "anthropic-messages",
+        "root_path": "$",
+        "conversation_path": "$.messages",
+        "system_paths": [
+          "$.system"
+        ],
+        "message_paths": [
+          "$.messages[]"
+        ],
+        "signature_paths": [
+          "$.messages[].content[?(@.type=='thinking')].signature"
+        ],
+        "signature_container_paths": [
+          "$.messages[].content[?(@.type=='thinking')]"
+        ],
+        "reasoning_text_paths": [
+          "$.messages[].content[?(@.type=='thinking')].thinking"
+        ],
+        "tool_call_paths": [
+          "$.messages[].content[?(@.type=='tool_use')]"
+        ],
+        "tool_result_paths": [
+          "$.messages[].content[?(@.type=='tool_result')]"
+        ],
+        "id_paths": [
+          "$.messages[].content[?(@.type=='tool_use')].id",
+          "$.messages[].content[?(@.type=='tool_result')].tool_use_id"
+        ],
+        "related_paths": [
+          "$.thinking",
+          "$.thinking.display",
+          "$.thinking.budget_tokens"
+        ],
+        "ordering_invariants": [
+          "assistant thinking blocks replay with their original signature",
+          "tool_result blocks reference prior tool_use ids",
+          "thinking display controls visible thinking text and must be tracked separately from signature replay"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "response": {
+        "protocol": "anthropic-messages",
+        "root_path": "$",
+        "signature_paths": [
+          "$.content[?(@.type=='thinking')].signature"
+        ],
+        "signature_container_paths": [
+          "$.content[?(@.type=='thinking')]"
+        ],
+        "reasoning_text_paths": [
+          "$.content[?(@.type=='thinking')].thinking"
+        ],
+        "related_paths": [
+          "$.content[?(@.type=='thinking')].signature",
+          "$.content[?(@.type=='thinking')].thinking"
+        ],
+        "tool_call_paths": [
+          "$.content[?(@.type=='tool_use')]"
+        ],
+        "id_paths": [
+          "$.content[?(@.type=='tool_use')].id"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "stream": {
+        "protocol": "anthropic-messages",
+        "signature_paths": [
+          "$.delta.signature"
+        ],
+        "reasoning_text_paths": [
+          "$.delta.thinking"
+        ],
+        "stream_events": [
+          "content_block_start",
+          "content_block_delta:thinking_delta",
+          "content_block_delta:signature_delta",
+          "content_block_stop"
+        ],
+        "prompt_content_policy": "not_collected"
+      }
+    },
+    "conversion": {
+      "round_trip_required": true,
+      "replay_scope": "same_endpoint",
+      "cross_endpoint_safe": false,
+      "fallback_policy": "drop_block",
+      "cache_key_hints": [
+        "thinking_text",
+        "conversation_prefix"
+      ],
+      "notes": "Claude thinking block signatures cannot be synthesized for another endpoint."
+    },
+    "protocol_profile_id": "claude-anthropic-messages-thinking-v1",
+    "replay_contract": {
+      "emitted_in": "response_and_stream",
+      "replayed_in": "next_request_history",
+      "must_replay": true,
+      "scope": [
+        "same_endpoint",
+        "same_model",
+        "same_conversation_prefix"
+      ],
+      "native_endpoint_ids": [
+        "anthropic",
+        "aws-bedrock",
+        "azure",
+        "vertex",
+        "claude-code"
+      ],
+      "foreign_signature_policy": "drop_block",
+      "synthetic_replacement": {
+        "allowed": false
+      },
+      "tool_pairing": {
+        "required": true,
+        "pairing_rule": "tool_use_followed_by_tool_result",
+        "call_id_paths": [
+          "$.messages[].content[?(@.type=='tool_use')].id"
+        ],
+        "response_id_paths": [
+          "$.messages[].content[?(@.type=='tool_result')].tool_use_id"
+        ],
+        "order_sensitive": true,
+        "signature_required_on": "none"
+      },
+      "notes": "Thinking signatures are provider-native; incompatible foreign signatures should not be replayed as Claude thinking."
+    },
+    "provenance": {
+      "legacy_source_file": "signatures/claude/google-vertex.txt",
+      "legacy_source_line": 13,
+      "legacy_source_name": "google-vertex",
+      "backend_claim": "vertex",
+      "backend_confidence": "confirmed",
+      "notes": "Stable import from CPA-API Claude samples. OpenRouter-named legacy files are reduced to the claimed backend endpoint instead of becoming signature buckets."
+    },
+    "observed_at": "2026-02-06T04:58:19.827855Z",
+    "redactions": [
+      "request_context",
+      "user_content"
+    ]
+  },
+  {
+    "schema_version": "1.0",
+    "model_family": "claude",
+    "endpoint": {
+      "id": "vertex",
+      "confidence": "confirmed",
+      "provider": "google",
+      "product": "Vertex AI",
+      "protocol": "anthropic-messages-compatible"
+    },
+    "model": "unknown",
+    "collection_status": "stable",
+    "signature_source": {
+      "protocol": "anthropic-messages",
+      "container_type": "thinking",
+      "container_selector": {
+        "type": "thinking"
+      },
+      "field": "signature",
+      "stream_field": "signature_delta",
+      "json_path": "$.content[?(@.type=='thinking')].signature",
+      "request_replay_json_path": "$.messages[].content[?(@.type=='thinking')].signature",
+      "provider_term": "thinking block signature"
+    },
+    "sample": {
+      "raw_policy": "metadata_only",
+      "sha256": "f10582fd6dd1dec43ab28dfdb1e5385fbea2aaf2b0ead9edefb975c10d132c41",
+      "length": 448,
+      "encoding": "base64",
+      "omitted_reason": "raw provider-native signature is not published"
+    },
+    "classification": {
+      "format": "protobuf",
+      "encoding_layers": 2,
+      "decoded_length": 336,
+      "protobuf_length": 252,
+      "top_level_first_byte": "0x12",
+      "channel_block_length": 72,
+      "channel_id": 11,
+      "routing_class": "routing_class_11",
+      "infra_id": 2,
+      "infrastructure_class": "infra_google",
+      "version": 2,
+      "ecdsa_length": 64,
+      "model_text": null,
+      "field7": null,
+      "schema_class": "compact_schema",
+      "valid_outer_format": true
+    },
+    "payload_shape": {
+      "request": {
+        "protocol": "anthropic-messages",
+        "root_path": "$",
+        "conversation_path": "$.messages",
+        "system_paths": [
+          "$.system"
+        ],
+        "message_paths": [
+          "$.messages[]"
+        ],
+        "signature_paths": [
+          "$.messages[].content[?(@.type=='thinking')].signature"
+        ],
+        "signature_container_paths": [
+          "$.messages[].content[?(@.type=='thinking')]"
+        ],
+        "reasoning_text_paths": [
+          "$.messages[].content[?(@.type=='thinking')].thinking"
+        ],
+        "tool_call_paths": [
+          "$.messages[].content[?(@.type=='tool_use')]"
+        ],
+        "tool_result_paths": [
+          "$.messages[].content[?(@.type=='tool_result')]"
+        ],
+        "id_paths": [
+          "$.messages[].content[?(@.type=='tool_use')].id",
+          "$.messages[].content[?(@.type=='tool_result')].tool_use_id"
+        ],
+        "related_paths": [
+          "$.thinking",
+          "$.thinking.display",
+          "$.thinking.budget_tokens"
+        ],
+        "ordering_invariants": [
+          "assistant thinking blocks replay with their original signature",
+          "tool_result blocks reference prior tool_use ids",
+          "thinking display controls visible thinking text and must be tracked separately from signature replay"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "response": {
+        "protocol": "anthropic-messages",
+        "root_path": "$",
+        "signature_paths": [
+          "$.content[?(@.type=='thinking')].signature"
+        ],
+        "signature_container_paths": [
+          "$.content[?(@.type=='thinking')]"
+        ],
+        "reasoning_text_paths": [
+          "$.content[?(@.type=='thinking')].thinking"
+        ],
+        "related_paths": [
+          "$.content[?(@.type=='thinking')].signature",
+          "$.content[?(@.type=='thinking')].thinking"
+        ],
+        "tool_call_paths": [
+          "$.content[?(@.type=='tool_use')]"
+        ],
+        "id_paths": [
+          "$.content[?(@.type=='tool_use')].id"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "stream": {
+        "protocol": "anthropic-messages",
+        "signature_paths": [
+          "$.delta.signature"
+        ],
+        "reasoning_text_paths": [
+          "$.delta.thinking"
+        ],
+        "stream_events": [
+          "content_block_start",
+          "content_block_delta:thinking_delta",
+          "content_block_delta:signature_delta",
+          "content_block_stop"
+        ],
+        "prompt_content_policy": "not_collected"
+      }
+    },
+    "conversion": {
+      "round_trip_required": true,
+      "replay_scope": "same_endpoint",
+      "cross_endpoint_safe": false,
+      "fallback_policy": "drop_block",
+      "cache_key_hints": [
+        "thinking_text",
+        "conversation_prefix"
+      ],
+      "notes": "Claude thinking block signatures cannot be synthesized for another endpoint."
+    },
+    "protocol_profile_id": "claude-anthropic-messages-thinking-v1",
+    "replay_contract": {
+      "emitted_in": "response_and_stream",
+      "replayed_in": "next_request_history",
+      "must_replay": true,
+      "scope": [
+        "same_endpoint",
+        "same_model",
+        "same_conversation_prefix"
+      ],
+      "native_endpoint_ids": [
+        "anthropic",
+        "aws-bedrock",
+        "azure",
+        "vertex",
+        "claude-code"
+      ],
+      "foreign_signature_policy": "drop_block",
+      "synthetic_replacement": {
+        "allowed": false
+      },
+      "tool_pairing": {
+        "required": true,
+        "pairing_rule": "tool_use_followed_by_tool_result",
+        "call_id_paths": [
+          "$.messages[].content[?(@.type=='tool_use')].id"
+        ],
+        "response_id_paths": [
+          "$.messages[].content[?(@.type=='tool_result')].tool_use_id"
+        ],
+        "order_sensitive": true,
+        "signature_required_on": "none"
+      },
+      "notes": "Thinking signatures are provider-native; incompatible foreign signatures should not be replayed as Claude thinking."
+    },
+    "provenance": {
+      "legacy_source_file": "signatures/claude/google-vertex.txt",
+      "legacy_source_line": 14,
+      "legacy_source_name": "google-vertex",
+      "backend_claim": "vertex",
+      "backend_confidence": "confirmed",
+      "notes": "Stable import from CPA-API Claude samples. OpenRouter-named legacy files are reduced to the claimed backend endpoint instead of becoming signature buckets."
+    },
+    "observed_at": "2026-02-06T04:58:19.827855Z",
+    "redactions": [
+      "request_context",
+      "user_content"
+    ]
+  },
+  {
+    "schema_version": "1.0",
+    "model_family": "claude",
+    "endpoint": {
+      "id": "vertex",
+      "confidence": "confirmed",
+      "provider": "google",
+      "product": "Vertex AI",
+      "protocol": "anthropic-messages-compatible"
+    },
+    "model": "unknown",
+    "collection_status": "stable",
+    "signature_source": {
+      "protocol": "anthropic-messages",
+      "container_type": "thinking",
+      "container_selector": {
+        "type": "thinking"
+      },
+      "field": "signature",
+      "stream_field": "signature_delta",
+      "json_path": "$.content[?(@.type=='thinking')].signature",
+      "request_replay_json_path": "$.messages[].content[?(@.type=='thinking')].signature",
+      "provider_term": "thinking block signature"
+    },
+    "sample": {
+      "raw_policy": "metadata_only",
+      "sha256": "50ab5c35399be29638e325766f76969335173906f5569b99de8b5f61c0eaeed3",
+      "length": 12008,
+      "encoding": "base64",
+      "omitted_reason": "raw provider-native signature is not published"
+    },
+    "classification": {
+      "format": "protobuf",
+      "encoding_layers": 2,
+      "decoded_length": 9004,
+      "protobuf_length": 6751,
+      "top_level_first_byte": "0x12",
+      "channel_block_length": 72,
+      "channel_id": 11,
+      "routing_class": "routing_class_11",
+      "infra_id": 2,
+      "infrastructure_class": "infra_google",
+      "version": 2,
+      "ecdsa_length": 64,
+      "model_text": null,
+      "field7": null,
+      "schema_class": "compact_schema",
+      "valid_outer_format": true
+    },
+    "payload_shape": {
+      "request": {
+        "protocol": "anthropic-messages",
+        "root_path": "$",
+        "conversation_path": "$.messages",
+        "system_paths": [
+          "$.system"
+        ],
+        "message_paths": [
+          "$.messages[]"
+        ],
+        "signature_paths": [
+          "$.messages[].content[?(@.type=='thinking')].signature"
+        ],
+        "signature_container_paths": [
+          "$.messages[].content[?(@.type=='thinking')]"
+        ],
+        "reasoning_text_paths": [
+          "$.messages[].content[?(@.type=='thinking')].thinking"
+        ],
+        "tool_call_paths": [
+          "$.messages[].content[?(@.type=='tool_use')]"
+        ],
+        "tool_result_paths": [
+          "$.messages[].content[?(@.type=='tool_result')]"
+        ],
+        "id_paths": [
+          "$.messages[].content[?(@.type=='tool_use')].id",
+          "$.messages[].content[?(@.type=='tool_result')].tool_use_id"
+        ],
+        "related_paths": [
+          "$.thinking",
+          "$.thinking.display",
+          "$.thinking.budget_tokens"
+        ],
+        "ordering_invariants": [
+          "assistant thinking blocks replay with their original signature",
+          "tool_result blocks reference prior tool_use ids",
+          "thinking display controls visible thinking text and must be tracked separately from signature replay"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "response": {
+        "protocol": "anthropic-messages",
+        "root_path": "$",
+        "signature_paths": [
+          "$.content[?(@.type=='thinking')].signature"
+        ],
+        "signature_container_paths": [
+          "$.content[?(@.type=='thinking')]"
+        ],
+        "reasoning_text_paths": [
+          "$.content[?(@.type=='thinking')].thinking"
+        ],
+        "related_paths": [
+          "$.content[?(@.type=='thinking')].signature",
+          "$.content[?(@.type=='thinking')].thinking"
+        ],
+        "tool_call_paths": [
+          "$.content[?(@.type=='tool_use')]"
+        ],
+        "id_paths": [
+          "$.content[?(@.type=='tool_use')].id"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "stream": {
+        "protocol": "anthropic-messages",
+        "signature_paths": [
+          "$.delta.signature"
+        ],
+        "reasoning_text_paths": [
+          "$.delta.thinking"
+        ],
+        "stream_events": [
+          "content_block_start",
+          "content_block_delta:thinking_delta",
+          "content_block_delta:signature_delta",
+          "content_block_stop"
+        ],
+        "prompt_content_policy": "not_collected"
+      }
+    },
+    "conversion": {
+      "round_trip_required": true,
+      "replay_scope": "same_endpoint",
+      "cross_endpoint_safe": false,
+      "fallback_policy": "drop_block",
+      "cache_key_hints": [
+        "thinking_text",
+        "conversation_prefix"
+      ],
+      "notes": "Claude thinking block signatures cannot be synthesized for another endpoint."
+    },
+    "protocol_profile_id": "claude-anthropic-messages-thinking-v1",
+    "replay_contract": {
+      "emitted_in": "response_and_stream",
+      "replayed_in": "next_request_history",
+      "must_replay": true,
+      "scope": [
+        "same_endpoint",
+        "same_model",
+        "same_conversation_prefix"
+      ],
+      "native_endpoint_ids": [
+        "anthropic",
+        "aws-bedrock",
+        "azure",
+        "vertex",
+        "claude-code"
+      ],
+      "foreign_signature_policy": "drop_block",
+      "synthetic_replacement": {
+        "allowed": false
+      },
+      "tool_pairing": {
+        "required": true,
+        "pairing_rule": "tool_use_followed_by_tool_result",
+        "call_id_paths": [
+          "$.messages[].content[?(@.type=='tool_use')].id"
+        ],
+        "response_id_paths": [
+          "$.messages[].content[?(@.type=='tool_result')].tool_use_id"
+        ],
+        "order_sensitive": true,
+        "signature_required_on": "none"
+      },
+      "notes": "Thinking signatures are provider-native; incompatible foreign signatures should not be replayed as Claude thinking."
+    },
+    "provenance": {
+      "legacy_source_file": "signatures/claude/google-vertex.txt",
+      "legacy_source_line": 15,
+      "legacy_source_name": "google-vertex",
+      "backend_claim": "vertex",
+      "backend_confidence": "confirmed",
+      "notes": "Stable import from CPA-API Claude samples. OpenRouter-named legacy files are reduced to the claimed backend endpoint instead of becoming signature buckets."
+    },
+    "observed_at": "2026-02-06T04:58:19.827855Z",
+    "redactions": [
+      "request_context",
+      "user_content"
+    ]
+  },
+  {
+    "schema_version": "1.0",
+    "model_family": "claude",
+    "endpoint": {
+      "id": "vertex",
+      "confidence": "confirmed",
+      "provider": "google",
+      "product": "Vertex AI",
+      "protocol": "anthropic-messages-compatible"
+    },
+    "model": "unknown",
+    "collection_status": "stable",
+    "signature_source": {
+      "protocol": "anthropic-messages",
+      "container_type": "thinking",
+      "container_selector": {
+        "type": "thinking"
+      },
+      "field": "signature",
+      "stream_field": "signature_delta",
+      "json_path": "$.content[?(@.type=='thinking')].signature",
+      "request_replay_json_path": "$.messages[].content[?(@.type=='thinking')].signature",
+      "provider_term": "thinking block signature"
+    },
+    "sample": {
+      "raw_policy": "metadata_only",
+      "sha256": "305a3e72908f8b5cfc044875e9f84d54c2b45fa0ae9100eb7009963982a2aed7",
+      "length": 3868,
+      "encoding": "base64",
+      "omitted_reason": "raw provider-native signature is not published"
+    },
+    "classification": {
+      "format": "protobuf",
+      "encoding_layers": 2,
+      "decoded_length": 2900,
+      "protobuf_length": 2174,
+      "top_level_first_byte": "0x12",
+      "channel_block_length": 72,
+      "channel_id": 11,
+      "routing_class": "routing_class_11",
+      "infra_id": 2,
+      "infrastructure_class": "infra_google",
+      "version": 2,
+      "ecdsa_length": 64,
+      "model_text": null,
+      "field7": null,
+      "schema_class": "compact_schema",
+      "valid_outer_format": true
+    },
+    "payload_shape": {
+      "request": {
+        "protocol": "anthropic-messages",
+        "root_path": "$",
+        "conversation_path": "$.messages",
+        "system_paths": [
+          "$.system"
+        ],
+        "message_paths": [
+          "$.messages[]"
+        ],
+        "signature_paths": [
+          "$.messages[].content[?(@.type=='thinking')].signature"
+        ],
+        "signature_container_paths": [
+          "$.messages[].content[?(@.type=='thinking')]"
+        ],
+        "reasoning_text_paths": [
+          "$.messages[].content[?(@.type=='thinking')].thinking"
+        ],
+        "tool_call_paths": [
+          "$.messages[].content[?(@.type=='tool_use')]"
+        ],
+        "tool_result_paths": [
+          "$.messages[].content[?(@.type=='tool_result')]"
+        ],
+        "id_paths": [
+          "$.messages[].content[?(@.type=='tool_use')].id",
+          "$.messages[].content[?(@.type=='tool_result')].tool_use_id"
+        ],
+        "related_paths": [
+          "$.thinking",
+          "$.thinking.display",
+          "$.thinking.budget_tokens"
+        ],
+        "ordering_invariants": [
+          "assistant thinking blocks replay with their original signature",
+          "tool_result blocks reference prior tool_use ids",
+          "thinking display controls visible thinking text and must be tracked separately from signature replay"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "response": {
+        "protocol": "anthropic-messages",
+        "root_path": "$",
+        "signature_paths": [
+          "$.content[?(@.type=='thinking')].signature"
+        ],
+        "signature_container_paths": [
+          "$.content[?(@.type=='thinking')]"
+        ],
+        "reasoning_text_paths": [
+          "$.content[?(@.type=='thinking')].thinking"
+        ],
+        "related_paths": [
+          "$.content[?(@.type=='thinking')].signature",
+          "$.content[?(@.type=='thinking')].thinking"
+        ],
+        "tool_call_paths": [
+          "$.content[?(@.type=='tool_use')]"
+        ],
+        "id_paths": [
+          "$.content[?(@.type=='tool_use')].id"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "stream": {
+        "protocol": "anthropic-messages",
+        "signature_paths": [
+          "$.delta.signature"
+        ],
+        "reasoning_text_paths": [
+          "$.delta.thinking"
+        ],
+        "stream_events": [
+          "content_block_start",
+          "content_block_delta:thinking_delta",
+          "content_block_delta:signature_delta",
+          "content_block_stop"
+        ],
+        "prompt_content_policy": "not_collected"
+      }
+    },
+    "conversion": {
+      "round_trip_required": true,
+      "replay_scope": "same_endpoint",
+      "cross_endpoint_safe": false,
+      "fallback_policy": "drop_block",
+      "cache_key_hints": [
+        "thinking_text",
+        "conversation_prefix"
+      ],
+      "notes": "Claude thinking block signatures cannot be synthesized for another endpoint."
+    },
+    "protocol_profile_id": "claude-anthropic-messages-thinking-v1",
+    "replay_contract": {
+      "emitted_in": "response_and_stream",
+      "replayed_in": "next_request_history",
+      "must_replay": true,
+      "scope": [
+        "same_endpoint",
+        "same_model",
+        "same_conversation_prefix"
+      ],
+      "native_endpoint_ids": [
+        "anthropic",
+        "aws-bedrock",
+        "azure",
+        "vertex",
+        "claude-code"
+      ],
+      "foreign_signature_policy": "drop_block",
+      "synthetic_replacement": {
+        "allowed": false
+      },
+      "tool_pairing": {
+        "required": true,
+        "pairing_rule": "tool_use_followed_by_tool_result",
+        "call_id_paths": [
+          "$.messages[].content[?(@.type=='tool_use')].id"
+        ],
+        "response_id_paths": [
+          "$.messages[].content[?(@.type=='tool_result')].tool_use_id"
+        ],
+        "order_sensitive": true,
+        "signature_required_on": "none"
+      },
+      "notes": "Thinking signatures are provider-native; incompatible foreign signatures should not be replayed as Claude thinking."
+    },
+    "provenance": {
+      "legacy_source_file": "signatures/claude/google-vertex.txt",
+      "legacy_source_line": 16,
+      "legacy_source_name": "google-vertex",
+      "backend_claim": "vertex",
+      "backend_confidence": "confirmed",
+      "notes": "Stable import from CPA-API Claude samples. OpenRouter-named legacy files are reduced to the claimed backend endpoint instead of becoming signature buckets."
+    },
+    "observed_at": "2026-02-06T04:58:19.827855Z",
+    "redactions": [
+      "request_context",
+      "user_content"
+    ]
+  },
+  {
+    "schema_version": "1.0",
+    "model_family": "claude",
+    "endpoint": {
+      "id": "vertex",
+      "confidence": "confirmed",
+      "provider": "google",
+      "product": "Vertex AI",
+      "protocol": "anthropic-messages-compatible"
+    },
+    "model": "unknown",
+    "collection_status": "stable",
+    "signature_source": {
+      "protocol": "anthropic-messages",
+      "container_type": "thinking",
+      "container_selector": {
+        "type": "thinking"
+      },
+      "field": "signature",
+      "stream_field": "signature_delta",
+      "json_path": "$.content[?(@.type=='thinking')].signature",
+      "request_replay_json_path": "$.messages[].content[?(@.type=='thinking')].signature",
+      "provider_term": "thinking block signature"
+    },
+    "sample": {
+      "raw_policy": "metadata_only",
+      "sha256": "fbd21b086670d51161d84fd5b32c632fcb570d03cf97c455920f5340876d5d62",
+      "length": 2636,
+      "encoding": "base64",
+      "omitted_reason": "raw provider-native signature is not published"
+    },
+    "classification": {
+      "format": "protobuf",
+      "encoding_layers": 2,
+      "decoded_length": 1976,
+      "protobuf_length": 1480,
+      "top_level_first_byte": "0x12",
+      "channel_block_length": 72,
+      "channel_id": 11,
+      "routing_class": "routing_class_11",
+      "infra_id": 2,
+      "infrastructure_class": "infra_google",
+      "version": 2,
+      "ecdsa_length": 64,
+      "model_text": null,
+      "field7": null,
+      "schema_class": "compact_schema",
+      "valid_outer_format": true
+    },
+    "payload_shape": {
+      "request": {
+        "protocol": "anthropic-messages",
+        "root_path": "$",
+        "conversation_path": "$.messages",
+        "system_paths": [
+          "$.system"
+        ],
+        "message_paths": [
+          "$.messages[]"
+        ],
+        "signature_paths": [
+          "$.messages[].content[?(@.type=='thinking')].signature"
+        ],
+        "signature_container_paths": [
+          "$.messages[].content[?(@.type=='thinking')]"
+        ],
+        "reasoning_text_paths": [
+          "$.messages[].content[?(@.type=='thinking')].thinking"
+        ],
+        "tool_call_paths": [
+          "$.messages[].content[?(@.type=='tool_use')]"
+        ],
+        "tool_result_paths": [
+          "$.messages[].content[?(@.type=='tool_result')]"
+        ],
+        "id_paths": [
+          "$.messages[].content[?(@.type=='tool_use')].id",
+          "$.messages[].content[?(@.type=='tool_result')].tool_use_id"
+        ],
+        "related_paths": [
+          "$.thinking",
+          "$.thinking.display",
+          "$.thinking.budget_tokens"
+        ],
+        "ordering_invariants": [
+          "assistant thinking blocks replay with their original signature",
+          "tool_result blocks reference prior tool_use ids",
+          "thinking display controls visible thinking text and must be tracked separately from signature replay"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "response": {
+        "protocol": "anthropic-messages",
+        "root_path": "$",
+        "signature_paths": [
+          "$.content[?(@.type=='thinking')].signature"
+        ],
+        "signature_container_paths": [
+          "$.content[?(@.type=='thinking')]"
+        ],
+        "reasoning_text_paths": [
+          "$.content[?(@.type=='thinking')].thinking"
+        ],
+        "related_paths": [
+          "$.content[?(@.type=='thinking')].signature",
+          "$.content[?(@.type=='thinking')].thinking"
+        ],
+        "tool_call_paths": [
+          "$.content[?(@.type=='tool_use')]"
+        ],
+        "id_paths": [
+          "$.content[?(@.type=='tool_use')].id"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "stream": {
+        "protocol": "anthropic-messages",
+        "signature_paths": [
+          "$.delta.signature"
+        ],
+        "reasoning_text_paths": [
+          "$.delta.thinking"
+        ],
+        "stream_events": [
+          "content_block_start",
+          "content_block_delta:thinking_delta",
+          "content_block_delta:signature_delta",
+          "content_block_stop"
+        ],
+        "prompt_content_policy": "not_collected"
+      }
+    },
+    "conversion": {
+      "round_trip_required": true,
+      "replay_scope": "same_endpoint",
+      "cross_endpoint_safe": false,
+      "fallback_policy": "drop_block",
+      "cache_key_hints": [
+        "thinking_text",
+        "conversation_prefix"
+      ],
+      "notes": "Claude thinking block signatures cannot be synthesized for another endpoint."
+    },
+    "protocol_profile_id": "claude-anthropic-messages-thinking-v1",
+    "replay_contract": {
+      "emitted_in": "response_and_stream",
+      "replayed_in": "next_request_history",
+      "must_replay": true,
+      "scope": [
+        "same_endpoint",
+        "same_model",
+        "same_conversation_prefix"
+      ],
+      "native_endpoint_ids": [
+        "anthropic",
+        "aws-bedrock",
+        "azure",
+        "vertex",
+        "claude-code"
+      ],
+      "foreign_signature_policy": "drop_block",
+      "synthetic_replacement": {
+        "allowed": false
+      },
+      "tool_pairing": {
+        "required": true,
+        "pairing_rule": "tool_use_followed_by_tool_result",
+        "call_id_paths": [
+          "$.messages[].content[?(@.type=='tool_use')].id"
+        ],
+        "response_id_paths": [
+          "$.messages[].content[?(@.type=='tool_result')].tool_use_id"
+        ],
+        "order_sensitive": true,
+        "signature_required_on": "none"
+      },
+      "notes": "Thinking signatures are provider-native; incompatible foreign signatures should not be replayed as Claude thinking."
+    },
+    "provenance": {
+      "legacy_source_file": "signatures/claude/google-vertex.txt",
+      "legacy_source_line": 17,
+      "legacy_source_name": "google-vertex",
+      "backend_claim": "vertex",
+      "backend_confidence": "confirmed",
+      "notes": "Stable import from CPA-API Claude samples. OpenRouter-named legacy files are reduced to the claimed backend endpoint instead of becoming signature buckets."
+    },
+    "observed_at": "2026-02-06T04:58:19.827855Z",
+    "redactions": [
+      "request_context",
+      "user_content"
+    ]
+  },
+  {
+    "schema_version": "1.0",
+    "model_family": "claude",
+    "endpoint": {
+      "id": "vertex",
+      "confidence": "confirmed",
+      "provider": "google",
+      "product": "Vertex AI",
+      "protocol": "anthropic-messages-compatible"
+    },
+    "model": "unknown",
+    "collection_status": "stable",
+    "signature_source": {
+      "protocol": "anthropic-messages",
+      "container_type": "thinking",
+      "container_selector": {
+        "type": "thinking"
+      },
+      "field": "signature",
+      "stream_field": "signature_delta",
+      "json_path": "$.content[?(@.type=='thinking')].signature",
+      "request_replay_json_path": "$.messages[].content[?(@.type=='thinking')].signature",
+      "provider_term": "thinking block signature"
+    },
+    "sample": {
+      "raw_policy": "metadata_only",
+      "sha256": "587cdec54d9d14a1b43424a19b6edda2acfc932aa4bb6e766be3ee9c915fa547",
+      "length": 1676,
+      "encoding": "base64",
+      "omitted_reason": "raw provider-native signature is not published"
+    },
+    "classification": {
+      "format": "protobuf",
+      "encoding_layers": 2,
+      "decoded_length": 1256,
+      "protobuf_length": 941,
+      "top_level_first_byte": "0x12",
+      "channel_block_length": 72,
+      "channel_id": 11,
+      "routing_class": "routing_class_11",
+      "infra_id": 2,
+      "infrastructure_class": "infra_google",
+      "version": 2,
+      "ecdsa_length": 64,
+      "model_text": null,
+      "field7": null,
+      "schema_class": "compact_schema",
+      "valid_outer_format": true
+    },
+    "payload_shape": {
+      "request": {
+        "protocol": "anthropic-messages",
+        "root_path": "$",
+        "conversation_path": "$.messages",
+        "system_paths": [
+          "$.system"
+        ],
+        "message_paths": [
+          "$.messages[]"
+        ],
+        "signature_paths": [
+          "$.messages[].content[?(@.type=='thinking')].signature"
+        ],
+        "signature_container_paths": [
+          "$.messages[].content[?(@.type=='thinking')]"
+        ],
+        "reasoning_text_paths": [
+          "$.messages[].content[?(@.type=='thinking')].thinking"
+        ],
+        "tool_call_paths": [
+          "$.messages[].content[?(@.type=='tool_use')]"
+        ],
+        "tool_result_paths": [
+          "$.messages[].content[?(@.type=='tool_result')]"
+        ],
+        "id_paths": [
+          "$.messages[].content[?(@.type=='tool_use')].id",
+          "$.messages[].content[?(@.type=='tool_result')].tool_use_id"
+        ],
+        "related_paths": [
+          "$.thinking",
+          "$.thinking.display",
+          "$.thinking.budget_tokens"
+        ],
+        "ordering_invariants": [
+          "assistant thinking blocks replay with their original signature",
+          "tool_result blocks reference prior tool_use ids",
+          "thinking display controls visible thinking text and must be tracked separately from signature replay"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "response": {
+        "protocol": "anthropic-messages",
+        "root_path": "$",
+        "signature_paths": [
+          "$.content[?(@.type=='thinking')].signature"
+        ],
+        "signature_container_paths": [
+          "$.content[?(@.type=='thinking')]"
+        ],
+        "reasoning_text_paths": [
+          "$.content[?(@.type=='thinking')].thinking"
+        ],
+        "related_paths": [
+          "$.content[?(@.type=='thinking')].signature",
+          "$.content[?(@.type=='thinking')].thinking"
+        ],
+        "tool_call_paths": [
+          "$.content[?(@.type=='tool_use')]"
+        ],
+        "id_paths": [
+          "$.content[?(@.type=='tool_use')].id"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "stream": {
+        "protocol": "anthropic-messages",
+        "signature_paths": [
+          "$.delta.signature"
+        ],
+        "reasoning_text_paths": [
+          "$.delta.thinking"
+        ],
+        "stream_events": [
+          "content_block_start",
+          "content_block_delta:thinking_delta",
+          "content_block_delta:signature_delta",
+          "content_block_stop"
+        ],
+        "prompt_content_policy": "not_collected"
+      }
+    },
+    "conversion": {
+      "round_trip_required": true,
+      "replay_scope": "same_endpoint",
+      "cross_endpoint_safe": false,
+      "fallback_policy": "drop_block",
+      "cache_key_hints": [
+        "thinking_text",
+        "conversation_prefix"
+      ],
+      "notes": "Claude thinking block signatures cannot be synthesized for another endpoint."
+    },
+    "protocol_profile_id": "claude-anthropic-messages-thinking-v1",
+    "replay_contract": {
+      "emitted_in": "response_and_stream",
+      "replayed_in": "next_request_history",
+      "must_replay": true,
+      "scope": [
+        "same_endpoint",
+        "same_model",
+        "same_conversation_prefix"
+      ],
+      "native_endpoint_ids": [
+        "anthropic",
+        "aws-bedrock",
+        "azure",
+        "vertex",
+        "claude-code"
+      ],
+      "foreign_signature_policy": "drop_block",
+      "synthetic_replacement": {
+        "allowed": false
+      },
+      "tool_pairing": {
+        "required": true,
+        "pairing_rule": "tool_use_followed_by_tool_result",
+        "call_id_paths": [
+          "$.messages[].content[?(@.type=='tool_use')].id"
+        ],
+        "response_id_paths": [
+          "$.messages[].content[?(@.type=='tool_result')].tool_use_id"
+        ],
+        "order_sensitive": true,
+        "signature_required_on": "none"
+      },
+      "notes": "Thinking signatures are provider-native; incompatible foreign signatures should not be replayed as Claude thinking."
+    },
+    "provenance": {
+      "legacy_source_file": "signatures/claude/google-vertex.txt",
+      "legacy_source_line": 18,
+      "legacy_source_name": "google-vertex",
+      "backend_claim": "vertex",
+      "backend_confidence": "confirmed",
+      "notes": "Stable import from CPA-API Claude samples. OpenRouter-named legacy files are reduced to the claimed backend endpoint instead of becoming signature buckets."
+    },
+    "observed_at": "2026-02-06T04:58:19.827855Z",
+    "redactions": [
+      "request_context",
+      "user_content"
+    ]
+  },
+  {
+    "schema_version": "1.0",
+    "model_family": "claude",
+    "endpoint": {
+      "id": "vertex",
+      "confidence": "confirmed",
+      "provider": "google",
+      "product": "Vertex AI",
+      "protocol": "anthropic-messages-compatible"
+    },
+    "model": "unknown",
+    "collection_status": "stable",
+    "signature_source": {
+      "protocol": "anthropic-messages",
+      "container_type": "thinking",
+      "container_selector": {
+        "type": "thinking"
+      },
+      "field": "signature",
+      "stream_field": "signature_delta",
+      "json_path": "$.content[?(@.type=='thinking')].signature",
+      "request_replay_json_path": "$.messages[].content[?(@.type=='thinking')].signature",
+      "provider_term": "thinking block signature"
+    },
+    "sample": {
+      "raw_policy": "metadata_only",
+      "sha256": "33f27c024b0c34e3ddb5027c3c5dae97e1f54d07583d68a48ecb18fbe5ae2f9f",
+      "length": 8924,
+      "encoding": "base64",
+      "omitted_reason": "raw provider-native signature is not published"
+    },
+    "classification": {
+      "format": "protobuf",
+      "encoding_layers": 2,
+      "decoded_length": 6692,
+      "protobuf_length": 5018,
+      "top_level_first_byte": "0x12",
+      "channel_block_length": 72,
+      "channel_id": 11,
+      "routing_class": "routing_class_11",
+      "infra_id": 2,
+      "infrastructure_class": "infra_google",
+      "version": 2,
+      "ecdsa_length": 64,
+      "model_text": null,
+      "field7": null,
+      "schema_class": "compact_schema",
+      "valid_outer_format": true
+    },
+    "payload_shape": {
+      "request": {
+        "protocol": "anthropic-messages",
+        "root_path": "$",
+        "conversation_path": "$.messages",
+        "system_paths": [
+          "$.system"
+        ],
+        "message_paths": [
+          "$.messages[]"
+        ],
+        "signature_paths": [
+          "$.messages[].content[?(@.type=='thinking')].signature"
+        ],
+        "signature_container_paths": [
+          "$.messages[].content[?(@.type=='thinking')]"
+        ],
+        "reasoning_text_paths": [
+          "$.messages[].content[?(@.type=='thinking')].thinking"
+        ],
+        "tool_call_paths": [
+          "$.messages[].content[?(@.type=='tool_use')]"
+        ],
+        "tool_result_paths": [
+          "$.messages[].content[?(@.type=='tool_result')]"
+        ],
+        "id_paths": [
+          "$.messages[].content[?(@.type=='tool_use')].id",
+          "$.messages[].content[?(@.type=='tool_result')].tool_use_id"
+        ],
+        "related_paths": [
+          "$.thinking",
+          "$.thinking.display",
+          "$.thinking.budget_tokens"
+        ],
+        "ordering_invariants": [
+          "assistant thinking blocks replay with their original signature",
+          "tool_result blocks reference prior tool_use ids",
+          "thinking display controls visible thinking text and must be tracked separately from signature replay"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "response": {
+        "protocol": "anthropic-messages",
+        "root_path": "$",
+        "signature_paths": [
+          "$.content[?(@.type=='thinking')].signature"
+        ],
+        "signature_container_paths": [
+          "$.content[?(@.type=='thinking')]"
+        ],
+        "reasoning_text_paths": [
+          "$.content[?(@.type=='thinking')].thinking"
+        ],
+        "related_paths": [
+          "$.content[?(@.type=='thinking')].signature",
+          "$.content[?(@.type=='thinking')].thinking"
+        ],
+        "tool_call_paths": [
+          "$.content[?(@.type=='tool_use')]"
+        ],
+        "id_paths": [
+          "$.content[?(@.type=='tool_use')].id"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "stream": {
+        "protocol": "anthropic-messages",
+        "signature_paths": [
+          "$.delta.signature"
+        ],
+        "reasoning_text_paths": [
+          "$.delta.thinking"
+        ],
+        "stream_events": [
+          "content_block_start",
+          "content_block_delta:thinking_delta",
+          "content_block_delta:signature_delta",
+          "content_block_stop"
+        ],
+        "prompt_content_policy": "not_collected"
+      }
+    },
+    "conversion": {
+      "round_trip_required": true,
+      "replay_scope": "same_endpoint",
+      "cross_endpoint_safe": false,
+      "fallback_policy": "drop_block",
+      "cache_key_hints": [
+        "thinking_text",
+        "conversation_prefix"
+      ],
+      "notes": "Claude thinking block signatures cannot be synthesized for another endpoint."
+    },
+    "protocol_profile_id": "claude-anthropic-messages-thinking-v1",
+    "replay_contract": {
+      "emitted_in": "response_and_stream",
+      "replayed_in": "next_request_history",
+      "must_replay": true,
+      "scope": [
+        "same_endpoint",
+        "same_model",
+        "same_conversation_prefix"
+      ],
+      "native_endpoint_ids": [
+        "anthropic",
+        "aws-bedrock",
+        "azure",
+        "vertex",
+        "claude-code"
+      ],
+      "foreign_signature_policy": "drop_block",
+      "synthetic_replacement": {
+        "allowed": false
+      },
+      "tool_pairing": {
+        "required": true,
+        "pairing_rule": "tool_use_followed_by_tool_result",
+        "call_id_paths": [
+          "$.messages[].content[?(@.type=='tool_use')].id"
+        ],
+        "response_id_paths": [
+          "$.messages[].content[?(@.type=='tool_result')].tool_use_id"
+        ],
+        "order_sensitive": true,
+        "signature_required_on": "none"
+      },
+      "notes": "Thinking signatures are provider-native; incompatible foreign signatures should not be replayed as Claude thinking."
+    },
+    "provenance": {
+      "legacy_source_file": "signatures/claude/google-vertex.txt",
+      "legacy_source_line": 19,
+      "legacy_source_name": "google-vertex",
+      "backend_claim": "vertex",
+      "backend_confidence": "confirmed",
+      "notes": "Stable import from CPA-API Claude samples. OpenRouter-named legacy files are reduced to the claimed backend endpoint instead of becoming signature buckets."
+    },
+    "observed_at": "2026-02-06T04:58:19.827855Z",
+    "redactions": [
+      "request_context",
+      "user_content"
+    ]
+  },
+  {
+    "schema_version": "1.0",
+    "model_family": "claude",
+    "endpoint": {
+      "id": "vertex",
+      "confidence": "confirmed",
+      "provider": "google",
+      "product": "Vertex AI",
+      "protocol": "anthropic-messages-compatible"
+    },
+    "model": "unknown",
+    "collection_status": "stable",
+    "signature_source": {
+      "protocol": "anthropic-messages",
+      "container_type": "thinking",
+      "container_selector": {
+        "type": "thinking"
+      },
+      "field": "signature",
+      "stream_field": "signature_delta",
+      "json_path": "$.content[?(@.type=='thinking')].signature",
+      "request_replay_json_path": "$.messages[].content[?(@.type=='thinking')].signature",
+      "provider_term": "thinking block signature"
+    },
+    "sample": {
+      "raw_policy": "metadata_only",
+      "sha256": "f6a04700200b578e629b16440e59c56c9242ec2f1421069e5c1ec527b2605c4c",
+      "length": 624,
+      "encoding": "base64",
+      "omitted_reason": "raw provider-native signature is not published"
+    },
+    "classification": {
+      "format": "protobuf",
+      "encoding_layers": 2,
+      "decoded_length": 468,
+      "protobuf_length": 349,
+      "top_level_first_byte": "0x12",
+      "channel_block_length": 72,
+      "channel_id": 11,
+      "routing_class": "routing_class_11",
+      "infra_id": 2,
+      "infrastructure_class": "infra_google",
+      "version": 2,
+      "ecdsa_length": 64,
+      "model_text": null,
+      "field7": null,
+      "schema_class": "compact_schema",
+      "valid_outer_format": true
+    },
+    "payload_shape": {
+      "request": {
+        "protocol": "anthropic-messages",
+        "root_path": "$",
+        "conversation_path": "$.messages",
+        "system_paths": [
+          "$.system"
+        ],
+        "message_paths": [
+          "$.messages[]"
+        ],
+        "signature_paths": [
+          "$.messages[].content[?(@.type=='thinking')].signature"
+        ],
+        "signature_container_paths": [
+          "$.messages[].content[?(@.type=='thinking')]"
+        ],
+        "reasoning_text_paths": [
+          "$.messages[].content[?(@.type=='thinking')].thinking"
+        ],
+        "tool_call_paths": [
+          "$.messages[].content[?(@.type=='tool_use')]"
+        ],
+        "tool_result_paths": [
+          "$.messages[].content[?(@.type=='tool_result')]"
+        ],
+        "id_paths": [
+          "$.messages[].content[?(@.type=='tool_use')].id",
+          "$.messages[].content[?(@.type=='tool_result')].tool_use_id"
+        ],
+        "related_paths": [
+          "$.thinking",
+          "$.thinking.display",
+          "$.thinking.budget_tokens"
+        ],
+        "ordering_invariants": [
+          "assistant thinking blocks replay with their original signature",
+          "tool_result blocks reference prior tool_use ids",
+          "thinking display controls visible thinking text and must be tracked separately from signature replay"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "response": {
+        "protocol": "anthropic-messages",
+        "root_path": "$",
+        "signature_paths": [
+          "$.content[?(@.type=='thinking')].signature"
+        ],
+        "signature_container_paths": [
+          "$.content[?(@.type=='thinking')]"
+        ],
+        "reasoning_text_paths": [
+          "$.content[?(@.type=='thinking')].thinking"
+        ],
+        "related_paths": [
+          "$.content[?(@.type=='thinking')].signature",
+          "$.content[?(@.type=='thinking')].thinking"
+        ],
+        "tool_call_paths": [
+          "$.content[?(@.type=='tool_use')]"
+        ],
+        "id_paths": [
+          "$.content[?(@.type=='tool_use')].id"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "stream": {
+        "protocol": "anthropic-messages",
+        "signature_paths": [
+          "$.delta.signature"
+        ],
+        "reasoning_text_paths": [
+          "$.delta.thinking"
+        ],
+        "stream_events": [
+          "content_block_start",
+          "content_block_delta:thinking_delta",
+          "content_block_delta:signature_delta",
+          "content_block_stop"
+        ],
+        "prompt_content_policy": "not_collected"
+      }
+    },
+    "conversion": {
+      "round_trip_required": true,
+      "replay_scope": "same_endpoint",
+      "cross_endpoint_safe": false,
+      "fallback_policy": "drop_block",
+      "cache_key_hints": [
+        "thinking_text",
+        "conversation_prefix"
+      ],
+      "notes": "Claude thinking block signatures cannot be synthesized for another endpoint."
+    },
+    "protocol_profile_id": "claude-anthropic-messages-thinking-v1",
+    "replay_contract": {
+      "emitted_in": "response_and_stream",
+      "replayed_in": "next_request_history",
+      "must_replay": true,
+      "scope": [
+        "same_endpoint",
+        "same_model",
+        "same_conversation_prefix"
+      ],
+      "native_endpoint_ids": [
+        "anthropic",
+        "aws-bedrock",
+        "azure",
+        "vertex",
+        "claude-code"
+      ],
+      "foreign_signature_policy": "drop_block",
+      "synthetic_replacement": {
+        "allowed": false
+      },
+      "tool_pairing": {
+        "required": true,
+        "pairing_rule": "tool_use_followed_by_tool_result",
+        "call_id_paths": [
+          "$.messages[].content[?(@.type=='tool_use')].id"
+        ],
+        "response_id_paths": [
+          "$.messages[].content[?(@.type=='tool_result')].tool_use_id"
+        ],
+        "order_sensitive": true,
+        "signature_required_on": "none"
+      },
+      "notes": "Thinking signatures are provider-native; incompatible foreign signatures should not be replayed as Claude thinking."
+    },
+    "provenance": {
+      "legacy_source_file": "signatures/claude/google-vertex.txt",
+      "legacy_source_line": 20,
+      "legacy_source_name": "google-vertex",
+      "backend_claim": "vertex",
+      "backend_confidence": "confirmed",
+      "notes": "Stable import from CPA-API Claude samples. OpenRouter-named legacy files are reduced to the claimed backend endpoint instead of becoming signature buckets."
+    },
+    "observed_at": "2026-02-06T04:58:19.827855Z",
+    "redactions": [
+      "request_context",
+      "user_content"
+    ]
+  },
+  {
+    "schema_version": "1.0",
+    "model_family": "claude",
+    "endpoint": {
+      "id": "vertex",
+      "confidence": "confirmed",
+      "provider": "google",
+      "product": "Vertex AI",
+      "protocol": "anthropic-messages-compatible"
+    },
+    "model": "unknown",
+    "collection_status": "stable",
+    "signature_source": {
+      "protocol": "anthropic-messages",
+      "container_type": "thinking",
+      "container_selector": {
+        "type": "thinking"
+      },
+      "field": "signature",
+      "stream_field": "signature_delta",
+      "json_path": "$.content[?(@.type=='thinking')].signature",
+      "request_replay_json_path": "$.messages[].content[?(@.type=='thinking')].signature",
+      "provider_term": "thinking block signature"
+    },
+    "sample": {
+      "raw_policy": "metadata_only",
+      "sha256": "d8517c92e144dcb9e3098b6b4e3170106e0781c6e95b7a71cd160bd8fe4e8955",
+      "length": 700,
+      "encoding": "base64",
+      "omitted_reason": "raw provider-native signature is not published"
+    },
+    "classification": {
+      "format": "protobuf",
+      "encoding_layers": 2,
+      "decoded_length": 524,
+      "protobuf_length": 393,
+      "top_level_first_byte": "0x12",
+      "channel_block_length": 72,
+      "channel_id": 11,
+      "routing_class": "routing_class_11",
+      "infra_id": 2,
+      "infrastructure_class": "infra_google",
+      "version": 2,
+      "ecdsa_length": 64,
+      "model_text": null,
+      "field7": null,
+      "schema_class": "compact_schema",
+      "valid_outer_format": true
+    },
+    "payload_shape": {
+      "request": {
+        "protocol": "anthropic-messages",
+        "root_path": "$",
+        "conversation_path": "$.messages",
+        "system_paths": [
+          "$.system"
+        ],
+        "message_paths": [
+          "$.messages[]"
+        ],
+        "signature_paths": [
+          "$.messages[].content[?(@.type=='thinking')].signature"
+        ],
+        "signature_container_paths": [
+          "$.messages[].content[?(@.type=='thinking')]"
+        ],
+        "reasoning_text_paths": [
+          "$.messages[].content[?(@.type=='thinking')].thinking"
+        ],
+        "tool_call_paths": [
+          "$.messages[].content[?(@.type=='tool_use')]"
+        ],
+        "tool_result_paths": [
+          "$.messages[].content[?(@.type=='tool_result')]"
+        ],
+        "id_paths": [
+          "$.messages[].content[?(@.type=='tool_use')].id",
+          "$.messages[].content[?(@.type=='tool_result')].tool_use_id"
+        ],
+        "related_paths": [
+          "$.thinking",
+          "$.thinking.display",
+          "$.thinking.budget_tokens"
+        ],
+        "ordering_invariants": [
+          "assistant thinking blocks replay with their original signature",
+          "tool_result blocks reference prior tool_use ids",
+          "thinking display controls visible thinking text and must be tracked separately from signature replay"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "response": {
+        "protocol": "anthropic-messages",
+        "root_path": "$",
+        "signature_paths": [
+          "$.content[?(@.type=='thinking')].signature"
+        ],
+        "signature_container_paths": [
+          "$.content[?(@.type=='thinking')]"
+        ],
+        "reasoning_text_paths": [
+          "$.content[?(@.type=='thinking')].thinking"
+        ],
+        "related_paths": [
+          "$.content[?(@.type=='thinking')].signature",
+          "$.content[?(@.type=='thinking')].thinking"
+        ],
+        "tool_call_paths": [
+          "$.content[?(@.type=='tool_use')]"
+        ],
+        "id_paths": [
+          "$.content[?(@.type=='tool_use')].id"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "stream": {
+        "protocol": "anthropic-messages",
+        "signature_paths": [
+          "$.delta.signature"
+        ],
+        "reasoning_text_paths": [
+          "$.delta.thinking"
+        ],
+        "stream_events": [
+          "content_block_start",
+          "content_block_delta:thinking_delta",
+          "content_block_delta:signature_delta",
+          "content_block_stop"
+        ],
+        "prompt_content_policy": "not_collected"
+      }
+    },
+    "conversion": {
+      "round_trip_required": true,
+      "replay_scope": "same_endpoint",
+      "cross_endpoint_safe": false,
+      "fallback_policy": "drop_block",
+      "cache_key_hints": [
+        "thinking_text",
+        "conversation_prefix"
+      ],
+      "notes": "Claude thinking block signatures cannot be synthesized for another endpoint."
+    },
+    "protocol_profile_id": "claude-anthropic-messages-thinking-v1",
+    "replay_contract": {
+      "emitted_in": "response_and_stream",
+      "replayed_in": "next_request_history",
+      "must_replay": true,
+      "scope": [
+        "same_endpoint",
+        "same_model",
+        "same_conversation_prefix"
+      ],
+      "native_endpoint_ids": [
+        "anthropic",
+        "aws-bedrock",
+        "azure",
+        "vertex",
+        "claude-code"
+      ],
+      "foreign_signature_policy": "drop_block",
+      "synthetic_replacement": {
+        "allowed": false
+      },
+      "tool_pairing": {
+        "required": true,
+        "pairing_rule": "tool_use_followed_by_tool_result",
+        "call_id_paths": [
+          "$.messages[].content[?(@.type=='tool_use')].id"
+        ],
+        "response_id_paths": [
+          "$.messages[].content[?(@.type=='tool_result')].tool_use_id"
+        ],
+        "order_sensitive": true,
+        "signature_required_on": "none"
+      },
+      "notes": "Thinking signatures are provider-native; incompatible foreign signatures should not be replayed as Claude thinking."
+    },
+    "provenance": {
+      "legacy_source_file": "signatures/claude/google-vertex.txt",
+      "legacy_source_line": 21,
+      "legacy_source_name": "google-vertex",
+      "backend_claim": "vertex",
+      "backend_confidence": "confirmed",
+      "notes": "Stable import from CPA-API Claude samples. OpenRouter-named legacy files are reduced to the claimed backend endpoint instead of becoming signature buckets."
+    },
+    "observed_at": "2026-02-06T04:58:19.827855Z",
+    "redactions": [
+      "request_context",
+      "user_content"
+    ]
+  },
+  {
+    "schema_version": "1.0",
+    "model_family": "claude",
+    "endpoint": {
+      "id": "vertex",
+      "confidence": "confirmed",
+      "provider": "google",
+      "product": "Vertex AI",
+      "protocol": "anthropic-messages-compatible"
+    },
+    "model": "unknown",
+    "collection_status": "stable",
+    "signature_source": {
+      "protocol": "anthropic-messages",
+      "container_type": "thinking",
+      "container_selector": {
+        "type": "thinking"
+      },
+      "field": "signature",
+      "stream_field": "signature_delta",
+      "json_path": "$.content[?(@.type=='thinking')].signature",
+      "request_replay_json_path": "$.messages[].content[?(@.type=='thinking')].signature",
+      "provider_term": "thinking block signature"
+    },
+    "sample": {
+      "raw_policy": "metadata_only",
+      "sha256": "38a94a83366c0c0a9c3aae29ae4c348fdc33aa3b1d8944d156d3840884fc01ec",
+      "length": 792,
+      "encoding": "base64",
+      "omitted_reason": "raw provider-native signature is not published"
+    },
+    "classification": {
+      "format": "protobuf",
+      "encoding_layers": 2,
+      "decoded_length": 592,
+      "protobuf_length": 443,
+      "top_level_first_byte": "0x12",
+      "channel_block_length": 72,
+      "channel_id": 11,
+      "routing_class": "routing_class_11",
+      "infra_id": 2,
+      "infrastructure_class": "infra_google",
+      "version": 2,
+      "ecdsa_length": 64,
+      "model_text": null,
+      "field7": null,
+      "schema_class": "compact_schema",
+      "valid_outer_format": true
+    },
+    "payload_shape": {
+      "request": {
+        "protocol": "anthropic-messages",
+        "root_path": "$",
+        "conversation_path": "$.messages",
+        "system_paths": [
+          "$.system"
+        ],
+        "message_paths": [
+          "$.messages[]"
+        ],
+        "signature_paths": [
+          "$.messages[].content[?(@.type=='thinking')].signature"
+        ],
+        "signature_container_paths": [
+          "$.messages[].content[?(@.type=='thinking')]"
+        ],
+        "reasoning_text_paths": [
+          "$.messages[].content[?(@.type=='thinking')].thinking"
+        ],
+        "tool_call_paths": [
+          "$.messages[].content[?(@.type=='tool_use')]"
+        ],
+        "tool_result_paths": [
+          "$.messages[].content[?(@.type=='tool_result')]"
+        ],
+        "id_paths": [
+          "$.messages[].content[?(@.type=='tool_use')].id",
+          "$.messages[].content[?(@.type=='tool_result')].tool_use_id"
+        ],
+        "related_paths": [
+          "$.thinking",
+          "$.thinking.display",
+          "$.thinking.budget_tokens"
+        ],
+        "ordering_invariants": [
+          "assistant thinking blocks replay with their original signature",
+          "tool_result blocks reference prior tool_use ids",
+          "thinking display controls visible thinking text and must be tracked separately from signature replay"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "response": {
+        "protocol": "anthropic-messages",
+        "root_path": "$",
+        "signature_paths": [
+          "$.content[?(@.type=='thinking')].signature"
+        ],
+        "signature_container_paths": [
+          "$.content[?(@.type=='thinking')]"
+        ],
+        "reasoning_text_paths": [
+          "$.content[?(@.type=='thinking')].thinking"
+        ],
+        "related_paths": [
+          "$.content[?(@.type=='thinking')].signature",
+          "$.content[?(@.type=='thinking')].thinking"
+        ],
+        "tool_call_paths": [
+          "$.content[?(@.type=='tool_use')]"
+        ],
+        "id_paths": [
+          "$.content[?(@.type=='tool_use')].id"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "stream": {
+        "protocol": "anthropic-messages",
+        "signature_paths": [
+          "$.delta.signature"
+        ],
+        "reasoning_text_paths": [
+          "$.delta.thinking"
+        ],
+        "stream_events": [
+          "content_block_start",
+          "content_block_delta:thinking_delta",
+          "content_block_delta:signature_delta",
+          "content_block_stop"
+        ],
+        "prompt_content_policy": "not_collected"
+      }
+    },
+    "conversion": {
+      "round_trip_required": true,
+      "replay_scope": "same_endpoint",
+      "cross_endpoint_safe": false,
+      "fallback_policy": "drop_block",
+      "cache_key_hints": [
+        "thinking_text",
+        "conversation_prefix"
+      ],
+      "notes": "Claude thinking block signatures cannot be synthesized for another endpoint."
+    },
+    "protocol_profile_id": "claude-anthropic-messages-thinking-v1",
+    "replay_contract": {
+      "emitted_in": "response_and_stream",
+      "replayed_in": "next_request_history",
+      "must_replay": true,
+      "scope": [
+        "same_endpoint",
+        "same_model",
+        "same_conversation_prefix"
+      ],
+      "native_endpoint_ids": [
+        "anthropic",
+        "aws-bedrock",
+        "azure",
+        "vertex",
+        "claude-code"
+      ],
+      "foreign_signature_policy": "drop_block",
+      "synthetic_replacement": {
+        "allowed": false
+      },
+      "tool_pairing": {
+        "required": true,
+        "pairing_rule": "tool_use_followed_by_tool_result",
+        "call_id_paths": [
+          "$.messages[].content[?(@.type=='tool_use')].id"
+        ],
+        "response_id_paths": [
+          "$.messages[].content[?(@.type=='tool_result')].tool_use_id"
+        ],
+        "order_sensitive": true,
+        "signature_required_on": "none"
+      },
+      "notes": "Thinking signatures are provider-native; incompatible foreign signatures should not be replayed as Claude thinking."
+    },
+    "provenance": {
+      "legacy_source_file": "signatures/claude/google-vertex.txt",
+      "legacy_source_line": 22,
+      "legacy_source_name": "google-vertex",
+      "backend_claim": "vertex",
+      "backend_confidence": "confirmed",
+      "notes": "Stable import from CPA-API Claude samples. OpenRouter-named legacy files are reduced to the claimed backend endpoint instead of becoming signature buckets."
+    },
+    "observed_at": "2026-02-06T04:58:19.827855Z",
+    "redactions": [
+      "request_context",
+      "user_content"
+    ]
+  },
+  {
+    "schema_version": "1.0",
+    "model_family": "claude",
+    "endpoint": {
+      "id": "vertex",
+      "confidence": "confirmed",
+      "provider": "google",
+      "product": "Vertex AI",
+      "protocol": "anthropic-messages-compatible"
+    },
+    "model": "unknown",
+    "collection_status": "stable",
+    "signature_source": {
+      "protocol": "anthropic-messages",
+      "container_type": "thinking",
+      "container_selector": {
+        "type": "thinking"
+      },
+      "field": "signature",
+      "stream_field": "signature_delta",
+      "json_path": "$.content[?(@.type=='thinking')].signature",
+      "request_replay_json_path": "$.messages[].content[?(@.type=='thinking')].signature",
+      "provider_term": "thinking block signature"
+    },
+    "sample": {
+      "raw_policy": "metadata_only",
+      "sha256": "e74650ac9546476b8c8900ac55a58facc5b2eba09890099f9b83b420c56f4140",
+      "length": 872,
+      "encoding": "base64",
+      "omitted_reason": "raw provider-native signature is not published"
+    },
+    "classification": {
+      "format": "protobuf",
+      "encoding_layers": 2,
+      "decoded_length": 652,
+      "protobuf_length": 489,
+      "top_level_first_byte": "0x12",
+      "channel_block_length": 72,
+      "channel_id": 11,
+      "routing_class": "routing_class_11",
+      "infra_id": 2,
+      "infrastructure_class": "infra_google",
+      "version": 2,
+      "ecdsa_length": 64,
+      "model_text": null,
+      "field7": null,
+      "schema_class": "compact_schema",
+      "valid_outer_format": true
+    },
+    "payload_shape": {
+      "request": {
+        "protocol": "anthropic-messages",
+        "root_path": "$",
+        "conversation_path": "$.messages",
+        "system_paths": [
+          "$.system"
+        ],
+        "message_paths": [
+          "$.messages[]"
+        ],
+        "signature_paths": [
+          "$.messages[].content[?(@.type=='thinking')].signature"
+        ],
+        "signature_container_paths": [
+          "$.messages[].content[?(@.type=='thinking')]"
+        ],
+        "reasoning_text_paths": [
+          "$.messages[].content[?(@.type=='thinking')].thinking"
+        ],
+        "tool_call_paths": [
+          "$.messages[].content[?(@.type=='tool_use')]"
+        ],
+        "tool_result_paths": [
+          "$.messages[].content[?(@.type=='tool_result')]"
+        ],
+        "id_paths": [
+          "$.messages[].content[?(@.type=='tool_use')].id",
+          "$.messages[].content[?(@.type=='tool_result')].tool_use_id"
+        ],
+        "related_paths": [
+          "$.thinking",
+          "$.thinking.display",
+          "$.thinking.budget_tokens"
+        ],
+        "ordering_invariants": [
+          "assistant thinking blocks replay with their original signature",
+          "tool_result blocks reference prior tool_use ids",
+          "thinking display controls visible thinking text and must be tracked separately from signature replay"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "response": {
+        "protocol": "anthropic-messages",
+        "root_path": "$",
+        "signature_paths": [
+          "$.content[?(@.type=='thinking')].signature"
+        ],
+        "signature_container_paths": [
+          "$.content[?(@.type=='thinking')]"
+        ],
+        "reasoning_text_paths": [
+          "$.content[?(@.type=='thinking')].thinking"
+        ],
+        "related_paths": [
+          "$.content[?(@.type=='thinking')].signature",
+          "$.content[?(@.type=='thinking')].thinking"
+        ],
+        "tool_call_paths": [
+          "$.content[?(@.type=='tool_use')]"
+        ],
+        "id_paths": [
+          "$.content[?(@.type=='tool_use')].id"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "stream": {
+        "protocol": "anthropic-messages",
+        "signature_paths": [
+          "$.delta.signature"
+        ],
+        "reasoning_text_paths": [
+          "$.delta.thinking"
+        ],
+        "stream_events": [
+          "content_block_start",
+          "content_block_delta:thinking_delta",
+          "content_block_delta:signature_delta",
+          "content_block_stop"
+        ],
+        "prompt_content_policy": "not_collected"
+      }
+    },
+    "conversion": {
+      "round_trip_required": true,
+      "replay_scope": "same_endpoint",
+      "cross_endpoint_safe": false,
+      "fallback_policy": "drop_block",
+      "cache_key_hints": [
+        "thinking_text",
+        "conversation_prefix"
+      ],
+      "notes": "Claude thinking block signatures cannot be synthesized for another endpoint."
+    },
+    "protocol_profile_id": "claude-anthropic-messages-thinking-v1",
+    "replay_contract": {
+      "emitted_in": "response_and_stream",
+      "replayed_in": "next_request_history",
+      "must_replay": true,
+      "scope": [
+        "same_endpoint",
+        "same_model",
+        "same_conversation_prefix"
+      ],
+      "native_endpoint_ids": [
+        "anthropic",
+        "aws-bedrock",
+        "azure",
+        "vertex",
+        "claude-code"
+      ],
+      "foreign_signature_policy": "drop_block",
+      "synthetic_replacement": {
+        "allowed": false
+      },
+      "tool_pairing": {
+        "required": true,
+        "pairing_rule": "tool_use_followed_by_tool_result",
+        "call_id_paths": [
+          "$.messages[].content[?(@.type=='tool_use')].id"
+        ],
+        "response_id_paths": [
+          "$.messages[].content[?(@.type=='tool_result')].tool_use_id"
+        ],
+        "order_sensitive": true,
+        "signature_required_on": "none"
+      },
+      "notes": "Thinking signatures are provider-native; incompatible foreign signatures should not be replayed as Claude thinking."
+    },
+    "provenance": {
+      "legacy_source_file": "signatures/claude/google-vertex.txt",
+      "legacy_source_line": 23,
+      "legacy_source_name": "google-vertex",
+      "backend_claim": "vertex",
+      "backend_confidence": "confirmed",
+      "notes": "Stable import from CPA-API Claude samples. OpenRouter-named legacy files are reduced to the claimed backend endpoint instead of becoming signature buckets."
+    },
+    "observed_at": "2026-02-06T04:58:19.827855Z",
+    "redactions": [
+      "request_context",
+      "user_content"
+    ]
+  },
+  {
+    "schema_version": "1.0",
+    "model_family": "claude",
+    "endpoint": {
+      "id": "vertex",
+      "confidence": "confirmed",
+      "provider": "google",
+      "product": "Vertex AI",
+      "protocol": "anthropic-messages-compatible"
+    },
+    "model": "unknown",
+    "collection_status": "stable",
+    "signature_source": {
+      "protocol": "anthropic-messages",
+      "container_type": "thinking",
+      "container_selector": {
+        "type": "thinking"
+      },
+      "field": "signature",
+      "stream_field": "signature_delta",
+      "json_path": "$.content[?(@.type=='thinking')].signature",
+      "request_replay_json_path": "$.messages[].content[?(@.type=='thinking')].signature",
+      "provider_term": "thinking block signature"
+    },
+    "sample": {
+      "raw_policy": "metadata_only",
+      "sha256": "09ea185639089da19c51642d6017b411bd83e410874add3b4742293c30b56c40",
+      "length": 668,
+      "encoding": "base64",
+      "omitted_reason": "raw provider-native signature is not published"
+    },
+    "classification": {
+      "format": "protobuf",
+      "encoding_layers": 2,
+      "decoded_length": 500,
+      "protobuf_length": 373,
+      "top_level_first_byte": "0x12",
+      "channel_block_length": 72,
+      "channel_id": 11,
+      "routing_class": "routing_class_11",
+      "infra_id": 2,
+      "infrastructure_class": "infra_google",
+      "version": 2,
+      "ecdsa_length": 64,
+      "model_text": null,
+      "field7": null,
+      "schema_class": "compact_schema",
+      "valid_outer_format": true
+    },
+    "payload_shape": {
+      "request": {
+        "protocol": "anthropic-messages",
+        "root_path": "$",
+        "conversation_path": "$.messages",
+        "system_paths": [
+          "$.system"
+        ],
+        "message_paths": [
+          "$.messages[]"
+        ],
+        "signature_paths": [
+          "$.messages[].content[?(@.type=='thinking')].signature"
+        ],
+        "signature_container_paths": [
+          "$.messages[].content[?(@.type=='thinking')]"
+        ],
+        "reasoning_text_paths": [
+          "$.messages[].content[?(@.type=='thinking')].thinking"
+        ],
+        "tool_call_paths": [
+          "$.messages[].content[?(@.type=='tool_use')]"
+        ],
+        "tool_result_paths": [
+          "$.messages[].content[?(@.type=='tool_result')]"
+        ],
+        "id_paths": [
+          "$.messages[].content[?(@.type=='tool_use')].id",
+          "$.messages[].content[?(@.type=='tool_result')].tool_use_id"
+        ],
+        "related_paths": [
+          "$.thinking",
+          "$.thinking.display",
+          "$.thinking.budget_tokens"
+        ],
+        "ordering_invariants": [
+          "assistant thinking blocks replay with their original signature",
+          "tool_result blocks reference prior tool_use ids",
+          "thinking display controls visible thinking text and must be tracked separately from signature replay"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "response": {
+        "protocol": "anthropic-messages",
+        "root_path": "$",
+        "signature_paths": [
+          "$.content[?(@.type=='thinking')].signature"
+        ],
+        "signature_container_paths": [
+          "$.content[?(@.type=='thinking')]"
+        ],
+        "reasoning_text_paths": [
+          "$.content[?(@.type=='thinking')].thinking"
+        ],
+        "related_paths": [
+          "$.content[?(@.type=='thinking')].signature",
+          "$.content[?(@.type=='thinking')].thinking"
+        ],
+        "tool_call_paths": [
+          "$.content[?(@.type=='tool_use')]"
+        ],
+        "id_paths": [
+          "$.content[?(@.type=='tool_use')].id"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "stream": {
+        "protocol": "anthropic-messages",
+        "signature_paths": [
+          "$.delta.signature"
+        ],
+        "reasoning_text_paths": [
+          "$.delta.thinking"
+        ],
+        "stream_events": [
+          "content_block_start",
+          "content_block_delta:thinking_delta",
+          "content_block_delta:signature_delta",
+          "content_block_stop"
+        ],
+        "prompt_content_policy": "not_collected"
+      }
+    },
+    "conversion": {
+      "round_trip_required": true,
+      "replay_scope": "same_endpoint",
+      "cross_endpoint_safe": false,
+      "fallback_policy": "drop_block",
+      "cache_key_hints": [
+        "thinking_text",
+        "conversation_prefix"
+      ],
+      "notes": "Claude thinking block signatures cannot be synthesized for another endpoint."
+    },
+    "protocol_profile_id": "claude-anthropic-messages-thinking-v1",
+    "replay_contract": {
+      "emitted_in": "response_and_stream",
+      "replayed_in": "next_request_history",
+      "must_replay": true,
+      "scope": [
+        "same_endpoint",
+        "same_model",
+        "same_conversation_prefix"
+      ],
+      "native_endpoint_ids": [
+        "anthropic",
+        "aws-bedrock",
+        "azure",
+        "vertex",
+        "claude-code"
+      ],
+      "foreign_signature_policy": "drop_block",
+      "synthetic_replacement": {
+        "allowed": false
+      },
+      "tool_pairing": {
+        "required": true,
+        "pairing_rule": "tool_use_followed_by_tool_result",
+        "call_id_paths": [
+          "$.messages[].content[?(@.type=='tool_use')].id"
+        ],
+        "response_id_paths": [
+          "$.messages[].content[?(@.type=='tool_result')].tool_use_id"
+        ],
+        "order_sensitive": true,
+        "signature_required_on": "none"
+      },
+      "notes": "Thinking signatures are provider-native; incompatible foreign signatures should not be replayed as Claude thinking."
+    },
+    "provenance": {
+      "legacy_source_file": "signatures/claude/google-vertex.txt",
+      "legacy_source_line": 24,
+      "legacy_source_name": "google-vertex",
+      "backend_claim": "vertex",
+      "backend_confidence": "confirmed",
+      "notes": "Stable import from CPA-API Claude samples. OpenRouter-named legacy files are reduced to the claimed backend endpoint instead of becoming signature buckets."
+    },
+    "observed_at": "2026-02-06T04:58:19.827855Z",
+    "redactions": [
+      "request_context",
+      "user_content"
+    ]
+  },
+  {
+    "schema_version": "1.0",
+    "model_family": "claude",
+    "endpoint": {
+      "id": "vertex",
+      "confidence": "confirmed",
+      "provider": "google",
+      "product": "Vertex AI",
+      "protocol": "anthropic-messages-compatible"
+    },
+    "model": "unknown",
+    "collection_status": "stable",
+    "signature_source": {
+      "protocol": "anthropic-messages",
+      "container_type": "thinking",
+      "container_selector": {
+        "type": "thinking"
+      },
+      "field": "signature",
+      "stream_field": "signature_delta",
+      "json_path": "$.content[?(@.type=='thinking')].signature",
+      "request_replay_json_path": "$.messages[].content[?(@.type=='thinking')].signature",
+      "provider_term": "thinking block signature"
+    },
+    "sample": {
+      "raw_policy": "metadata_only",
+      "sha256": "834ee7cd7ebf6aae17b27f509f81e37aa08d3a7768f6ec9f65e320270c6f6cd4",
+      "length": 416,
+      "encoding": "base64",
+      "omitted_reason": "raw provider-native signature is not published"
+    },
+    "classification": {
+      "format": "protobuf",
+      "encoding_layers": 2,
+      "decoded_length": 312,
+      "protobuf_length": 233,
+      "top_level_first_byte": "0x12",
+      "channel_block_length": 72,
+      "channel_id": 11,
+      "routing_class": "routing_class_11",
+      "infra_id": 2,
+      "infrastructure_class": "infra_google",
+      "version": 2,
+      "ecdsa_length": 64,
+      "model_text": null,
+      "field7": null,
+      "schema_class": "compact_schema",
+      "valid_outer_format": true
+    },
+    "payload_shape": {
+      "request": {
+        "protocol": "anthropic-messages",
+        "root_path": "$",
+        "conversation_path": "$.messages",
+        "system_paths": [
+          "$.system"
+        ],
+        "message_paths": [
+          "$.messages[]"
+        ],
+        "signature_paths": [
+          "$.messages[].content[?(@.type=='thinking')].signature"
+        ],
+        "signature_container_paths": [
+          "$.messages[].content[?(@.type=='thinking')]"
+        ],
+        "reasoning_text_paths": [
+          "$.messages[].content[?(@.type=='thinking')].thinking"
+        ],
+        "tool_call_paths": [
+          "$.messages[].content[?(@.type=='tool_use')]"
+        ],
+        "tool_result_paths": [
+          "$.messages[].content[?(@.type=='tool_result')]"
+        ],
+        "id_paths": [
+          "$.messages[].content[?(@.type=='tool_use')].id",
+          "$.messages[].content[?(@.type=='tool_result')].tool_use_id"
+        ],
+        "related_paths": [
+          "$.thinking",
+          "$.thinking.display",
+          "$.thinking.budget_tokens"
+        ],
+        "ordering_invariants": [
+          "assistant thinking blocks replay with their original signature",
+          "tool_result blocks reference prior tool_use ids",
+          "thinking display controls visible thinking text and must be tracked separately from signature replay"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "response": {
+        "protocol": "anthropic-messages",
+        "root_path": "$",
+        "signature_paths": [
+          "$.content[?(@.type=='thinking')].signature"
+        ],
+        "signature_container_paths": [
+          "$.content[?(@.type=='thinking')]"
+        ],
+        "reasoning_text_paths": [
+          "$.content[?(@.type=='thinking')].thinking"
+        ],
+        "related_paths": [
+          "$.content[?(@.type=='thinking')].signature",
+          "$.content[?(@.type=='thinking')].thinking"
+        ],
+        "tool_call_paths": [
+          "$.content[?(@.type=='tool_use')]"
+        ],
+        "id_paths": [
+          "$.content[?(@.type=='tool_use')].id"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "stream": {
+        "protocol": "anthropic-messages",
+        "signature_paths": [
+          "$.delta.signature"
+        ],
+        "reasoning_text_paths": [
+          "$.delta.thinking"
+        ],
+        "stream_events": [
+          "content_block_start",
+          "content_block_delta:thinking_delta",
+          "content_block_delta:signature_delta",
+          "content_block_stop"
+        ],
+        "prompt_content_policy": "not_collected"
+      }
+    },
+    "conversion": {
+      "round_trip_required": true,
+      "replay_scope": "same_endpoint",
+      "cross_endpoint_safe": false,
+      "fallback_policy": "drop_block",
+      "cache_key_hints": [
+        "thinking_text",
+        "conversation_prefix"
+      ],
+      "notes": "Claude thinking block signatures cannot be synthesized for another endpoint."
+    },
+    "protocol_profile_id": "claude-anthropic-messages-thinking-v1",
+    "replay_contract": {
+      "emitted_in": "response_and_stream",
+      "replayed_in": "next_request_history",
+      "must_replay": true,
+      "scope": [
+        "same_endpoint",
+        "same_model",
+        "same_conversation_prefix"
+      ],
+      "native_endpoint_ids": [
+        "anthropic",
+        "aws-bedrock",
+        "azure",
+        "vertex",
+        "claude-code"
+      ],
+      "foreign_signature_policy": "drop_block",
+      "synthetic_replacement": {
+        "allowed": false
+      },
+      "tool_pairing": {
+        "required": true,
+        "pairing_rule": "tool_use_followed_by_tool_result",
+        "call_id_paths": [
+          "$.messages[].content[?(@.type=='tool_use')].id"
+        ],
+        "response_id_paths": [
+          "$.messages[].content[?(@.type=='tool_result')].tool_use_id"
+        ],
+        "order_sensitive": true,
+        "signature_required_on": "none"
+      },
+      "notes": "Thinking signatures are provider-native; incompatible foreign signatures should not be replayed as Claude thinking."
+    },
+    "provenance": {
+      "legacy_source_file": "signatures/claude/google-vertex.txt",
+      "legacy_source_line": 25,
+      "legacy_source_name": "google-vertex",
+      "backend_claim": "vertex",
+      "backend_confidence": "confirmed",
+      "notes": "Stable import from CPA-API Claude samples. OpenRouter-named legacy files are reduced to the claimed backend endpoint instead of becoming signature buckets."
+    },
+    "observed_at": "2026-02-06T04:58:19.827855Z",
+    "redactions": [
+      "request_context",
+      "user_content"
+    ]
+  },
+  {
+    "schema_version": "1.0",
+    "model_family": "claude",
+    "endpoint": {
+      "id": "vertex",
+      "confidence": "confirmed",
+      "provider": "google",
+      "product": "Vertex AI",
+      "protocol": "anthropic-messages-compatible"
+    },
+    "model": "unknown",
+    "collection_status": "stable",
+    "signature_source": {
+      "protocol": "anthropic-messages",
+      "container_type": "thinking",
+      "container_selector": {
+        "type": "thinking"
+      },
+      "field": "signature",
+      "stream_field": "signature_delta",
+      "json_path": "$.content[?(@.type=='thinking')].signature",
+      "request_replay_json_path": "$.messages[].content[?(@.type=='thinking')].signature",
+      "provider_term": "thinking block signature"
+    },
+    "sample": {
+      "raw_policy": "metadata_only",
+      "sha256": "7421e8ca17fa113abf4409bf76802ea4b5376e67aa32925e9db814347a946146",
+      "length": 544,
+      "encoding": "base64",
+      "omitted_reason": "raw provider-native signature is not published"
+    },
+    "classification": {
+      "format": "protobuf",
+      "encoding_layers": 2,
+      "decoded_length": 408,
+      "protobuf_length": 304,
+      "top_level_first_byte": "0x12",
+      "channel_block_length": 72,
+      "channel_id": 11,
+      "routing_class": "routing_class_11",
+      "infra_id": 2,
+      "infrastructure_class": "infra_google",
+      "version": 2,
+      "ecdsa_length": 64,
+      "model_text": null,
+      "field7": null,
+      "schema_class": "compact_schema",
+      "valid_outer_format": true
+    },
+    "payload_shape": {
+      "request": {
+        "protocol": "anthropic-messages",
+        "root_path": "$",
+        "conversation_path": "$.messages",
+        "system_paths": [
+          "$.system"
+        ],
+        "message_paths": [
+          "$.messages[]"
+        ],
+        "signature_paths": [
+          "$.messages[].content[?(@.type=='thinking')].signature"
+        ],
+        "signature_container_paths": [
+          "$.messages[].content[?(@.type=='thinking')]"
+        ],
+        "reasoning_text_paths": [
+          "$.messages[].content[?(@.type=='thinking')].thinking"
+        ],
+        "tool_call_paths": [
+          "$.messages[].content[?(@.type=='tool_use')]"
+        ],
+        "tool_result_paths": [
+          "$.messages[].content[?(@.type=='tool_result')]"
+        ],
+        "id_paths": [
+          "$.messages[].content[?(@.type=='tool_use')].id",
+          "$.messages[].content[?(@.type=='tool_result')].tool_use_id"
+        ],
+        "related_paths": [
+          "$.thinking",
+          "$.thinking.display",
+          "$.thinking.budget_tokens"
+        ],
+        "ordering_invariants": [
+          "assistant thinking blocks replay with their original signature",
+          "tool_result blocks reference prior tool_use ids",
+          "thinking display controls visible thinking text and must be tracked separately from signature replay"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "response": {
+        "protocol": "anthropic-messages",
+        "root_path": "$",
+        "signature_paths": [
+          "$.content[?(@.type=='thinking')].signature"
+        ],
+        "signature_container_paths": [
+          "$.content[?(@.type=='thinking')]"
+        ],
+        "reasoning_text_paths": [
+          "$.content[?(@.type=='thinking')].thinking"
+        ],
+        "related_paths": [
+          "$.content[?(@.type=='thinking')].signature",
+          "$.content[?(@.type=='thinking')].thinking"
+        ],
+        "tool_call_paths": [
+          "$.content[?(@.type=='tool_use')]"
+        ],
+        "id_paths": [
+          "$.content[?(@.type=='tool_use')].id"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "stream": {
+        "protocol": "anthropic-messages",
+        "signature_paths": [
+          "$.delta.signature"
+        ],
+        "reasoning_text_paths": [
+          "$.delta.thinking"
+        ],
+        "stream_events": [
+          "content_block_start",
+          "content_block_delta:thinking_delta",
+          "content_block_delta:signature_delta",
+          "content_block_stop"
+        ],
+        "prompt_content_policy": "not_collected"
+      }
+    },
+    "conversion": {
+      "round_trip_required": true,
+      "replay_scope": "same_endpoint",
+      "cross_endpoint_safe": false,
+      "fallback_policy": "drop_block",
+      "cache_key_hints": [
+        "thinking_text",
+        "conversation_prefix"
+      ],
+      "notes": "Claude thinking block signatures cannot be synthesized for another endpoint."
+    },
+    "protocol_profile_id": "claude-anthropic-messages-thinking-v1",
+    "replay_contract": {
+      "emitted_in": "response_and_stream",
+      "replayed_in": "next_request_history",
+      "must_replay": true,
+      "scope": [
+        "same_endpoint",
+        "same_model",
+        "same_conversation_prefix"
+      ],
+      "native_endpoint_ids": [
+        "anthropic",
+        "aws-bedrock",
+        "azure",
+        "vertex",
+        "claude-code"
+      ],
+      "foreign_signature_policy": "drop_block",
+      "synthetic_replacement": {
+        "allowed": false
+      },
+      "tool_pairing": {
+        "required": true,
+        "pairing_rule": "tool_use_followed_by_tool_result",
+        "call_id_paths": [
+          "$.messages[].content[?(@.type=='tool_use')].id"
+        ],
+        "response_id_paths": [
+          "$.messages[].content[?(@.type=='tool_result')].tool_use_id"
+        ],
+        "order_sensitive": true,
+        "signature_required_on": "none"
+      },
+      "notes": "Thinking signatures are provider-native; incompatible foreign signatures should not be replayed as Claude thinking."
+    },
+    "provenance": {
+      "legacy_source_file": "signatures/claude/google-vertex.txt",
+      "legacy_source_line": 26,
+      "legacy_source_name": "google-vertex",
+      "backend_claim": "vertex",
+      "backend_confidence": "confirmed",
+      "notes": "Stable import from CPA-API Claude samples. OpenRouter-named legacy files are reduced to the claimed backend endpoint instead of becoming signature buckets."
+    },
+    "observed_at": "2026-02-06T04:58:19.827855Z",
+    "redactions": [
+      "request_context",
+      "user_content"
+    ]
+  },
+  {
+    "schema_version": "1.0",
+    "model_family": "claude",
+    "endpoint": {
+      "id": "vertex",
+      "confidence": "filename_claimed",
+      "provider": "google",
+      "product": "Vertex AI",
+      "protocol": "anthropic-messages-compatible"
+    },
+    "model": "unknown",
+    "collection_status": "stable",
+    "signature_source": {
+      "protocol": "anthropic-messages",
+      "container_type": "thinking",
+      "container_selector": {
+        "type": "thinking"
+      },
+      "field": "signature",
+      "stream_field": "signature_delta",
+      "json_path": "$.content[?(@.type=='thinking')].signature",
+      "request_replay_json_path": "$.messages[].content[?(@.type=='thinking')].signature",
+      "provider_term": "thinking block signature"
+    },
+    "sample": {
+      "raw_policy": "metadata_only",
+      "sha256": "a526afc76c39a2f3abb15473e04edbbedd75e23563a697dba62a076e9a55590b",
+      "length": 2084,
+      "encoding": "base64",
+      "omitted_reason": "raw provider-native signature is not published"
+    },
+    "classification": {
+      "format": "protobuf",
+      "encoding_layers": 1,
+      "decoded_length": 1562,
+      "protobuf_length": 1562,
+      "top_level_first_byte": "0x12",
+      "channel_block_length": 72,
+      "channel_id": 11,
+      "routing_class": "routing_class_11",
+      "infra_id": 2,
+      "infrastructure_class": "infra_google",
+      "version": 2,
+      "ecdsa_length": 64,
+      "model_text": null,
+      "field7": null,
+      "schema_class": "compact_schema",
+      "valid_outer_format": true
+    },
+    "payload_shape": {
+      "request": {
+        "protocol": "anthropic-messages",
+        "root_path": "$",
+        "conversation_path": "$.messages",
+        "system_paths": [
+          "$.system"
+        ],
+        "message_paths": [
+          "$.messages[]"
+        ],
+        "signature_paths": [
+          "$.messages[].content[?(@.type=='thinking')].signature"
+        ],
+        "signature_container_paths": [
+          "$.messages[].content[?(@.type=='thinking')]"
+        ],
+        "reasoning_text_paths": [
+          "$.messages[].content[?(@.type=='thinking')].thinking"
+        ],
+        "tool_call_paths": [
+          "$.messages[].content[?(@.type=='tool_use')]"
+        ],
+        "tool_result_paths": [
+          "$.messages[].content[?(@.type=='tool_result')]"
+        ],
+        "id_paths": [
+          "$.messages[].content[?(@.type=='tool_use')].id",
+          "$.messages[].content[?(@.type=='tool_result')].tool_use_id"
+        ],
+        "related_paths": [
+          "$.thinking",
+          "$.thinking.display",
+          "$.thinking.budget_tokens"
+        ],
+        "ordering_invariants": [
+          "assistant thinking blocks replay with their original signature",
+          "tool_result blocks reference prior tool_use ids",
+          "thinking display controls visible thinking text and must be tracked separately from signature replay"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "response": {
+        "protocol": "anthropic-messages",
+        "root_path": "$",
+        "signature_paths": [
+          "$.content[?(@.type=='thinking')].signature"
+        ],
+        "signature_container_paths": [
+          "$.content[?(@.type=='thinking')]"
+        ],
+        "reasoning_text_paths": [
+          "$.content[?(@.type=='thinking')].thinking"
+        ],
+        "related_paths": [
+          "$.content[?(@.type=='thinking')].signature",
+          "$.content[?(@.type=='thinking')].thinking"
+        ],
+        "tool_call_paths": [
+          "$.content[?(@.type=='tool_use')]"
+        ],
+        "id_paths": [
+          "$.content[?(@.type=='tool_use')].id"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "stream": {
+        "protocol": "anthropic-messages",
+        "signature_paths": [
+          "$.delta.signature"
+        ],
+        "reasoning_text_paths": [
+          "$.delta.thinking"
+        ],
+        "stream_events": [
+          "content_block_start",
+          "content_block_delta:thinking_delta",
+          "content_block_delta:signature_delta",
+          "content_block_stop"
+        ],
+        "prompt_content_policy": "not_collected"
+      }
+    },
+    "conversion": {
+      "round_trip_required": true,
+      "replay_scope": "same_endpoint",
+      "cross_endpoint_safe": false,
+      "fallback_policy": "drop_block",
+      "cache_key_hints": [
+        "thinking_text",
+        "conversation_prefix"
+      ],
+      "notes": "Claude thinking block signatures cannot be synthesized for another endpoint."
+    },
+    "protocol_profile_id": "claude-anthropic-messages-thinking-v1",
+    "replay_contract": {
+      "emitted_in": "response_and_stream",
+      "replayed_in": "next_request_history",
+      "must_replay": true,
+      "scope": [
+        "same_endpoint",
+        "same_model",
+        "same_conversation_prefix"
+      ],
+      "native_endpoint_ids": [
+        "anthropic",
+        "aws-bedrock",
+        "azure",
+        "vertex",
+        "claude-code"
+      ],
+      "foreign_signature_policy": "drop_block",
+      "synthetic_replacement": {
+        "allowed": false
+      },
+      "tool_pairing": {
+        "required": true,
+        "pairing_rule": "tool_use_followed_by_tool_result",
+        "call_id_paths": [
+          "$.messages[].content[?(@.type=='tool_use')].id"
+        ],
+        "response_id_paths": [
+          "$.messages[].content[?(@.type=='tool_result')].tool_use_id"
+        ],
+        "order_sensitive": true,
+        "signature_required_on": "none"
+      },
+      "notes": "Thinking signatures are provider-native; incompatible foreign signatures should not be replayed as Claude thinking."
+    },
+    "provenance": {
+      "legacy_source_file": "signatures/claude/openrouter-vertex.txt",
+      "legacy_source_line": 1,
+      "legacy_source_name": "openrouter-vertex",
+      "backend_claim": "vertex",
+      "backend_confidence": "filename_claimed",
+      "notes": "Stable import from CPA-API Claude samples. OpenRouter-named legacy files are reduced to the claimed backend endpoint instead of becoming signature buckets."
+    },
+    "observed_at": "2026-02-06T04:58:19.836697Z",
+    "redactions": [
+      "request_context",
+      "user_content"
+    ]
+  },
+  {
+    "schema_version": "1.0",
+    "model_family": "claude",
+    "endpoint": {
+      "id": "vertex",
+      "confidence": "confirmed",
+      "provider": "google",
+      "product": "Vertex AI",
+      "protocol": "anthropic-messages-compatible"
+    },
+    "model": "claude-sonnet-4-6",
+    "collection_status": "stable",
+    "signature_source": {
+      "protocol": "anthropic-messages",
+      "container_type": "thinking",
+      "container_selector": {
+        "type": "thinking"
+      },
+      "field": "signature",
+      "stream_field": "signature_delta",
+      "json_path": "$.content[?(@.type=='thinking')].signature",
+      "request_replay_json_path": "$.messages[].content[?(@.type=='thinking')].signature",
+      "provider_term": "thinking block signature"
+    },
+    "sample": {
+      "raw_policy": "metadata_only",
+      "sha256": "f3948109ec63da856dd675141dc9f8dc55902372eeab9b567dfd74ed319a3930",
+      "length": 400,
+      "encoding": "base64",
+      "omitted_reason": "raw provider-native signature is not published"
+    },
+    "classification": {
+      "format": "protobuf",
+      "encoding_layers": 1,
+      "decoded_length": 299,
+      "protobuf_length": 299,
+      "top_level_first_byte": "0x12",
+      "channel_block_length": 93,
+      "channel_id": 12,
+      "routing_class": "routing_class_12",
+      "infra_id": 2,
+      "infrastructure_class": "infra_google",
+      "version": 2,
+      "ecdsa_length": 64,
+      "model_text": "claude-sonnet-4-6",
+      "field7": 0,
+      "schema_class": "extended_model_tagged_schema",
+      "valid_outer_format": true
+    },
+    "payload_shape": {
+      "request": {
+        "protocol": "anthropic-messages",
+        "root_path": "$",
+        "conversation_path": "$.messages",
+        "system_paths": [
+          "$.system"
+        ],
+        "message_paths": [
+          "$.messages[]"
+        ],
+        "signature_paths": [
+          "$.messages[].content[?(@.type=='thinking')].signature"
+        ],
+        "signature_container_paths": [
+          "$.messages[].content[?(@.type=='thinking')]"
+        ],
+        "reasoning_text_paths": [
+          "$.messages[].content[?(@.type=='thinking')].thinking"
+        ],
+        "tool_call_paths": [
+          "$.messages[].content[?(@.type=='tool_use')]"
+        ],
+        "tool_result_paths": [
+          "$.messages[].content[?(@.type=='tool_result')]"
+        ],
+        "id_paths": [
+          "$.messages[].content[?(@.type=='tool_use')].id",
+          "$.messages[].content[?(@.type=='tool_result')].tool_use_id"
+        ],
+        "related_paths": [
+          "$.thinking",
+          "$.thinking.display",
+          "$.thinking.budget_tokens"
+        ],
+        "ordering_invariants": [
+          "assistant thinking blocks replay with their original signature",
+          "tool_result blocks reference prior tool_use ids",
+          "thinking display controls visible thinking text and must be tracked separately from signature replay"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "response": {
+        "protocol": "anthropic-messages",
+        "root_path": "$",
+        "signature_paths": [
+          "$.content[?(@.type=='thinking')].signature"
+        ],
+        "signature_container_paths": [
+          "$.content[?(@.type=='thinking')]"
+        ],
+        "reasoning_text_paths": [
+          "$.content[?(@.type=='thinking')].thinking"
+        ],
+        "related_paths": [
+          "$.content[?(@.type=='thinking')].signature",
+          "$.content[?(@.type=='thinking')].thinking"
+        ],
+        "tool_call_paths": [
+          "$.content[?(@.type=='tool_use')]"
+        ],
+        "id_paths": [
+          "$.content[?(@.type=='tool_use')].id"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "stream": {
+        "protocol": "anthropic-messages",
+        "signature_paths": [
+          "$.delta.signature"
+        ],
+        "reasoning_text_paths": [
+          "$.delta.thinking"
+        ],
+        "stream_events": [
+          "content_block_start",
+          "content_block_delta:thinking_delta",
+          "content_block_delta:signature_delta",
+          "content_block_stop"
+        ],
+        "prompt_content_policy": "not_collected"
+      }
+    },
+    "conversion": {
+      "round_trip_required": true,
+      "replay_scope": "same_endpoint",
+      "cross_endpoint_safe": false,
+      "fallback_policy": "drop_block",
+      "cache_key_hints": [
+        "thinking_text",
+        "conversation_prefix"
+      ],
+      "notes": "Claude thinking block signatures cannot be synthesized for another endpoint."
+    },
+    "protocol_profile_id": "claude-anthropic-messages-thinking-v1",
+    "replay_contract": {
+      "emitted_in": "response_and_stream",
+      "replayed_in": "next_request_history",
+      "must_replay": true,
+      "scope": [
+        "same_endpoint",
+        "same_model",
+        "same_conversation_prefix"
+      ],
+      "native_endpoint_ids": [
+        "anthropic",
+        "aws-bedrock",
+        "azure",
+        "vertex",
+        "claude-code"
+      ],
+      "foreign_signature_policy": "drop_block",
+      "synthetic_replacement": {
+        "allowed": false
+      },
+      "tool_pairing": {
+        "required": true,
+        "pairing_rule": "tool_use_followed_by_tool_result",
+        "call_id_paths": [
+          "$.messages[].content[?(@.type=='tool_use')].id"
+        ],
+        "response_id_paths": [
+          "$.messages[].content[?(@.type=='tool_result')].tool_use_id"
+        ],
+        "order_sensitive": true,
+        "signature_required_on": "none"
+      },
+      "notes": "Thinking signatures are provider-native; incompatible foreign signatures should not be replayed as Claude thinking."
+    },
+    "provenance": {
+      "legacy_source_file": "SIGNATURE-CHANNEL-SPEC.md",
+      "legacy_source_line": 166,
+      "legacy_source_name": "SIGNATURE-CHANNEL-SPEC",
+      "backend_claim": "vertex",
+      "backend_confidence": "confirmed",
+      "notes": "Stable import from CPA-API SIGNATURE-CHANNEL-SPEC.md confirmed Google / Vertex appendix sample. The importer ignores unconfirmed appendix sections."
+    },
+    "observed_at": "2026-03-30T14:15:38.529303Z",
+    "redactions": [
+      "request_context",
+      "user_content"
+    ]
+  }
+]

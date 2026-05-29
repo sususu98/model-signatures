@@ -1,2 +1,2235 @@
-[]
-
+[
+  {
+    "schema_version": "1.0",
+    "model_family": "gpt",
+    "endpoint": {
+      "id": "codex",
+      "confidence": "confirmed",
+      "provider": "openai",
+      "product": "Codex",
+      "protocol": "openai-responses-compatible"
+    },
+    "model": "gpt-5.3-codex",
+    "collection_status": "stable",
+    "signature_source": {
+      "protocol": "openai-responses",
+      "container_type": "reasoning",
+      "container_selector": {
+        "type": "reasoning"
+      },
+      "field": "encrypted_content",
+      "json_path": "$.output[?(@.type=='reasoning')].encrypted_content",
+      "request_replay_json_path": "$.input[?(@.type=='reasoning')].encrypted_content",
+      "provider_term": "reasoning.encrypted_content"
+    },
+    "sample": {
+      "raw_policy": "metadata_only",
+      "sha256": "3a1a4a2f61a4cc36998064b8c8305b5e00cb521b90a64188e494fefcdb425c1c",
+      "length": 41700,
+      "encoding": "base64url",
+      "omitted_reason": "raw encrypted_content is not published"
+    },
+    "classification": {
+      "format": "fernet_like_token",
+      "valid_fernet_like": true,
+      "version_byte": "0x80",
+      "decoded_length": 31273,
+      "ciphertext_length": 31216,
+      "timestamp_utc": "2026-04-27T07:03:44Z",
+      "timestamp_beijing": "2026-04-27T15:03:44+08:00",
+      "iv_sha256": "e68aa9a07e46f2369053a52d50ecf99e2131780f5cca4ea110b070378244aeb8",
+      "hmac_sha256": "d195f3afdf31ad90308e438da0cf88a51212d5fea558235d43e3db0095a83317",
+      "valid_outer_format": true
+    },
+    "payload_shape": {
+      "request": {
+        "protocol": "openai-responses",
+        "root_path": "$",
+        "conversation_path": "$.input",
+        "message_paths": [
+          "$.input[]"
+        ],
+        "signature_paths": [
+          "$.input[?(@.type=='reasoning')].encrypted_content",
+          "$.input[?(@.type=='compaction')].encrypted_content",
+          "$.input[?(@.type=='context_compaction')].encrypted_content",
+          "$.input[?(@.type=='function_call_output')].output[?(@.type=='encrypted_content')].encrypted_content"
+        ],
+        "signature_container_paths": [
+          "$.input[?(@.type=='reasoning')]",
+          "$.input[?(@.type=='compaction')]",
+          "$.input[?(@.type=='context_compaction')]",
+          "$.input[?(@.type=='function_call_output')].output[?(@.type=='encrypted_content')]"
+        ],
+        "reasoning_text_paths": [
+          "$.input[?(@.type=='reasoning')].summary[].text"
+        ],
+        "tool_call_paths": [
+          "$.input[?(@.type=='function_call')]"
+        ],
+        "tool_result_paths": [
+          "$.input[?(@.type=='function_call_output')]"
+        ],
+        "id_paths": [
+          "$.input[?(@.type=='function_call')].call_id",
+          "$.input[?(@.type=='function_call_output')].call_id",
+          "$.previous_response_id",
+          "$.input[].id"
+        ],
+        "related_paths": [
+          "$.store",
+          "$.include[?(@=='reasoning.encrypted_content')]",
+          "$.previous_response_id"
+        ],
+        "ordering_invariants": [
+          "reasoning items replay as input items before dependent outputs",
+          "function_call_output uses the prior function_call call_id",
+          "store=true replay must not orphan a server-assigned assistant message from its required preceding reasoning item",
+          "Azure OpenAI Responses replay may require previous_response_id instead of full-history replay"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "response": {
+        "protocol": "openai-responses",
+        "root_path": "$",
+        "conversation_path": "$.output",
+        "message_paths": [
+          "$.output[]"
+        ],
+        "signature_paths": [
+          "$.output[?(@.type=='reasoning')].encrypted_content",
+          "$.output[?(@.type=='compaction')].encrypted_content",
+          "$.output[?(@.type=='context_compaction')].encrypted_content",
+          "$.output[?(@.type=='function_call_output')].output[?(@.type=='encrypted_content')].encrypted_content"
+        ],
+        "signature_container_paths": [
+          "$.output[?(@.type=='reasoning')]",
+          "$.output[?(@.type=='compaction')]",
+          "$.output[?(@.type=='context_compaction')]",
+          "$.output[?(@.type=='function_call_output')].output[?(@.type=='encrypted_content')]"
+        ],
+        "reasoning_text_paths": [
+          "$.output[?(@.type=='reasoning')].summary[].text"
+        ],
+        "tool_call_paths": [
+          "$.output[?(@.type=='function_call')]"
+        ],
+        "id_paths": [
+          "$.output[?(@.type=='function_call')].call_id",
+          "$.output[].id"
+        ],
+        "ordering_invariants": [
+          "server-assigned assistant message items can depend on the preceding server-assigned reasoning item",
+          "compaction and context_compaction encrypted_content remain opaque replay state"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "stream": {
+        "protocol": "openai-responses",
+        "root_path": "$",
+        "signature_paths": [
+          "$.item.encrypted_content"
+        ],
+        "reasoning_text_paths": [
+          "$.delta",
+          "$.part.text"
+        ],
+        "stream_events": [
+          "response.output_item.added",
+          "response.reasoning_summary_part.added",
+          "response.reasoning_summary_text.delta",
+          "response.reasoning_summary_part.done",
+          "response.output_item.done"
+        ],
+        "prompt_content_policy": "not_collected"
+      }
+    },
+    "conversion": {
+      "round_trip_required": true,
+      "replay_scope": "same_endpoint",
+      "cross_endpoint_safe": false,
+      "fallback_policy": "drop_block",
+      "cache_key_hints": [
+        "reasoning_item_id",
+        "conversation_thread"
+      ],
+      "notes": "OpenAI/Azure OpenAI/Codex encrypted_content is opaque and not decryptability-proof from outer format."
+    },
+    "protocol_profile_id": "gpt-openai-responses-reasoning-v1",
+    "replay_contract": {
+      "emitted_in": "response_and_stream",
+      "replayed_in": "next_request_history",
+      "must_replay": true,
+      "scope": [
+        "same_endpoint",
+        "same_auth",
+        "same_session"
+      ],
+      "native_endpoint_ids": [
+        "openai",
+        "azure-openai",
+        "codex"
+      ],
+      "foreign_signature_policy": "drop_block",
+      "synthetic_replacement": {
+        "allowed": false
+      },
+      "tool_pairing": {
+        "required": true,
+        "pairing_rule": "responses_call_id",
+        "call_id_paths": [
+          "$.input[?(@.type=='function_call')].call_id"
+        ],
+        "response_id_paths": [
+          "$.input[?(@.type=='function_call_output')].call_id"
+        ],
+        "order_sensitive": true,
+        "signature_required_on": "none"
+      },
+      "notes": "encrypted_content is opaque; outer format checks do not prove decryptability across accounts, sessions, or endpoints."
+    },
+    "provenance": {
+      "legacy_source_file": "signatures/openai/gpt-5.3-codex.txt",
+      "legacy_source_line": 6,
+      "legacy_source_name": "gpt-5.3-codex",
+      "backend_claim": "codex",
+      "backend_confidence": "confirmed",
+      "notes": "Stable metadata-only import from CPA-API Codex encrypted_content samples. Raw encrypted_content is intentionally omitted."
+    },
+    "observed_at": "2026-04-27T07:15:58.104344Z",
+    "redactions": [
+      "request_context",
+      "user_content"
+    ]
+  },
+  {
+    "schema_version": "1.0",
+    "model_family": "gpt",
+    "endpoint": {
+      "id": "codex",
+      "confidence": "confirmed",
+      "provider": "openai",
+      "product": "Codex",
+      "protocol": "openai-responses-compatible"
+    },
+    "model": "gpt-5.3-codex",
+    "collection_status": "stable",
+    "signature_source": {
+      "protocol": "openai-responses",
+      "container_type": "reasoning",
+      "container_selector": {
+        "type": "reasoning"
+      },
+      "field": "encrypted_content",
+      "json_path": "$.output[?(@.type=='reasoning')].encrypted_content",
+      "request_replay_json_path": "$.input[?(@.type=='reasoning')].encrypted_content",
+      "provider_term": "reasoning.encrypted_content"
+    },
+    "sample": {
+      "raw_policy": "metadata_only",
+      "sha256": "3ab250d37941ba16741b812d3fae0636f2d70afdab2aa3e0ff39165d902b2915",
+      "length": 972,
+      "encoding": "base64url",
+      "omitted_reason": "raw encrypted_content is not published"
+    },
+    "classification": {
+      "format": "fernet_like_token",
+      "valid_fernet_like": true,
+      "version_byte": "0x80",
+      "decoded_length": 729,
+      "ciphertext_length": 672,
+      "timestamp_utc": "2026-04-27T07:03:57Z",
+      "timestamp_beijing": "2026-04-27T15:03:57+08:00",
+      "iv_sha256": "9580bfa2a5f84e6980e5e1564866546903ae74d8d3338e87ad00608fe30ed1f7",
+      "hmac_sha256": "aefa128e0bfad8c74c22e14c0f9092a4435267bbb55e0cd83718c765e05998c0",
+      "valid_outer_format": true
+    },
+    "payload_shape": {
+      "request": {
+        "protocol": "openai-responses",
+        "root_path": "$",
+        "conversation_path": "$.input",
+        "message_paths": [
+          "$.input[]"
+        ],
+        "signature_paths": [
+          "$.input[?(@.type=='reasoning')].encrypted_content",
+          "$.input[?(@.type=='compaction')].encrypted_content",
+          "$.input[?(@.type=='context_compaction')].encrypted_content",
+          "$.input[?(@.type=='function_call_output')].output[?(@.type=='encrypted_content')].encrypted_content"
+        ],
+        "signature_container_paths": [
+          "$.input[?(@.type=='reasoning')]",
+          "$.input[?(@.type=='compaction')]",
+          "$.input[?(@.type=='context_compaction')]",
+          "$.input[?(@.type=='function_call_output')].output[?(@.type=='encrypted_content')]"
+        ],
+        "reasoning_text_paths": [
+          "$.input[?(@.type=='reasoning')].summary[].text"
+        ],
+        "tool_call_paths": [
+          "$.input[?(@.type=='function_call')]"
+        ],
+        "tool_result_paths": [
+          "$.input[?(@.type=='function_call_output')]"
+        ],
+        "id_paths": [
+          "$.input[?(@.type=='function_call')].call_id",
+          "$.input[?(@.type=='function_call_output')].call_id",
+          "$.previous_response_id",
+          "$.input[].id"
+        ],
+        "related_paths": [
+          "$.store",
+          "$.include[?(@=='reasoning.encrypted_content')]",
+          "$.previous_response_id"
+        ],
+        "ordering_invariants": [
+          "reasoning items replay as input items before dependent outputs",
+          "function_call_output uses the prior function_call call_id",
+          "store=true replay must not orphan a server-assigned assistant message from its required preceding reasoning item",
+          "Azure OpenAI Responses replay may require previous_response_id instead of full-history replay"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "response": {
+        "protocol": "openai-responses",
+        "root_path": "$",
+        "conversation_path": "$.output",
+        "message_paths": [
+          "$.output[]"
+        ],
+        "signature_paths": [
+          "$.output[?(@.type=='reasoning')].encrypted_content",
+          "$.output[?(@.type=='compaction')].encrypted_content",
+          "$.output[?(@.type=='context_compaction')].encrypted_content",
+          "$.output[?(@.type=='function_call_output')].output[?(@.type=='encrypted_content')].encrypted_content"
+        ],
+        "signature_container_paths": [
+          "$.output[?(@.type=='reasoning')]",
+          "$.output[?(@.type=='compaction')]",
+          "$.output[?(@.type=='context_compaction')]",
+          "$.output[?(@.type=='function_call_output')].output[?(@.type=='encrypted_content')]"
+        ],
+        "reasoning_text_paths": [
+          "$.output[?(@.type=='reasoning')].summary[].text"
+        ],
+        "tool_call_paths": [
+          "$.output[?(@.type=='function_call')]"
+        ],
+        "id_paths": [
+          "$.output[?(@.type=='function_call')].call_id",
+          "$.output[].id"
+        ],
+        "ordering_invariants": [
+          "server-assigned assistant message items can depend on the preceding server-assigned reasoning item",
+          "compaction and context_compaction encrypted_content remain opaque replay state"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "stream": {
+        "protocol": "openai-responses",
+        "root_path": "$",
+        "signature_paths": [
+          "$.item.encrypted_content"
+        ],
+        "reasoning_text_paths": [
+          "$.delta",
+          "$.part.text"
+        ],
+        "stream_events": [
+          "response.output_item.added",
+          "response.reasoning_summary_part.added",
+          "response.reasoning_summary_text.delta",
+          "response.reasoning_summary_part.done",
+          "response.output_item.done"
+        ],
+        "prompt_content_policy": "not_collected"
+      }
+    },
+    "conversion": {
+      "round_trip_required": true,
+      "replay_scope": "same_endpoint",
+      "cross_endpoint_safe": false,
+      "fallback_policy": "drop_block",
+      "cache_key_hints": [
+        "reasoning_item_id",
+        "conversation_thread"
+      ],
+      "notes": "OpenAI/Azure OpenAI/Codex encrypted_content is opaque and not decryptability-proof from outer format."
+    },
+    "protocol_profile_id": "gpt-openai-responses-reasoning-v1",
+    "replay_contract": {
+      "emitted_in": "response_and_stream",
+      "replayed_in": "next_request_history",
+      "must_replay": true,
+      "scope": [
+        "same_endpoint",
+        "same_auth",
+        "same_session"
+      ],
+      "native_endpoint_ids": [
+        "openai",
+        "azure-openai",
+        "codex"
+      ],
+      "foreign_signature_policy": "drop_block",
+      "synthetic_replacement": {
+        "allowed": false
+      },
+      "tool_pairing": {
+        "required": true,
+        "pairing_rule": "responses_call_id",
+        "call_id_paths": [
+          "$.input[?(@.type=='function_call')].call_id"
+        ],
+        "response_id_paths": [
+          "$.input[?(@.type=='function_call_output')].call_id"
+        ],
+        "order_sensitive": true,
+        "signature_required_on": "none"
+      },
+      "notes": "encrypted_content is opaque; outer format checks do not prove decryptability across accounts, sessions, or endpoints."
+    },
+    "provenance": {
+      "legacy_source_file": "signatures/openai/gpt-5.3-codex.txt",
+      "legacy_source_line": 7,
+      "legacy_source_name": "gpt-5.3-codex",
+      "backend_claim": "codex",
+      "backend_confidence": "confirmed",
+      "notes": "Stable metadata-only import from CPA-API Codex encrypted_content samples. Raw encrypted_content is intentionally omitted."
+    },
+    "observed_at": "2026-04-27T07:15:58.104344Z",
+    "redactions": [
+      "request_context",
+      "user_content"
+    ]
+  },
+  {
+    "schema_version": "1.0",
+    "model_family": "gpt",
+    "endpoint": {
+      "id": "codex",
+      "confidence": "confirmed",
+      "provider": "openai",
+      "product": "Codex",
+      "protocol": "openai-responses-compatible"
+    },
+    "model": "gpt-5.3-codex",
+    "collection_status": "stable",
+    "signature_source": {
+      "protocol": "openai-responses",
+      "container_type": "reasoning",
+      "container_selector": {
+        "type": "reasoning"
+      },
+      "field": "encrypted_content",
+      "json_path": "$.output[?(@.type=='reasoning')].encrypted_content",
+      "request_replay_json_path": "$.input[?(@.type=='reasoning')].encrypted_content",
+      "provider_term": "reasoning.encrypted_content"
+    },
+    "sample": {
+      "raw_policy": "metadata_only",
+      "sha256": "44625896aaac58413f8dba469734a002c02e3ddc37a0c1b7c873dd1f0328fe04",
+      "length": 4620,
+      "encoding": "base64url",
+      "omitted_reason": "raw encrypted_content is not published"
+    },
+    "classification": {
+      "format": "fernet_like_token",
+      "valid_fernet_like": true,
+      "version_byte": "0x80",
+      "decoded_length": 3465,
+      "ciphertext_length": 3408,
+      "timestamp_utc": "2026-04-27T07:04:13Z",
+      "timestamp_beijing": "2026-04-27T15:04:13+08:00",
+      "iv_sha256": "a4dc1ee4b2545f6a0e17ac48f816688f2d4bfc62d37c2453c0828d92a239e72e",
+      "hmac_sha256": "21929c787cdb4814c2d3cf8b8dcfd4774db72d22c94fe8ff408ddb48bd33fb3e",
+      "valid_outer_format": true
+    },
+    "payload_shape": {
+      "request": {
+        "protocol": "openai-responses",
+        "root_path": "$",
+        "conversation_path": "$.input",
+        "message_paths": [
+          "$.input[]"
+        ],
+        "signature_paths": [
+          "$.input[?(@.type=='reasoning')].encrypted_content",
+          "$.input[?(@.type=='compaction')].encrypted_content",
+          "$.input[?(@.type=='context_compaction')].encrypted_content",
+          "$.input[?(@.type=='function_call_output')].output[?(@.type=='encrypted_content')].encrypted_content"
+        ],
+        "signature_container_paths": [
+          "$.input[?(@.type=='reasoning')]",
+          "$.input[?(@.type=='compaction')]",
+          "$.input[?(@.type=='context_compaction')]",
+          "$.input[?(@.type=='function_call_output')].output[?(@.type=='encrypted_content')]"
+        ],
+        "reasoning_text_paths": [
+          "$.input[?(@.type=='reasoning')].summary[].text"
+        ],
+        "tool_call_paths": [
+          "$.input[?(@.type=='function_call')]"
+        ],
+        "tool_result_paths": [
+          "$.input[?(@.type=='function_call_output')]"
+        ],
+        "id_paths": [
+          "$.input[?(@.type=='function_call')].call_id",
+          "$.input[?(@.type=='function_call_output')].call_id",
+          "$.previous_response_id",
+          "$.input[].id"
+        ],
+        "related_paths": [
+          "$.store",
+          "$.include[?(@=='reasoning.encrypted_content')]",
+          "$.previous_response_id"
+        ],
+        "ordering_invariants": [
+          "reasoning items replay as input items before dependent outputs",
+          "function_call_output uses the prior function_call call_id",
+          "store=true replay must not orphan a server-assigned assistant message from its required preceding reasoning item",
+          "Azure OpenAI Responses replay may require previous_response_id instead of full-history replay"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "response": {
+        "protocol": "openai-responses",
+        "root_path": "$",
+        "conversation_path": "$.output",
+        "message_paths": [
+          "$.output[]"
+        ],
+        "signature_paths": [
+          "$.output[?(@.type=='reasoning')].encrypted_content",
+          "$.output[?(@.type=='compaction')].encrypted_content",
+          "$.output[?(@.type=='context_compaction')].encrypted_content",
+          "$.output[?(@.type=='function_call_output')].output[?(@.type=='encrypted_content')].encrypted_content"
+        ],
+        "signature_container_paths": [
+          "$.output[?(@.type=='reasoning')]",
+          "$.output[?(@.type=='compaction')]",
+          "$.output[?(@.type=='context_compaction')]",
+          "$.output[?(@.type=='function_call_output')].output[?(@.type=='encrypted_content')]"
+        ],
+        "reasoning_text_paths": [
+          "$.output[?(@.type=='reasoning')].summary[].text"
+        ],
+        "tool_call_paths": [
+          "$.output[?(@.type=='function_call')]"
+        ],
+        "id_paths": [
+          "$.output[?(@.type=='function_call')].call_id",
+          "$.output[].id"
+        ],
+        "ordering_invariants": [
+          "server-assigned assistant message items can depend on the preceding server-assigned reasoning item",
+          "compaction and context_compaction encrypted_content remain opaque replay state"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "stream": {
+        "protocol": "openai-responses",
+        "root_path": "$",
+        "signature_paths": [
+          "$.item.encrypted_content"
+        ],
+        "reasoning_text_paths": [
+          "$.delta",
+          "$.part.text"
+        ],
+        "stream_events": [
+          "response.output_item.added",
+          "response.reasoning_summary_part.added",
+          "response.reasoning_summary_text.delta",
+          "response.reasoning_summary_part.done",
+          "response.output_item.done"
+        ],
+        "prompt_content_policy": "not_collected"
+      }
+    },
+    "conversion": {
+      "round_trip_required": true,
+      "replay_scope": "same_endpoint",
+      "cross_endpoint_safe": false,
+      "fallback_policy": "drop_block",
+      "cache_key_hints": [
+        "reasoning_item_id",
+        "conversation_thread"
+      ],
+      "notes": "OpenAI/Azure OpenAI/Codex encrypted_content is opaque and not decryptability-proof from outer format."
+    },
+    "protocol_profile_id": "gpt-openai-responses-reasoning-v1",
+    "replay_contract": {
+      "emitted_in": "response_and_stream",
+      "replayed_in": "next_request_history",
+      "must_replay": true,
+      "scope": [
+        "same_endpoint",
+        "same_auth",
+        "same_session"
+      ],
+      "native_endpoint_ids": [
+        "openai",
+        "azure-openai",
+        "codex"
+      ],
+      "foreign_signature_policy": "drop_block",
+      "synthetic_replacement": {
+        "allowed": false
+      },
+      "tool_pairing": {
+        "required": true,
+        "pairing_rule": "responses_call_id",
+        "call_id_paths": [
+          "$.input[?(@.type=='function_call')].call_id"
+        ],
+        "response_id_paths": [
+          "$.input[?(@.type=='function_call_output')].call_id"
+        ],
+        "order_sensitive": true,
+        "signature_required_on": "none"
+      },
+      "notes": "encrypted_content is opaque; outer format checks do not prove decryptability across accounts, sessions, or endpoints."
+    },
+    "provenance": {
+      "legacy_source_file": "signatures/openai/gpt-5.3-codex.txt",
+      "legacy_source_line": 8,
+      "legacy_source_name": "gpt-5.3-codex",
+      "backend_claim": "codex",
+      "backend_confidence": "confirmed",
+      "notes": "Stable metadata-only import from CPA-API Codex encrypted_content samples. Raw encrypted_content is intentionally omitted."
+    },
+    "observed_at": "2026-04-27T07:15:58.104344Z",
+    "redactions": [
+      "request_context",
+      "user_content"
+    ]
+  },
+  {
+    "schema_version": "1.0",
+    "model_family": "gpt",
+    "endpoint": {
+      "id": "codex",
+      "confidence": "confirmed",
+      "provider": "openai",
+      "product": "Codex",
+      "protocol": "openai-responses-compatible"
+    },
+    "model": "gpt-5.3-codex",
+    "collection_status": "stable",
+    "signature_source": {
+      "protocol": "openai-responses",
+      "container_type": "reasoning",
+      "container_selector": {
+        "type": "reasoning"
+      },
+      "field": "encrypted_content",
+      "json_path": "$.output[?(@.type=='reasoning')].encrypted_content",
+      "request_replay_json_path": "$.input[?(@.type=='reasoning')].encrypted_content",
+      "provider_term": "reasoning.encrypted_content"
+    },
+    "sample": {
+      "raw_policy": "metadata_only",
+      "sha256": "e71888dcd92ae94568d0566c95ea9d564eca1d4f05c4d4308d50e3ebc079aaed",
+      "length": 45644,
+      "encoding": "base64url",
+      "omitted_reason": "raw encrypted_content is not published"
+    },
+    "classification": {
+      "format": "fernet_like_token",
+      "valid_fernet_like": true,
+      "version_byte": "0x80",
+      "decoded_length": 34233,
+      "ciphertext_length": 34176,
+      "timestamp_utc": "2026-04-27T07:06:25Z",
+      "timestamp_beijing": "2026-04-27T15:06:25+08:00",
+      "iv_sha256": "3f727a357314c0f847924e25c0bbab7e23c58e25799cd75e54f11879867897da",
+      "hmac_sha256": "007917c90bc2664738516469604b0d67d6ccaade02bebb84a0f3faaa1e2e3630",
+      "valid_outer_format": true
+    },
+    "payload_shape": {
+      "request": {
+        "protocol": "openai-responses",
+        "root_path": "$",
+        "conversation_path": "$.input",
+        "message_paths": [
+          "$.input[]"
+        ],
+        "signature_paths": [
+          "$.input[?(@.type=='reasoning')].encrypted_content",
+          "$.input[?(@.type=='compaction')].encrypted_content",
+          "$.input[?(@.type=='context_compaction')].encrypted_content",
+          "$.input[?(@.type=='function_call_output')].output[?(@.type=='encrypted_content')].encrypted_content"
+        ],
+        "signature_container_paths": [
+          "$.input[?(@.type=='reasoning')]",
+          "$.input[?(@.type=='compaction')]",
+          "$.input[?(@.type=='context_compaction')]",
+          "$.input[?(@.type=='function_call_output')].output[?(@.type=='encrypted_content')]"
+        ],
+        "reasoning_text_paths": [
+          "$.input[?(@.type=='reasoning')].summary[].text"
+        ],
+        "tool_call_paths": [
+          "$.input[?(@.type=='function_call')]"
+        ],
+        "tool_result_paths": [
+          "$.input[?(@.type=='function_call_output')]"
+        ],
+        "id_paths": [
+          "$.input[?(@.type=='function_call')].call_id",
+          "$.input[?(@.type=='function_call_output')].call_id",
+          "$.previous_response_id",
+          "$.input[].id"
+        ],
+        "related_paths": [
+          "$.store",
+          "$.include[?(@=='reasoning.encrypted_content')]",
+          "$.previous_response_id"
+        ],
+        "ordering_invariants": [
+          "reasoning items replay as input items before dependent outputs",
+          "function_call_output uses the prior function_call call_id",
+          "store=true replay must not orphan a server-assigned assistant message from its required preceding reasoning item",
+          "Azure OpenAI Responses replay may require previous_response_id instead of full-history replay"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "response": {
+        "protocol": "openai-responses",
+        "root_path": "$",
+        "conversation_path": "$.output",
+        "message_paths": [
+          "$.output[]"
+        ],
+        "signature_paths": [
+          "$.output[?(@.type=='reasoning')].encrypted_content",
+          "$.output[?(@.type=='compaction')].encrypted_content",
+          "$.output[?(@.type=='context_compaction')].encrypted_content",
+          "$.output[?(@.type=='function_call_output')].output[?(@.type=='encrypted_content')].encrypted_content"
+        ],
+        "signature_container_paths": [
+          "$.output[?(@.type=='reasoning')]",
+          "$.output[?(@.type=='compaction')]",
+          "$.output[?(@.type=='context_compaction')]",
+          "$.output[?(@.type=='function_call_output')].output[?(@.type=='encrypted_content')]"
+        ],
+        "reasoning_text_paths": [
+          "$.output[?(@.type=='reasoning')].summary[].text"
+        ],
+        "tool_call_paths": [
+          "$.output[?(@.type=='function_call')]"
+        ],
+        "id_paths": [
+          "$.output[?(@.type=='function_call')].call_id",
+          "$.output[].id"
+        ],
+        "ordering_invariants": [
+          "server-assigned assistant message items can depend on the preceding server-assigned reasoning item",
+          "compaction and context_compaction encrypted_content remain opaque replay state"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "stream": {
+        "protocol": "openai-responses",
+        "root_path": "$",
+        "signature_paths": [
+          "$.item.encrypted_content"
+        ],
+        "reasoning_text_paths": [
+          "$.delta",
+          "$.part.text"
+        ],
+        "stream_events": [
+          "response.output_item.added",
+          "response.reasoning_summary_part.added",
+          "response.reasoning_summary_text.delta",
+          "response.reasoning_summary_part.done",
+          "response.output_item.done"
+        ],
+        "prompt_content_policy": "not_collected"
+      }
+    },
+    "conversion": {
+      "round_trip_required": true,
+      "replay_scope": "same_endpoint",
+      "cross_endpoint_safe": false,
+      "fallback_policy": "drop_block",
+      "cache_key_hints": [
+        "reasoning_item_id",
+        "conversation_thread"
+      ],
+      "notes": "OpenAI/Azure OpenAI/Codex encrypted_content is opaque and not decryptability-proof from outer format."
+    },
+    "protocol_profile_id": "gpt-openai-responses-reasoning-v1",
+    "replay_contract": {
+      "emitted_in": "response_and_stream",
+      "replayed_in": "next_request_history",
+      "must_replay": true,
+      "scope": [
+        "same_endpoint",
+        "same_auth",
+        "same_session"
+      ],
+      "native_endpoint_ids": [
+        "openai",
+        "azure-openai",
+        "codex"
+      ],
+      "foreign_signature_policy": "drop_block",
+      "synthetic_replacement": {
+        "allowed": false
+      },
+      "tool_pairing": {
+        "required": true,
+        "pairing_rule": "responses_call_id",
+        "call_id_paths": [
+          "$.input[?(@.type=='function_call')].call_id"
+        ],
+        "response_id_paths": [
+          "$.input[?(@.type=='function_call_output')].call_id"
+        ],
+        "order_sensitive": true,
+        "signature_required_on": "none"
+      },
+      "notes": "encrypted_content is opaque; outer format checks do not prove decryptability across accounts, sessions, or endpoints."
+    },
+    "provenance": {
+      "legacy_source_file": "signatures/openai/gpt-5.3-codex.txt",
+      "legacy_source_line": 9,
+      "legacy_source_name": "gpt-5.3-codex",
+      "backend_claim": "codex",
+      "backend_confidence": "confirmed",
+      "notes": "Stable metadata-only import from CPA-API Codex encrypted_content samples. Raw encrypted_content is intentionally omitted."
+    },
+    "observed_at": "2026-04-27T07:15:58.104344Z",
+    "redactions": [
+      "request_context",
+      "user_content"
+    ]
+  },
+  {
+    "schema_version": "1.0",
+    "model_family": "gpt",
+    "endpoint": {
+      "id": "codex",
+      "confidence": "confirmed",
+      "provider": "openai",
+      "product": "Codex",
+      "protocol": "openai-responses-compatible"
+    },
+    "model": "gpt-5.3-codex",
+    "collection_status": "stable",
+    "signature_source": {
+      "protocol": "openai-responses",
+      "container_type": "reasoning",
+      "container_selector": {
+        "type": "reasoning"
+      },
+      "field": "encrypted_content",
+      "json_path": "$.output[?(@.type=='reasoning')].encrypted_content",
+      "request_replay_json_path": "$.input[?(@.type=='reasoning')].encrypted_content",
+      "provider_term": "reasoning.encrypted_content"
+    },
+    "sample": {
+      "raw_policy": "metadata_only",
+      "sha256": "f0e75025d3285d625d398503a956318107c164bdae15e7c1bd5fba133f80d7b8",
+      "length": 972,
+      "encoding": "base64url",
+      "omitted_reason": "raw encrypted_content is not published"
+    },
+    "classification": {
+      "format": "fernet_like_token",
+      "valid_fernet_like": true,
+      "version_byte": "0x80",
+      "decoded_length": 729,
+      "ciphertext_length": 672,
+      "timestamp_utc": "2026-04-27T07:06:29Z",
+      "timestamp_beijing": "2026-04-27T15:06:29+08:00",
+      "iv_sha256": "78d0fab508579ecdb16e0f57ca14da145170e2914c00e046cfd38903dc3ab65a",
+      "hmac_sha256": "8ca4b0b35a021adf1a746cd480d79aab49805267f277514cd9338aa3efdebbfe",
+      "valid_outer_format": true
+    },
+    "payload_shape": {
+      "request": {
+        "protocol": "openai-responses",
+        "root_path": "$",
+        "conversation_path": "$.input",
+        "message_paths": [
+          "$.input[]"
+        ],
+        "signature_paths": [
+          "$.input[?(@.type=='reasoning')].encrypted_content",
+          "$.input[?(@.type=='compaction')].encrypted_content",
+          "$.input[?(@.type=='context_compaction')].encrypted_content",
+          "$.input[?(@.type=='function_call_output')].output[?(@.type=='encrypted_content')].encrypted_content"
+        ],
+        "signature_container_paths": [
+          "$.input[?(@.type=='reasoning')]",
+          "$.input[?(@.type=='compaction')]",
+          "$.input[?(@.type=='context_compaction')]",
+          "$.input[?(@.type=='function_call_output')].output[?(@.type=='encrypted_content')]"
+        ],
+        "reasoning_text_paths": [
+          "$.input[?(@.type=='reasoning')].summary[].text"
+        ],
+        "tool_call_paths": [
+          "$.input[?(@.type=='function_call')]"
+        ],
+        "tool_result_paths": [
+          "$.input[?(@.type=='function_call_output')]"
+        ],
+        "id_paths": [
+          "$.input[?(@.type=='function_call')].call_id",
+          "$.input[?(@.type=='function_call_output')].call_id",
+          "$.previous_response_id",
+          "$.input[].id"
+        ],
+        "related_paths": [
+          "$.store",
+          "$.include[?(@=='reasoning.encrypted_content')]",
+          "$.previous_response_id"
+        ],
+        "ordering_invariants": [
+          "reasoning items replay as input items before dependent outputs",
+          "function_call_output uses the prior function_call call_id",
+          "store=true replay must not orphan a server-assigned assistant message from its required preceding reasoning item",
+          "Azure OpenAI Responses replay may require previous_response_id instead of full-history replay"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "response": {
+        "protocol": "openai-responses",
+        "root_path": "$",
+        "conversation_path": "$.output",
+        "message_paths": [
+          "$.output[]"
+        ],
+        "signature_paths": [
+          "$.output[?(@.type=='reasoning')].encrypted_content",
+          "$.output[?(@.type=='compaction')].encrypted_content",
+          "$.output[?(@.type=='context_compaction')].encrypted_content",
+          "$.output[?(@.type=='function_call_output')].output[?(@.type=='encrypted_content')].encrypted_content"
+        ],
+        "signature_container_paths": [
+          "$.output[?(@.type=='reasoning')]",
+          "$.output[?(@.type=='compaction')]",
+          "$.output[?(@.type=='context_compaction')]",
+          "$.output[?(@.type=='function_call_output')].output[?(@.type=='encrypted_content')]"
+        ],
+        "reasoning_text_paths": [
+          "$.output[?(@.type=='reasoning')].summary[].text"
+        ],
+        "tool_call_paths": [
+          "$.output[?(@.type=='function_call')]"
+        ],
+        "id_paths": [
+          "$.output[?(@.type=='function_call')].call_id",
+          "$.output[].id"
+        ],
+        "ordering_invariants": [
+          "server-assigned assistant message items can depend on the preceding server-assigned reasoning item",
+          "compaction and context_compaction encrypted_content remain opaque replay state"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "stream": {
+        "protocol": "openai-responses",
+        "root_path": "$",
+        "signature_paths": [
+          "$.item.encrypted_content"
+        ],
+        "reasoning_text_paths": [
+          "$.delta",
+          "$.part.text"
+        ],
+        "stream_events": [
+          "response.output_item.added",
+          "response.reasoning_summary_part.added",
+          "response.reasoning_summary_text.delta",
+          "response.reasoning_summary_part.done",
+          "response.output_item.done"
+        ],
+        "prompt_content_policy": "not_collected"
+      }
+    },
+    "conversion": {
+      "round_trip_required": true,
+      "replay_scope": "same_endpoint",
+      "cross_endpoint_safe": false,
+      "fallback_policy": "drop_block",
+      "cache_key_hints": [
+        "reasoning_item_id",
+        "conversation_thread"
+      ],
+      "notes": "OpenAI/Azure OpenAI/Codex encrypted_content is opaque and not decryptability-proof from outer format."
+    },
+    "protocol_profile_id": "gpt-openai-responses-reasoning-v1",
+    "replay_contract": {
+      "emitted_in": "response_and_stream",
+      "replayed_in": "next_request_history",
+      "must_replay": true,
+      "scope": [
+        "same_endpoint",
+        "same_auth",
+        "same_session"
+      ],
+      "native_endpoint_ids": [
+        "openai",
+        "azure-openai",
+        "codex"
+      ],
+      "foreign_signature_policy": "drop_block",
+      "synthetic_replacement": {
+        "allowed": false
+      },
+      "tool_pairing": {
+        "required": true,
+        "pairing_rule": "responses_call_id",
+        "call_id_paths": [
+          "$.input[?(@.type=='function_call')].call_id"
+        ],
+        "response_id_paths": [
+          "$.input[?(@.type=='function_call_output')].call_id"
+        ],
+        "order_sensitive": true,
+        "signature_required_on": "none"
+      },
+      "notes": "encrypted_content is opaque; outer format checks do not prove decryptability across accounts, sessions, or endpoints."
+    },
+    "provenance": {
+      "legacy_source_file": "signatures/openai/gpt-5.3-codex.txt",
+      "legacy_source_line": 10,
+      "legacy_source_name": "gpt-5.3-codex",
+      "backend_claim": "codex",
+      "backend_confidence": "confirmed",
+      "notes": "Stable metadata-only import from CPA-API Codex encrypted_content samples. Raw encrypted_content is intentionally omitted."
+    },
+    "observed_at": "2026-04-27T07:15:58.104344Z",
+    "redactions": [
+      "request_context",
+      "user_content"
+    ]
+  },
+  {
+    "schema_version": "1.0",
+    "model_family": "gpt",
+    "endpoint": {
+      "id": "codex",
+      "confidence": "confirmed",
+      "provider": "openai",
+      "product": "Codex",
+      "protocol": "openai-responses-compatible"
+    },
+    "model": "gpt-5.3-codex",
+    "collection_status": "stable",
+    "signature_source": {
+      "protocol": "openai-responses",
+      "container_type": "reasoning",
+      "container_selector": {
+        "type": "reasoning"
+      },
+      "field": "encrypted_content",
+      "json_path": "$.output[?(@.type=='reasoning')].encrypted_content",
+      "request_replay_json_path": "$.input[?(@.type=='reasoning')].encrypted_content",
+      "provider_term": "reasoning.encrypted_content"
+    },
+    "sample": {
+      "raw_policy": "metadata_only",
+      "sha256": "4866039c4a64539791dd08c1e4cd313d01b89ebf19598a1bf1164d84148cee2e",
+      "length": 996,
+      "encoding": "base64url",
+      "omitted_reason": "raw encrypted_content is not published"
+    },
+    "classification": {
+      "format": "fernet_like_token",
+      "valid_fernet_like": true,
+      "version_byte": "0x80",
+      "decoded_length": 745,
+      "ciphertext_length": 688,
+      "timestamp_utc": "2026-04-27T07:10:18Z",
+      "timestamp_beijing": "2026-04-27T15:10:18+08:00",
+      "iv_sha256": "d22afd56555e1ab6a18f1e926f3078635083d831abe4aa4f71792f2f1cb1515a",
+      "hmac_sha256": "53d7b95959c8f04967f6927579ee2d4a3e0b43442653313483f01f4c8c96141c",
+      "valid_outer_format": true
+    },
+    "payload_shape": {
+      "request": {
+        "protocol": "openai-responses",
+        "root_path": "$",
+        "conversation_path": "$.input",
+        "message_paths": [
+          "$.input[]"
+        ],
+        "signature_paths": [
+          "$.input[?(@.type=='reasoning')].encrypted_content",
+          "$.input[?(@.type=='compaction')].encrypted_content",
+          "$.input[?(@.type=='context_compaction')].encrypted_content",
+          "$.input[?(@.type=='function_call_output')].output[?(@.type=='encrypted_content')].encrypted_content"
+        ],
+        "signature_container_paths": [
+          "$.input[?(@.type=='reasoning')]",
+          "$.input[?(@.type=='compaction')]",
+          "$.input[?(@.type=='context_compaction')]",
+          "$.input[?(@.type=='function_call_output')].output[?(@.type=='encrypted_content')]"
+        ],
+        "reasoning_text_paths": [
+          "$.input[?(@.type=='reasoning')].summary[].text"
+        ],
+        "tool_call_paths": [
+          "$.input[?(@.type=='function_call')]"
+        ],
+        "tool_result_paths": [
+          "$.input[?(@.type=='function_call_output')]"
+        ],
+        "id_paths": [
+          "$.input[?(@.type=='function_call')].call_id",
+          "$.input[?(@.type=='function_call_output')].call_id",
+          "$.previous_response_id",
+          "$.input[].id"
+        ],
+        "related_paths": [
+          "$.store",
+          "$.include[?(@=='reasoning.encrypted_content')]",
+          "$.previous_response_id"
+        ],
+        "ordering_invariants": [
+          "reasoning items replay as input items before dependent outputs",
+          "function_call_output uses the prior function_call call_id",
+          "store=true replay must not orphan a server-assigned assistant message from its required preceding reasoning item",
+          "Azure OpenAI Responses replay may require previous_response_id instead of full-history replay"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "response": {
+        "protocol": "openai-responses",
+        "root_path": "$",
+        "conversation_path": "$.output",
+        "message_paths": [
+          "$.output[]"
+        ],
+        "signature_paths": [
+          "$.output[?(@.type=='reasoning')].encrypted_content",
+          "$.output[?(@.type=='compaction')].encrypted_content",
+          "$.output[?(@.type=='context_compaction')].encrypted_content",
+          "$.output[?(@.type=='function_call_output')].output[?(@.type=='encrypted_content')].encrypted_content"
+        ],
+        "signature_container_paths": [
+          "$.output[?(@.type=='reasoning')]",
+          "$.output[?(@.type=='compaction')]",
+          "$.output[?(@.type=='context_compaction')]",
+          "$.output[?(@.type=='function_call_output')].output[?(@.type=='encrypted_content')]"
+        ],
+        "reasoning_text_paths": [
+          "$.output[?(@.type=='reasoning')].summary[].text"
+        ],
+        "tool_call_paths": [
+          "$.output[?(@.type=='function_call')]"
+        ],
+        "id_paths": [
+          "$.output[?(@.type=='function_call')].call_id",
+          "$.output[].id"
+        ],
+        "ordering_invariants": [
+          "server-assigned assistant message items can depend on the preceding server-assigned reasoning item",
+          "compaction and context_compaction encrypted_content remain opaque replay state"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "stream": {
+        "protocol": "openai-responses",
+        "root_path": "$",
+        "signature_paths": [
+          "$.item.encrypted_content"
+        ],
+        "reasoning_text_paths": [
+          "$.delta",
+          "$.part.text"
+        ],
+        "stream_events": [
+          "response.output_item.added",
+          "response.reasoning_summary_part.added",
+          "response.reasoning_summary_text.delta",
+          "response.reasoning_summary_part.done",
+          "response.output_item.done"
+        ],
+        "prompt_content_policy": "not_collected"
+      }
+    },
+    "conversion": {
+      "round_trip_required": true,
+      "replay_scope": "same_endpoint",
+      "cross_endpoint_safe": false,
+      "fallback_policy": "drop_block",
+      "cache_key_hints": [
+        "reasoning_item_id",
+        "conversation_thread"
+      ],
+      "notes": "OpenAI/Azure OpenAI/Codex encrypted_content is opaque and not decryptability-proof from outer format."
+    },
+    "protocol_profile_id": "gpt-openai-responses-reasoning-v1",
+    "replay_contract": {
+      "emitted_in": "response_and_stream",
+      "replayed_in": "next_request_history",
+      "must_replay": true,
+      "scope": [
+        "same_endpoint",
+        "same_auth",
+        "same_session"
+      ],
+      "native_endpoint_ids": [
+        "openai",
+        "azure-openai",
+        "codex"
+      ],
+      "foreign_signature_policy": "drop_block",
+      "synthetic_replacement": {
+        "allowed": false
+      },
+      "tool_pairing": {
+        "required": true,
+        "pairing_rule": "responses_call_id",
+        "call_id_paths": [
+          "$.input[?(@.type=='function_call')].call_id"
+        ],
+        "response_id_paths": [
+          "$.input[?(@.type=='function_call_output')].call_id"
+        ],
+        "order_sensitive": true,
+        "signature_required_on": "none"
+      },
+      "notes": "encrypted_content is opaque; outer format checks do not prove decryptability across accounts, sessions, or endpoints."
+    },
+    "provenance": {
+      "legacy_source_file": "signatures/openai/gpt-5.3-codex.txt",
+      "legacy_source_line": 11,
+      "legacy_source_name": "gpt-5.3-codex",
+      "backend_claim": "codex",
+      "backend_confidence": "confirmed",
+      "notes": "Stable metadata-only import from CPA-API Codex encrypted_content samples. Raw encrypted_content is intentionally omitted."
+    },
+    "observed_at": "2026-04-27T07:15:58.104344Z",
+    "redactions": [
+      "request_context",
+      "user_content"
+    ]
+  },
+  {
+    "schema_version": "1.0",
+    "model_family": "gpt",
+    "endpoint": {
+      "id": "codex",
+      "confidence": "confirmed",
+      "provider": "openai",
+      "product": "Codex",
+      "protocol": "openai-responses-compatible"
+    },
+    "model": "gpt-5.3-codex",
+    "collection_status": "stable",
+    "signature_source": {
+      "protocol": "openai-responses",
+      "container_type": "reasoning",
+      "container_selector": {
+        "type": "reasoning"
+      },
+      "field": "encrypted_content",
+      "json_path": "$.output[?(@.type=='reasoning')].encrypted_content",
+      "request_replay_json_path": "$.input[?(@.type=='reasoning')].encrypted_content",
+      "provider_term": "reasoning.encrypted_content"
+    },
+    "sample": {
+      "raw_policy": "metadata_only",
+      "sha256": "a4384f4bce8e66cd4c780bf959abf2246f390b7345f6452a5b87cb264f336660",
+      "length": 972,
+      "encoding": "base64url",
+      "omitted_reason": "raw encrypted_content is not published"
+    },
+    "classification": {
+      "format": "fernet_like_token",
+      "valid_fernet_like": true,
+      "version_byte": "0x80",
+      "decoded_length": 729,
+      "ciphertext_length": 672,
+      "timestamp_utc": "2026-04-27T07:12:02Z",
+      "timestamp_beijing": "2026-04-27T15:12:02+08:00",
+      "iv_sha256": "9839363e4b2e22695a5d37682057a12afe56012235662c6f1c2edfa0d5fca70c",
+      "hmac_sha256": "ec74ba3088d87e9ce0044cb244b33ee509b0acc04e918a0e5bab3f0dcbb30667",
+      "valid_outer_format": true
+    },
+    "payload_shape": {
+      "request": {
+        "protocol": "openai-responses",
+        "root_path": "$",
+        "conversation_path": "$.input",
+        "message_paths": [
+          "$.input[]"
+        ],
+        "signature_paths": [
+          "$.input[?(@.type=='reasoning')].encrypted_content",
+          "$.input[?(@.type=='compaction')].encrypted_content",
+          "$.input[?(@.type=='context_compaction')].encrypted_content",
+          "$.input[?(@.type=='function_call_output')].output[?(@.type=='encrypted_content')].encrypted_content"
+        ],
+        "signature_container_paths": [
+          "$.input[?(@.type=='reasoning')]",
+          "$.input[?(@.type=='compaction')]",
+          "$.input[?(@.type=='context_compaction')]",
+          "$.input[?(@.type=='function_call_output')].output[?(@.type=='encrypted_content')]"
+        ],
+        "reasoning_text_paths": [
+          "$.input[?(@.type=='reasoning')].summary[].text"
+        ],
+        "tool_call_paths": [
+          "$.input[?(@.type=='function_call')]"
+        ],
+        "tool_result_paths": [
+          "$.input[?(@.type=='function_call_output')]"
+        ],
+        "id_paths": [
+          "$.input[?(@.type=='function_call')].call_id",
+          "$.input[?(@.type=='function_call_output')].call_id",
+          "$.previous_response_id",
+          "$.input[].id"
+        ],
+        "related_paths": [
+          "$.store",
+          "$.include[?(@=='reasoning.encrypted_content')]",
+          "$.previous_response_id"
+        ],
+        "ordering_invariants": [
+          "reasoning items replay as input items before dependent outputs",
+          "function_call_output uses the prior function_call call_id",
+          "store=true replay must not orphan a server-assigned assistant message from its required preceding reasoning item",
+          "Azure OpenAI Responses replay may require previous_response_id instead of full-history replay"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "response": {
+        "protocol": "openai-responses",
+        "root_path": "$",
+        "conversation_path": "$.output",
+        "message_paths": [
+          "$.output[]"
+        ],
+        "signature_paths": [
+          "$.output[?(@.type=='reasoning')].encrypted_content",
+          "$.output[?(@.type=='compaction')].encrypted_content",
+          "$.output[?(@.type=='context_compaction')].encrypted_content",
+          "$.output[?(@.type=='function_call_output')].output[?(@.type=='encrypted_content')].encrypted_content"
+        ],
+        "signature_container_paths": [
+          "$.output[?(@.type=='reasoning')]",
+          "$.output[?(@.type=='compaction')]",
+          "$.output[?(@.type=='context_compaction')]",
+          "$.output[?(@.type=='function_call_output')].output[?(@.type=='encrypted_content')]"
+        ],
+        "reasoning_text_paths": [
+          "$.output[?(@.type=='reasoning')].summary[].text"
+        ],
+        "tool_call_paths": [
+          "$.output[?(@.type=='function_call')]"
+        ],
+        "id_paths": [
+          "$.output[?(@.type=='function_call')].call_id",
+          "$.output[].id"
+        ],
+        "ordering_invariants": [
+          "server-assigned assistant message items can depend on the preceding server-assigned reasoning item",
+          "compaction and context_compaction encrypted_content remain opaque replay state"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "stream": {
+        "protocol": "openai-responses",
+        "root_path": "$",
+        "signature_paths": [
+          "$.item.encrypted_content"
+        ],
+        "reasoning_text_paths": [
+          "$.delta",
+          "$.part.text"
+        ],
+        "stream_events": [
+          "response.output_item.added",
+          "response.reasoning_summary_part.added",
+          "response.reasoning_summary_text.delta",
+          "response.reasoning_summary_part.done",
+          "response.output_item.done"
+        ],
+        "prompt_content_policy": "not_collected"
+      }
+    },
+    "conversion": {
+      "round_trip_required": true,
+      "replay_scope": "same_endpoint",
+      "cross_endpoint_safe": false,
+      "fallback_policy": "drop_block",
+      "cache_key_hints": [
+        "reasoning_item_id",
+        "conversation_thread"
+      ],
+      "notes": "OpenAI/Azure OpenAI/Codex encrypted_content is opaque and not decryptability-proof from outer format."
+    },
+    "protocol_profile_id": "gpt-openai-responses-reasoning-v1",
+    "replay_contract": {
+      "emitted_in": "response_and_stream",
+      "replayed_in": "next_request_history",
+      "must_replay": true,
+      "scope": [
+        "same_endpoint",
+        "same_auth",
+        "same_session"
+      ],
+      "native_endpoint_ids": [
+        "openai",
+        "azure-openai",
+        "codex"
+      ],
+      "foreign_signature_policy": "drop_block",
+      "synthetic_replacement": {
+        "allowed": false
+      },
+      "tool_pairing": {
+        "required": true,
+        "pairing_rule": "responses_call_id",
+        "call_id_paths": [
+          "$.input[?(@.type=='function_call')].call_id"
+        ],
+        "response_id_paths": [
+          "$.input[?(@.type=='function_call_output')].call_id"
+        ],
+        "order_sensitive": true,
+        "signature_required_on": "none"
+      },
+      "notes": "encrypted_content is opaque; outer format checks do not prove decryptability across accounts, sessions, or endpoints."
+    },
+    "provenance": {
+      "legacy_source_file": "signatures/openai/gpt-5.3-codex.txt",
+      "legacy_source_line": 12,
+      "legacy_source_name": "gpt-5.3-codex",
+      "backend_claim": "codex",
+      "backend_confidence": "confirmed",
+      "notes": "Stable metadata-only import from CPA-API Codex encrypted_content samples. Raw encrypted_content is intentionally omitted."
+    },
+    "observed_at": "2026-04-27T07:15:58.104344Z",
+    "redactions": [
+      "request_context",
+      "user_content"
+    ]
+  },
+  {
+    "schema_version": "1.0",
+    "model_family": "gpt",
+    "endpoint": {
+      "id": "codex",
+      "confidence": "confirmed",
+      "provider": "openai",
+      "product": "Codex",
+      "protocol": "openai-responses-compatible"
+    },
+    "model": "gpt-5.3-codex",
+    "collection_status": "stable",
+    "signature_source": {
+      "protocol": "openai-responses",
+      "container_type": "reasoning",
+      "container_selector": {
+        "type": "reasoning"
+      },
+      "field": "encrypted_content",
+      "json_path": "$.output[?(@.type=='reasoning')].encrypted_content",
+      "request_replay_json_path": "$.input[?(@.type=='reasoning')].encrypted_content",
+      "provider_term": "reasoning.encrypted_content"
+    },
+    "sample": {
+      "raw_policy": "metadata_only",
+      "sha256": "9b382c04e816106c818445a686be5b83eee399bd840c0760f22e240e1c31477f",
+      "length": 8780,
+      "encoding": "base64url",
+      "omitted_reason": "raw encrypted_content is not published"
+    },
+    "classification": {
+      "format": "fernet_like_token",
+      "valid_fernet_like": true,
+      "version_byte": "0x80",
+      "decoded_length": 6585,
+      "ciphertext_length": 6528,
+      "timestamp_utc": "2026-04-27T07:12:40Z",
+      "timestamp_beijing": "2026-04-27T15:12:40+08:00",
+      "iv_sha256": "2278b01678f4b3d0c2d944a41135f7bcdab98c5730ae66ad150428239ebb7e06",
+      "hmac_sha256": "a95ee38706c753e903cd60bf0aa24e97503f386e55f8f5c931f898947eefe8a2",
+      "valid_outer_format": true
+    },
+    "payload_shape": {
+      "request": {
+        "protocol": "openai-responses",
+        "root_path": "$",
+        "conversation_path": "$.input",
+        "message_paths": [
+          "$.input[]"
+        ],
+        "signature_paths": [
+          "$.input[?(@.type=='reasoning')].encrypted_content",
+          "$.input[?(@.type=='compaction')].encrypted_content",
+          "$.input[?(@.type=='context_compaction')].encrypted_content",
+          "$.input[?(@.type=='function_call_output')].output[?(@.type=='encrypted_content')].encrypted_content"
+        ],
+        "signature_container_paths": [
+          "$.input[?(@.type=='reasoning')]",
+          "$.input[?(@.type=='compaction')]",
+          "$.input[?(@.type=='context_compaction')]",
+          "$.input[?(@.type=='function_call_output')].output[?(@.type=='encrypted_content')]"
+        ],
+        "reasoning_text_paths": [
+          "$.input[?(@.type=='reasoning')].summary[].text"
+        ],
+        "tool_call_paths": [
+          "$.input[?(@.type=='function_call')]"
+        ],
+        "tool_result_paths": [
+          "$.input[?(@.type=='function_call_output')]"
+        ],
+        "id_paths": [
+          "$.input[?(@.type=='function_call')].call_id",
+          "$.input[?(@.type=='function_call_output')].call_id",
+          "$.previous_response_id",
+          "$.input[].id"
+        ],
+        "related_paths": [
+          "$.store",
+          "$.include[?(@=='reasoning.encrypted_content')]",
+          "$.previous_response_id"
+        ],
+        "ordering_invariants": [
+          "reasoning items replay as input items before dependent outputs",
+          "function_call_output uses the prior function_call call_id",
+          "store=true replay must not orphan a server-assigned assistant message from its required preceding reasoning item",
+          "Azure OpenAI Responses replay may require previous_response_id instead of full-history replay"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "response": {
+        "protocol": "openai-responses",
+        "root_path": "$",
+        "conversation_path": "$.output",
+        "message_paths": [
+          "$.output[]"
+        ],
+        "signature_paths": [
+          "$.output[?(@.type=='reasoning')].encrypted_content",
+          "$.output[?(@.type=='compaction')].encrypted_content",
+          "$.output[?(@.type=='context_compaction')].encrypted_content",
+          "$.output[?(@.type=='function_call_output')].output[?(@.type=='encrypted_content')].encrypted_content"
+        ],
+        "signature_container_paths": [
+          "$.output[?(@.type=='reasoning')]",
+          "$.output[?(@.type=='compaction')]",
+          "$.output[?(@.type=='context_compaction')]",
+          "$.output[?(@.type=='function_call_output')].output[?(@.type=='encrypted_content')]"
+        ],
+        "reasoning_text_paths": [
+          "$.output[?(@.type=='reasoning')].summary[].text"
+        ],
+        "tool_call_paths": [
+          "$.output[?(@.type=='function_call')]"
+        ],
+        "id_paths": [
+          "$.output[?(@.type=='function_call')].call_id",
+          "$.output[].id"
+        ],
+        "ordering_invariants": [
+          "server-assigned assistant message items can depend on the preceding server-assigned reasoning item",
+          "compaction and context_compaction encrypted_content remain opaque replay state"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "stream": {
+        "protocol": "openai-responses",
+        "root_path": "$",
+        "signature_paths": [
+          "$.item.encrypted_content"
+        ],
+        "reasoning_text_paths": [
+          "$.delta",
+          "$.part.text"
+        ],
+        "stream_events": [
+          "response.output_item.added",
+          "response.reasoning_summary_part.added",
+          "response.reasoning_summary_text.delta",
+          "response.reasoning_summary_part.done",
+          "response.output_item.done"
+        ],
+        "prompt_content_policy": "not_collected"
+      }
+    },
+    "conversion": {
+      "round_trip_required": true,
+      "replay_scope": "same_endpoint",
+      "cross_endpoint_safe": false,
+      "fallback_policy": "drop_block",
+      "cache_key_hints": [
+        "reasoning_item_id",
+        "conversation_thread"
+      ],
+      "notes": "OpenAI/Azure OpenAI/Codex encrypted_content is opaque and not decryptability-proof from outer format."
+    },
+    "protocol_profile_id": "gpt-openai-responses-reasoning-v1",
+    "replay_contract": {
+      "emitted_in": "response_and_stream",
+      "replayed_in": "next_request_history",
+      "must_replay": true,
+      "scope": [
+        "same_endpoint",
+        "same_auth",
+        "same_session"
+      ],
+      "native_endpoint_ids": [
+        "openai",
+        "azure-openai",
+        "codex"
+      ],
+      "foreign_signature_policy": "drop_block",
+      "synthetic_replacement": {
+        "allowed": false
+      },
+      "tool_pairing": {
+        "required": true,
+        "pairing_rule": "responses_call_id",
+        "call_id_paths": [
+          "$.input[?(@.type=='function_call')].call_id"
+        ],
+        "response_id_paths": [
+          "$.input[?(@.type=='function_call_output')].call_id"
+        ],
+        "order_sensitive": true,
+        "signature_required_on": "none"
+      },
+      "notes": "encrypted_content is opaque; outer format checks do not prove decryptability across accounts, sessions, or endpoints."
+    },
+    "provenance": {
+      "legacy_source_file": "signatures/openai/gpt-5.3-codex.txt",
+      "legacy_source_line": 13,
+      "legacy_source_name": "gpt-5.3-codex",
+      "backend_claim": "codex",
+      "backend_confidence": "confirmed",
+      "notes": "Stable metadata-only import from CPA-API Codex encrypted_content samples. Raw encrypted_content is intentionally omitted."
+    },
+    "observed_at": "2026-04-27T07:15:58.104344Z",
+    "redactions": [
+      "request_context",
+      "user_content"
+    ]
+  },
+  {
+    "schema_version": "1.0",
+    "model_family": "gpt",
+    "endpoint": {
+      "id": "codex",
+      "confidence": "confirmed",
+      "provider": "openai",
+      "product": "Codex",
+      "protocol": "openai-responses-compatible"
+    },
+    "model": "gpt-5.3-codex",
+    "collection_status": "stable",
+    "signature_source": {
+      "protocol": "openai-responses",
+      "container_type": "reasoning",
+      "container_selector": {
+        "type": "reasoning"
+      },
+      "field": "encrypted_content",
+      "json_path": "$.output[?(@.type=='reasoning')].encrypted_content",
+      "request_replay_json_path": "$.input[?(@.type=='reasoning')].encrypted_content",
+      "provider_term": "reasoning.encrypted_content"
+    },
+    "sample": {
+      "raw_policy": "metadata_only",
+      "sha256": "360d1b8bbf0bd02753304522f64ddb81fc02f9edc28a0605ab211945f3cf32c6",
+      "length": 1060,
+      "encoding": "base64url",
+      "omitted_reason": "raw encrypted_content is not published"
+    },
+    "classification": {
+      "format": "fernet_like_token",
+      "valid_fernet_like": true,
+      "version_byte": "0x80",
+      "decoded_length": 793,
+      "ciphertext_length": 736,
+      "timestamp_utc": "2026-04-27T07:12:49Z",
+      "timestamp_beijing": "2026-04-27T15:12:49+08:00",
+      "iv_sha256": "0ad1fd515f7da33e59b5a5bcaba8d36dcd3f217af51e6653fa7bccab989f3379",
+      "hmac_sha256": "c6ffed87f577fffb453dbc4edd9f1b2894d897e8dae9cd8b1a719f768895a585",
+      "valid_outer_format": true
+    },
+    "payload_shape": {
+      "request": {
+        "protocol": "openai-responses",
+        "root_path": "$",
+        "conversation_path": "$.input",
+        "message_paths": [
+          "$.input[]"
+        ],
+        "signature_paths": [
+          "$.input[?(@.type=='reasoning')].encrypted_content",
+          "$.input[?(@.type=='compaction')].encrypted_content",
+          "$.input[?(@.type=='context_compaction')].encrypted_content",
+          "$.input[?(@.type=='function_call_output')].output[?(@.type=='encrypted_content')].encrypted_content"
+        ],
+        "signature_container_paths": [
+          "$.input[?(@.type=='reasoning')]",
+          "$.input[?(@.type=='compaction')]",
+          "$.input[?(@.type=='context_compaction')]",
+          "$.input[?(@.type=='function_call_output')].output[?(@.type=='encrypted_content')]"
+        ],
+        "reasoning_text_paths": [
+          "$.input[?(@.type=='reasoning')].summary[].text"
+        ],
+        "tool_call_paths": [
+          "$.input[?(@.type=='function_call')]"
+        ],
+        "tool_result_paths": [
+          "$.input[?(@.type=='function_call_output')]"
+        ],
+        "id_paths": [
+          "$.input[?(@.type=='function_call')].call_id",
+          "$.input[?(@.type=='function_call_output')].call_id",
+          "$.previous_response_id",
+          "$.input[].id"
+        ],
+        "related_paths": [
+          "$.store",
+          "$.include[?(@=='reasoning.encrypted_content')]",
+          "$.previous_response_id"
+        ],
+        "ordering_invariants": [
+          "reasoning items replay as input items before dependent outputs",
+          "function_call_output uses the prior function_call call_id",
+          "store=true replay must not orphan a server-assigned assistant message from its required preceding reasoning item",
+          "Azure OpenAI Responses replay may require previous_response_id instead of full-history replay"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "response": {
+        "protocol": "openai-responses",
+        "root_path": "$",
+        "conversation_path": "$.output",
+        "message_paths": [
+          "$.output[]"
+        ],
+        "signature_paths": [
+          "$.output[?(@.type=='reasoning')].encrypted_content",
+          "$.output[?(@.type=='compaction')].encrypted_content",
+          "$.output[?(@.type=='context_compaction')].encrypted_content",
+          "$.output[?(@.type=='function_call_output')].output[?(@.type=='encrypted_content')].encrypted_content"
+        ],
+        "signature_container_paths": [
+          "$.output[?(@.type=='reasoning')]",
+          "$.output[?(@.type=='compaction')]",
+          "$.output[?(@.type=='context_compaction')]",
+          "$.output[?(@.type=='function_call_output')].output[?(@.type=='encrypted_content')]"
+        ],
+        "reasoning_text_paths": [
+          "$.output[?(@.type=='reasoning')].summary[].text"
+        ],
+        "tool_call_paths": [
+          "$.output[?(@.type=='function_call')]"
+        ],
+        "id_paths": [
+          "$.output[?(@.type=='function_call')].call_id",
+          "$.output[].id"
+        ],
+        "ordering_invariants": [
+          "server-assigned assistant message items can depend on the preceding server-assigned reasoning item",
+          "compaction and context_compaction encrypted_content remain opaque replay state"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "stream": {
+        "protocol": "openai-responses",
+        "root_path": "$",
+        "signature_paths": [
+          "$.item.encrypted_content"
+        ],
+        "reasoning_text_paths": [
+          "$.delta",
+          "$.part.text"
+        ],
+        "stream_events": [
+          "response.output_item.added",
+          "response.reasoning_summary_part.added",
+          "response.reasoning_summary_text.delta",
+          "response.reasoning_summary_part.done",
+          "response.output_item.done"
+        ],
+        "prompt_content_policy": "not_collected"
+      }
+    },
+    "conversion": {
+      "round_trip_required": true,
+      "replay_scope": "same_endpoint",
+      "cross_endpoint_safe": false,
+      "fallback_policy": "drop_block",
+      "cache_key_hints": [
+        "reasoning_item_id",
+        "conversation_thread"
+      ],
+      "notes": "OpenAI/Azure OpenAI/Codex encrypted_content is opaque and not decryptability-proof from outer format."
+    },
+    "protocol_profile_id": "gpt-openai-responses-reasoning-v1",
+    "replay_contract": {
+      "emitted_in": "response_and_stream",
+      "replayed_in": "next_request_history",
+      "must_replay": true,
+      "scope": [
+        "same_endpoint",
+        "same_auth",
+        "same_session"
+      ],
+      "native_endpoint_ids": [
+        "openai",
+        "azure-openai",
+        "codex"
+      ],
+      "foreign_signature_policy": "drop_block",
+      "synthetic_replacement": {
+        "allowed": false
+      },
+      "tool_pairing": {
+        "required": true,
+        "pairing_rule": "responses_call_id",
+        "call_id_paths": [
+          "$.input[?(@.type=='function_call')].call_id"
+        ],
+        "response_id_paths": [
+          "$.input[?(@.type=='function_call_output')].call_id"
+        ],
+        "order_sensitive": true,
+        "signature_required_on": "none"
+      },
+      "notes": "encrypted_content is opaque; outer format checks do not prove decryptability across accounts, sessions, or endpoints."
+    },
+    "provenance": {
+      "legacy_source_file": "signatures/openai/gpt-5.3-codex.txt",
+      "legacy_source_line": 14,
+      "legacy_source_name": "gpt-5.3-codex",
+      "backend_claim": "codex",
+      "backend_confidence": "confirmed",
+      "notes": "Stable metadata-only import from CPA-API Codex encrypted_content samples. Raw encrypted_content is intentionally omitted."
+    },
+    "observed_at": "2026-04-27T07:15:58.104344Z",
+    "redactions": [
+      "request_context",
+      "user_content"
+    ]
+  },
+  {
+    "schema_version": "1.0",
+    "model_family": "gpt",
+    "endpoint": {
+      "id": "codex",
+      "confidence": "confirmed",
+      "provider": "openai",
+      "product": "Codex",
+      "protocol": "openai-responses-compatible"
+    },
+    "model": "gpt-5.3-codex",
+    "collection_status": "stable",
+    "signature_source": {
+      "protocol": "openai-responses",
+      "container_type": "reasoning",
+      "container_selector": {
+        "type": "reasoning"
+      },
+      "field": "encrypted_content",
+      "json_path": "$.output[?(@.type=='reasoning')].encrypted_content",
+      "request_replay_json_path": "$.input[?(@.type=='reasoning')].encrypted_content",
+      "provider_term": "reasoning.encrypted_content"
+    },
+    "sample": {
+      "raw_policy": "metadata_only",
+      "sha256": "1db42a0ddf313808a7a6af2402e028c2a6f50e62222697a44ef26857117f35b7",
+      "length": 1208,
+      "encoding": "base64url",
+      "omitted_reason": "raw encrypted_content is not published"
+    },
+    "classification": {
+      "format": "fernet_like_token",
+      "valid_fernet_like": true,
+      "version_byte": "0x80",
+      "decoded_length": 905,
+      "ciphertext_length": 848,
+      "timestamp_utc": "2026-04-27T07:12:57Z",
+      "timestamp_beijing": "2026-04-27T15:12:57+08:00",
+      "iv_sha256": "8d8aaabcae657ed695e15a3325b90c0a9bf6f89214ba5ef0c85573487f98aad8",
+      "hmac_sha256": "292c9a9d870c2705b98cea815a43e84c59442d4be1523e02f0f88ebeed79dde7",
+      "valid_outer_format": true
+    },
+    "payload_shape": {
+      "request": {
+        "protocol": "openai-responses",
+        "root_path": "$",
+        "conversation_path": "$.input",
+        "message_paths": [
+          "$.input[]"
+        ],
+        "signature_paths": [
+          "$.input[?(@.type=='reasoning')].encrypted_content",
+          "$.input[?(@.type=='compaction')].encrypted_content",
+          "$.input[?(@.type=='context_compaction')].encrypted_content",
+          "$.input[?(@.type=='function_call_output')].output[?(@.type=='encrypted_content')].encrypted_content"
+        ],
+        "signature_container_paths": [
+          "$.input[?(@.type=='reasoning')]",
+          "$.input[?(@.type=='compaction')]",
+          "$.input[?(@.type=='context_compaction')]",
+          "$.input[?(@.type=='function_call_output')].output[?(@.type=='encrypted_content')]"
+        ],
+        "reasoning_text_paths": [
+          "$.input[?(@.type=='reasoning')].summary[].text"
+        ],
+        "tool_call_paths": [
+          "$.input[?(@.type=='function_call')]"
+        ],
+        "tool_result_paths": [
+          "$.input[?(@.type=='function_call_output')]"
+        ],
+        "id_paths": [
+          "$.input[?(@.type=='function_call')].call_id",
+          "$.input[?(@.type=='function_call_output')].call_id",
+          "$.previous_response_id",
+          "$.input[].id"
+        ],
+        "related_paths": [
+          "$.store",
+          "$.include[?(@=='reasoning.encrypted_content')]",
+          "$.previous_response_id"
+        ],
+        "ordering_invariants": [
+          "reasoning items replay as input items before dependent outputs",
+          "function_call_output uses the prior function_call call_id",
+          "store=true replay must not orphan a server-assigned assistant message from its required preceding reasoning item",
+          "Azure OpenAI Responses replay may require previous_response_id instead of full-history replay"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "response": {
+        "protocol": "openai-responses",
+        "root_path": "$",
+        "conversation_path": "$.output",
+        "message_paths": [
+          "$.output[]"
+        ],
+        "signature_paths": [
+          "$.output[?(@.type=='reasoning')].encrypted_content",
+          "$.output[?(@.type=='compaction')].encrypted_content",
+          "$.output[?(@.type=='context_compaction')].encrypted_content",
+          "$.output[?(@.type=='function_call_output')].output[?(@.type=='encrypted_content')].encrypted_content"
+        ],
+        "signature_container_paths": [
+          "$.output[?(@.type=='reasoning')]",
+          "$.output[?(@.type=='compaction')]",
+          "$.output[?(@.type=='context_compaction')]",
+          "$.output[?(@.type=='function_call_output')].output[?(@.type=='encrypted_content')]"
+        ],
+        "reasoning_text_paths": [
+          "$.output[?(@.type=='reasoning')].summary[].text"
+        ],
+        "tool_call_paths": [
+          "$.output[?(@.type=='function_call')]"
+        ],
+        "id_paths": [
+          "$.output[?(@.type=='function_call')].call_id",
+          "$.output[].id"
+        ],
+        "ordering_invariants": [
+          "server-assigned assistant message items can depend on the preceding server-assigned reasoning item",
+          "compaction and context_compaction encrypted_content remain opaque replay state"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "stream": {
+        "protocol": "openai-responses",
+        "root_path": "$",
+        "signature_paths": [
+          "$.item.encrypted_content"
+        ],
+        "reasoning_text_paths": [
+          "$.delta",
+          "$.part.text"
+        ],
+        "stream_events": [
+          "response.output_item.added",
+          "response.reasoning_summary_part.added",
+          "response.reasoning_summary_text.delta",
+          "response.reasoning_summary_part.done",
+          "response.output_item.done"
+        ],
+        "prompt_content_policy": "not_collected"
+      }
+    },
+    "conversion": {
+      "round_trip_required": true,
+      "replay_scope": "same_endpoint",
+      "cross_endpoint_safe": false,
+      "fallback_policy": "drop_block",
+      "cache_key_hints": [
+        "reasoning_item_id",
+        "conversation_thread"
+      ],
+      "notes": "OpenAI/Azure OpenAI/Codex encrypted_content is opaque and not decryptability-proof from outer format."
+    },
+    "protocol_profile_id": "gpt-openai-responses-reasoning-v1",
+    "replay_contract": {
+      "emitted_in": "response_and_stream",
+      "replayed_in": "next_request_history",
+      "must_replay": true,
+      "scope": [
+        "same_endpoint",
+        "same_auth",
+        "same_session"
+      ],
+      "native_endpoint_ids": [
+        "openai",
+        "azure-openai",
+        "codex"
+      ],
+      "foreign_signature_policy": "drop_block",
+      "synthetic_replacement": {
+        "allowed": false
+      },
+      "tool_pairing": {
+        "required": true,
+        "pairing_rule": "responses_call_id",
+        "call_id_paths": [
+          "$.input[?(@.type=='function_call')].call_id"
+        ],
+        "response_id_paths": [
+          "$.input[?(@.type=='function_call_output')].call_id"
+        ],
+        "order_sensitive": true,
+        "signature_required_on": "none"
+      },
+      "notes": "encrypted_content is opaque; outer format checks do not prove decryptability across accounts, sessions, or endpoints."
+    },
+    "provenance": {
+      "legacy_source_file": "signatures/openai/gpt-5.3-codex.txt",
+      "legacy_source_line": 15,
+      "legacy_source_name": "gpt-5.3-codex",
+      "backend_claim": "codex",
+      "backend_confidence": "confirmed",
+      "notes": "Stable metadata-only import from CPA-API Codex encrypted_content samples. Raw encrypted_content is intentionally omitted."
+    },
+    "observed_at": "2026-04-27T07:15:58.104344Z",
+    "redactions": [
+      "request_context",
+      "user_content"
+    ]
+  },
+  {
+    "schema_version": "1.0",
+    "model_family": "gpt",
+    "endpoint": {
+      "id": "codex",
+      "confidence": "confirmed",
+      "provider": "openai",
+      "product": "Codex",
+      "protocol": "openai-responses-compatible"
+    },
+    "model": "gpt-5.3-codex",
+    "collection_status": "stable",
+    "signature_source": {
+      "protocol": "openai-responses",
+      "container_type": "reasoning",
+      "container_selector": {
+        "type": "reasoning"
+      },
+      "field": "encrypted_content",
+      "json_path": "$.output[?(@.type=='reasoning')].encrypted_content",
+      "request_replay_json_path": "$.input[?(@.type=='reasoning')].encrypted_content",
+      "provider_term": "reasoning.encrypted_content"
+    },
+    "sample": {
+      "raw_policy": "metadata_only",
+      "sha256": "6098a6513e6df585b8ac4f50a18f0627790d28348feb5dfe11fde1ed0951821b",
+      "length": 1380,
+      "encoding": "base64url",
+      "omitted_reason": "raw encrypted_content is not published"
+    },
+    "classification": {
+      "format": "fernet_like_token",
+      "valid_fernet_like": true,
+      "version_byte": "0x80",
+      "decoded_length": 1033,
+      "ciphertext_length": 976,
+      "timestamp_utc": "2026-04-27T07:13:06Z",
+      "timestamp_beijing": "2026-04-27T15:13:06+08:00",
+      "iv_sha256": "358cb08ff38e6de12709615c2698a8743c7356e5b03ee00ed1736ff7ae70324c",
+      "hmac_sha256": "4dd94013c9120239f619e873d2fdc36a210253a7918ba5c2832ef67d70399555",
+      "valid_outer_format": true
+    },
+    "payload_shape": {
+      "request": {
+        "protocol": "openai-responses",
+        "root_path": "$",
+        "conversation_path": "$.input",
+        "message_paths": [
+          "$.input[]"
+        ],
+        "signature_paths": [
+          "$.input[?(@.type=='reasoning')].encrypted_content",
+          "$.input[?(@.type=='compaction')].encrypted_content",
+          "$.input[?(@.type=='context_compaction')].encrypted_content",
+          "$.input[?(@.type=='function_call_output')].output[?(@.type=='encrypted_content')].encrypted_content"
+        ],
+        "signature_container_paths": [
+          "$.input[?(@.type=='reasoning')]",
+          "$.input[?(@.type=='compaction')]",
+          "$.input[?(@.type=='context_compaction')]",
+          "$.input[?(@.type=='function_call_output')].output[?(@.type=='encrypted_content')]"
+        ],
+        "reasoning_text_paths": [
+          "$.input[?(@.type=='reasoning')].summary[].text"
+        ],
+        "tool_call_paths": [
+          "$.input[?(@.type=='function_call')]"
+        ],
+        "tool_result_paths": [
+          "$.input[?(@.type=='function_call_output')]"
+        ],
+        "id_paths": [
+          "$.input[?(@.type=='function_call')].call_id",
+          "$.input[?(@.type=='function_call_output')].call_id",
+          "$.previous_response_id",
+          "$.input[].id"
+        ],
+        "related_paths": [
+          "$.store",
+          "$.include[?(@=='reasoning.encrypted_content')]",
+          "$.previous_response_id"
+        ],
+        "ordering_invariants": [
+          "reasoning items replay as input items before dependent outputs",
+          "function_call_output uses the prior function_call call_id",
+          "store=true replay must not orphan a server-assigned assistant message from its required preceding reasoning item",
+          "Azure OpenAI Responses replay may require previous_response_id instead of full-history replay"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "response": {
+        "protocol": "openai-responses",
+        "root_path": "$",
+        "conversation_path": "$.output",
+        "message_paths": [
+          "$.output[]"
+        ],
+        "signature_paths": [
+          "$.output[?(@.type=='reasoning')].encrypted_content",
+          "$.output[?(@.type=='compaction')].encrypted_content",
+          "$.output[?(@.type=='context_compaction')].encrypted_content",
+          "$.output[?(@.type=='function_call_output')].output[?(@.type=='encrypted_content')].encrypted_content"
+        ],
+        "signature_container_paths": [
+          "$.output[?(@.type=='reasoning')]",
+          "$.output[?(@.type=='compaction')]",
+          "$.output[?(@.type=='context_compaction')]",
+          "$.output[?(@.type=='function_call_output')].output[?(@.type=='encrypted_content')]"
+        ],
+        "reasoning_text_paths": [
+          "$.output[?(@.type=='reasoning')].summary[].text"
+        ],
+        "tool_call_paths": [
+          "$.output[?(@.type=='function_call')]"
+        ],
+        "id_paths": [
+          "$.output[?(@.type=='function_call')].call_id",
+          "$.output[].id"
+        ],
+        "ordering_invariants": [
+          "server-assigned assistant message items can depend on the preceding server-assigned reasoning item",
+          "compaction and context_compaction encrypted_content remain opaque replay state"
+        ],
+        "prompt_content_policy": "not_collected"
+      },
+      "stream": {
+        "protocol": "openai-responses",
+        "root_path": "$",
+        "signature_paths": [
+          "$.item.encrypted_content"
+        ],
+        "reasoning_text_paths": [
+          "$.delta",
+          "$.part.text"
+        ],
+        "stream_events": [
+          "response.output_item.added",
+          "response.reasoning_summary_part.added",
+          "response.reasoning_summary_text.delta",
+          "response.reasoning_summary_part.done",
+          "response.output_item.done"
+        ],
+        "prompt_content_policy": "not_collected"
+      }
+    },
+    "conversion": {
+      "round_trip_required": true,
+      "replay_scope": "same_endpoint",
+      "cross_endpoint_safe": false,
+      "fallback_policy": "drop_block",
+      "cache_key_hints": [
+        "reasoning_item_id",
+        "conversation_thread"
+      ],
+      "notes": "OpenAI/Azure OpenAI/Codex encrypted_content is opaque and not decryptability-proof from outer format."
+    },
+    "protocol_profile_id": "gpt-openai-responses-reasoning-v1",
+    "replay_contract": {
+      "emitted_in": "response_and_stream",
+      "replayed_in": "next_request_history",
+      "must_replay": true,
+      "scope": [
+        "same_endpoint",
+        "same_auth",
+        "same_session"
+      ],
+      "native_endpoint_ids": [
+        "openai",
+        "azure-openai",
+        "codex"
+      ],
+      "foreign_signature_policy": "drop_block",
+      "synthetic_replacement": {
+        "allowed": false
+      },
+      "tool_pairing": {
+        "required": true,
+        "pairing_rule": "responses_call_id",
+        "call_id_paths": [
+          "$.input[?(@.type=='function_call')].call_id"
+        ],
+        "response_id_paths": [
+          "$.input[?(@.type=='function_call_output')].call_id"
+        ],
+        "order_sensitive": true,
+        "signature_required_on": "none"
+      },
+      "notes": "encrypted_content is opaque; outer format checks do not prove decryptability across accounts, sessions, or endpoints."
+    },
+    "provenance": {
+      "legacy_source_file": "signatures/openai/gpt-5.3-codex.txt",
+      "legacy_source_line": 16,
+      "legacy_source_name": "gpt-5.3-codex",
+      "backend_claim": "codex",
+      "backend_confidence": "confirmed",
+      "notes": "Stable metadata-only import from CPA-API Codex encrypted_content samples. Raw encrypted_content is intentionally omitted."
+    },
+    "observed_at": "2026-04-27T07:15:58.104344Z",
+    "redactions": [
+      "request_context",
+      "user_content"
+    ]
+  }
+]

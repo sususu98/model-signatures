@@ -2,61 +2,83 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/sususu98/model-signatures/schemas/signature.schema.json",
   "title": "Model Signature Entry",
+  "description": "Published metadata for a provider-native reasoning continuity value. Entries are keyed by model family and concrete emitting endpoint; they do not use a cross-provider kind abstraction for signature fields.",
   "type": "object",
   "additionalProperties": false,
   "required": [
-    "provider",
-    "source",
+    "schema_version",
+    "model_family",
+    "endpoint",
     "model",
-    "signature_type",
-    "signature",
-    "evidence",
-    "observed_at"
+    "collection_status",
+    "signature_source",
+    "sample",
+    "classification",
+    "provenance",
+    "protocol_profile_id",
+    "replay_contract",
+    "observed_at",
+    "redactions"
   ],
   "properties": {
-    "provider": {
+    "schema_version": {
       "type": "string",
-      "enum": ["claude", "gpt", "gemini"]
+      "const": "1.0"
     },
-    "source": {
+    "model_family": {
+      "description": "The model family whose native wire protocol emitted the signature field.",
       "type": "string",
       "enum": [
-        "api",
-        "codex",
-        "claude-code",
-        "aistudio",
-        "vertex",
-        "antigravity",
-        "gemini-cli",
-        "other"
+        "claude",
+        "gpt",
+        "gemini",
+        "grok"
       ]
+    },
+    "endpoint": {
+      "description": "Concrete endpoint or product surface that emitted the value. Use the family plus endpoint id as the database key, for example gemini/vertex versus claude/vertex.",
+      "$ref": "#/$defs/endpoint"
     },
     "model": {
       "type": "string",
       "minLength": 1
     },
-    "signature_type": {
+    "collection_status": {
       "type": "string",
-      "minLength": 1,
-      "examples": ["response_shape", "tool_call_shape", "thinking_signature"]
+      "enum": [
+        "stable",
+        "staging",
+        "overlap",
+        "unclassified",
+        "docs_derived"
+      ]
     },
-    "signature": {
-      "type": "object",
-      "additionalProperties": true
+    "signature_source": {
+      "description": "Provider-native payload location for the continuity value. Use fields such as signature, signature_delta, encrypted_content, thoughtSignature, or thought_signature directly.",
+      "$ref": "#/$defs/signature_source"
     },
-    "evidence": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["captured_from"],
-      "properties": {
-        "captured_from": {
-          "type": "string",
-          "minLength": 1
-        },
-        "notes": {
-          "type": "string"
-        }
-      }
+    "sample": {
+      "description": "Public sample metadata only. Raw signature values and encrypted blobs are not published.",
+      "$ref": "#/$defs/sample"
+    },
+    "classification": {
+      "$ref": "#/$defs/classification"
+    },
+    "payload_shape": {
+      "$ref": "#/$defs/payload_shape"
+    },
+    "conversion": {
+      "$ref": "#/$defs/conversion"
+    },
+    "protocol_profile_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "replay_contract": {
+      "$ref": "#/$defs/replay_contract"
+    },
+    "provenance": {
+      "$ref": "#/$defs/provenance"
     },
     "observed_at": {
       "type": "string",
@@ -65,9 +87,771 @@
     "redactions": {
       "type": "array",
       "items": {
-        "type": "string"
+        "type": "string",
+        "minLength": 1
       },
       "uniqueItems": true
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "model_family": { "const": "claude" }
+        },
+        "required": ["model_family"]
+      },
+      "then": {
+        "properties": {
+          "endpoint": {
+            "properties": {
+              "id": {
+                "enum": ["anthropic", "aws-bedrock", "azure", "vertex", "claude-code"]
+              }
+            },
+            "required": ["id"]
+          },
+          "signature_source": {
+            "properties": {
+              "field": { "const": "signature" },
+              "stream_field": { "const": "signature_delta" }
+            },
+            "required": ["field", "stream_field"]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "model_family": { "const": "gpt" }
+        },
+        "required": ["model_family"]
+      },
+      "then": {
+        "properties": {
+          "endpoint": {
+            "properties": {
+              "id": {
+                "enum": ["openai", "azure-openai", "codex"]
+              }
+            },
+            "required": ["id"]
+          },
+          "signature_source": {
+            "properties": {
+              "field": { "const": "encrypted_content" },
+              "stream_field": { "const": "encrypted_content" }
+            },
+            "required": ["field"]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "model_family": { "const": "gemini" }
+        },
+        "required": ["model_family"]
+      },
+      "then": {
+        "properties": {
+          "endpoint": {
+            "properties": {
+              "id": {
+                "enum": ["aistudio", "vertex", "antigravity", "gemini-cli", "unknown"]
+              }
+            },
+            "required": ["id"]
+          },
+          "signature_source": {
+            "properties": {
+              "field": {
+                "enum": ["thoughtSignature", "thought_signature"]
+              },
+              "stream_field": {
+                "enum": ["thoughtSignature", "thought_signature"]
+              }
+            },
+            "required": ["field"]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "model_family": { "const": "grok" }
+        },
+        "required": ["model_family"]
+      },
+      "then": {
+        "properties": {
+          "endpoint": {
+            "properties": {
+              "id": {
+                "const": "xai"
+              }
+            },
+            "required": ["id"]
+          },
+          "signature_source": {
+            "properties": {
+              "field": { "const": "encrypted_content" },
+              "stream_field": { "const": "encrypted_content" }
+            },
+            "required": ["field"]
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "endpoint": {
+      "type": "object",
+      "description": "Concrete endpoint identity for replay scope and database joins.",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "confidence"
+      ],
+      "properties": {
+        "id": {
+          "description": "Endpoint id within a model family. This may repeat across families, so it is not globally unique without model_family.",
+          "type": "string",
+          "enum": [
+            "anthropic",
+            "aws-bedrock",
+            "azure",
+            "azure-openai",
+            "vertex",
+            "claude-code",
+            "aistudio",
+            "antigravity",
+            "gemini-cli",
+            "openai",
+            "codex",
+            "xai",
+            "unknown"
+          ]
+        },
+        "provider": {
+          "type": "string",
+          "enum": [
+            "anthropic",
+            "aws",
+            "azure",
+            "google",
+            "openai",
+            "xai",
+            "unknown"
+          ]
+        },
+        "product": {
+          "type": "string",
+          "minLength": 1
+        },
+        "protocol": {
+          "$ref": "#/$defs/protocol"
+        },
+        "confidence": {
+          "type": "string",
+          "enum": [
+            "confirmed",
+            "filename_claimed",
+            "signature_inferred",
+            "github_reported",
+            "unknown"
+          ]
+        }
+      }
+    },
+    "signature_source": {
+      "type": "object",
+      "description": "Native field, container, and JSON path where the provider exposes replay state.",
+      "additionalProperties": false,
+      "required": [
+        "protocol",
+        "container_type",
+        "field",
+        "json_path",
+        "provider_term"
+      ],
+      "properties": {
+        "protocol": {
+          "$ref": "#/$defs/protocol"
+        },
+        "container_type": {
+          "type": "string",
+          "enum": [
+            "thinking",
+            "reasoning",
+            "part",
+            "functionCall",
+            "content_block_delta",
+            "unknown"
+          ]
+        },
+        "container_selector": {
+          "type": "object",
+          "additionalProperties": {
+            "type": [
+              "string",
+              "number",
+              "boolean",
+              "null"
+            ]
+          }
+        },
+        "field": {
+          "description": "Native response/request field. This is deliberately not normalized to a repository-invented kind alias.",
+          "type": "string",
+          "enum": [
+            "signature",
+            "encrypted_content",
+            "thoughtSignature",
+            "thought_signature",
+            "unknown"
+          ]
+        },
+        "alternate_fields": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "signature",
+              "signature_delta",
+              "encrypted_content",
+              "thoughtSignature",
+              "thought_signature",
+              "unknown"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "stream_field": {
+          "description": "Native stream field when the stream surface names the value differently, for example Claude signature_delta.",
+          "type": "string",
+          "enum": [
+            "signature_delta",
+            "encrypted_content",
+            "thoughtSignature",
+            "thought_signature"
+          ]
+        },
+        "json_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "request_replay_json_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "provider_term": {
+          "type": "string",
+          "minLength": 1
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "sample": {
+      "type": "object",
+      "description": "Hash, length, and encoding metadata for the native value. Public entries must not contain value, raw_value, or value_preview.",
+      "additionalProperties": false,
+      "required": [
+        "raw_policy"
+      ],
+      "properties": {
+        "raw_policy": {
+          "type": "string",
+          "enum": [
+            "metadata_only",
+            "redacted",
+            "absent"
+          ]
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "length": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "encoding": {
+          "type": "string",
+          "enum": [
+            "base64",
+            "base64url",
+            "uuid",
+            "opaque_string",
+            "json",
+            "unknown"
+          ]
+        },
+        "omitted_reason": {
+          "type": "string"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "not": {
+              "properties": {
+                "raw_policy": {
+                  "const": "absent"
+                }
+              },
+              "required": [
+                "raw_policy"
+              ]
+            }
+          },
+          "then": {
+            "required": [
+              "sha256",
+              "length"
+            ]
+          }
+        }
+      ]
+    },
+    "classification": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "format"
+      ],
+      "properties": {
+        "format": {
+          "type": "string",
+          "enum": [
+            "protobuf",
+            "fernet_like_token",
+            "sentinel",
+            "uuid",
+            "wrapped_protobuf_unclassified",
+            "unknown"
+          ]
+        },
+        "valid_outer_format": {
+          "type": "boolean"
+        },
+        "decoded_length": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "payload_shape": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "request": {
+          "$ref": "#/$defs/payload_side"
+        },
+        "response": {
+          "$ref": "#/$defs/payload_side"
+        },
+        "stream": {
+          "$ref": "#/$defs/payload_side"
+        }
+      }
+    },
+    "payload_side": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "protocol": {
+          "$ref": "#/$defs/protocol"
+        },
+        "root_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "conversation_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "system_paths": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "message_paths": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "signature_paths": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "signature_container_paths": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "reasoning_text_paths": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "tool_call_paths": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "tool_result_paths": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "id_paths": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "stream_events": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "ordering_invariants": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "related_paths": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "prompt_content_policy": {
+          "type": "string",
+          "enum": [
+            "not_collected",
+            "redacted",
+            "metadata_only"
+          ]
+        }
+      }
+    },
+    "replay_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "emitted_in",
+        "replayed_in",
+        "must_replay",
+        "scope",
+        "foreign_signature_policy",
+        "synthetic_replacement"
+      ],
+      "properties": {
+        "emitted_in": {
+          "type": "string",
+          "enum": [
+            "response",
+            "stream",
+            "response_and_stream",
+            "request_history",
+            "unknown"
+          ]
+        },
+        "replayed_in": {
+          "type": "string",
+          "enum": [
+            "next_request_history",
+            "same_session_connection",
+            "turn_state",
+            "not_replayable",
+            "unknown"
+          ]
+        },
+        "must_replay": {
+          "type": "boolean"
+        },
+        "scope": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "same_endpoint",
+              "same_auth",
+              "same_session",
+              "same_model",
+              "same_conversation_prefix",
+              "same_tool_call",
+              "unknown"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "native_endpoint_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "anthropic",
+              "aws-bedrock",
+              "azure",
+              "azure-openai",
+              "vertex",
+              "claude-code",
+              "aistudio",
+              "antigravity",
+              "gemini-cli",
+              "openai",
+              "codex",
+              "xai",
+              "unknown"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "foreign_signature_policy": {
+          "type": "string",
+          "enum": [
+            "preserve",
+            "drop_block",
+            "drop_signature",
+            "replace_with_sentinel",
+            "metadata_only",
+            "not_replayable",
+            "unknown"
+          ]
+        },
+        "synthetic_replacement": {
+          "$ref": "#/$defs/synthetic_replacement"
+        },
+        "tool_pairing": {
+          "$ref": "#/$defs/tool_pairing"
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "synthetic_replacement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "allowed"
+      ],
+      "properties": {
+        "allowed": {
+          "type": "boolean"
+        },
+        "field": {
+          "type": "string",
+          "enum": [
+            "signature",
+            "signature_delta",
+            "encrypted_content",
+            "thoughtSignature",
+            "thought_signature",
+            "unknown"
+          ]
+        },
+        "value": {
+          "type": "string",
+          "minLength": 1
+        },
+        "when": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "tool_pairing": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "required": {
+          "type": "boolean"
+        },
+        "pairing_rule": {
+          "type": "string",
+          "enum": [
+            "tool_use_followed_by_tool_result",
+            "function_call_followed_by_function_response",
+            "responses_call_id",
+            "none",
+            "unknown"
+          ]
+        },
+        "call_id_paths": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "response_id_paths": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "order_sensitive": {
+          "type": "boolean"
+        },
+        "signature_required_on": {
+          "type": "string",
+          "enum": [
+            "first_function_call_part",
+            "each_function_call_part",
+            "none",
+            "unknown"
+          ]
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "conversion": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "round_trip_required": {
+          "type": "boolean"
+        },
+        "replay_scope": {
+          "type": "string",
+          "enum": [
+            "same_endpoint",
+            "same_provider_family",
+            "same_session",
+            "unknown"
+          ]
+        },
+        "cross_endpoint_safe": {
+          "type": "boolean"
+        },
+        "fallback_policy": {
+          "type": "string",
+          "enum": [
+            "preserve",
+            "drop_block",
+            "drop_signature",
+            "skip_thought_signature_validator",
+            "no_synthetic_replacement",
+            "unknown"
+          ]
+        },
+        "cache_key_hints": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source_repo": {
+          "type": "string",
+          "pattern": "^[^/]+/[^/]+$"
+        },
+        "evidence_url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "legacy_source_file": {
+          "type": "string"
+        },
+        "legacy_source_line": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "legacy_source_name": {
+          "type": "string"
+        },
+        "backend_claim": {
+          "type": "string"
+        },
+        "backend_confidence": {
+          "type": "string",
+          "enum": [
+            "confirmed",
+            "filename_claimed",
+            "signature_inferred",
+            "github_reported",
+            "unknown"
+          ]
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "protocol": {
+      "type": "string",
+      "enum": [
+        "anthropic-messages",
+        "anthropic-messages-compatible",
+        "openai-responses",
+        "openai-responses-compatible",
+        "gemini-generate-content",
+        "gemini-generate-content-compatible",
+        "claude-code-jsonl",
+        "codex-rollout-jsonl",
+        "xai-responses",
+        "unknown"
+      ]
     }
   }
 }

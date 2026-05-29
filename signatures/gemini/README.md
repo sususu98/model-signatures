@@ -1,6 +1,6 @@
 # Gemini Signatures
 
-Gemini signatures are split by source:
+Gemini signatures are split by concrete endpoint:
 
 - `aistudio`: Google AI Studio observations.
 - `vertex`: Vertex AI observations.

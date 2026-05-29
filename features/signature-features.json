@@ -1,0 +1,303 @@
+[
+  {
+    "id": "claude-thinking-signature",
+    "model_family": "claude",
+    "field": "signature",
+    "profile_id": "claude-anthropic-messages-thinking-v1",
+    "observable_format": "base64 protobuf-like opaque signature, sometimes endpoint/routing-class distinguishable by decoded outer structure",
+    "raw_publication_policy": "metadata_only",
+    "must_replay": true,
+    "portable_across_endpoints": false,
+    "synthetic_replacement": {
+      "allowed": false
+    },
+    "observable_variants": [
+      {
+        "id": "claude-channel-12-direct",
+        "field": "signature",
+        "format": "base64 protobuf",
+        "source_scope": "direct_samples",
+        "endpoint_scope": [
+          "anthropic"
+        ],
+        "observed_markers": [
+          "top_level_first_byte=0x12",
+          "channel_id=12",
+          "backend_id_absent",
+          "channel_block_length=70"
+        ],
+        "replay_implication": "Treat as Anthropic Claude thinking-block state and replay only in compatible Claude history.",
+        "confidence": "sample_observed"
+      },
+      {
+        "id": "claude-channel-11-default-backend",
+        "field": "signature",
+        "format": "base64 protobuf",
+        "source_scope": "direct_samples",
+        "endpoint_scope": [
+          "anthropic",
+          "azure"
+        ],
+        "observed_markers": [
+          "top_level_first_byte=0x12",
+          "channel_id=11",
+          "backend_id_absent",
+          "channel_block_length=70"
+        ],
+        "replay_implication": "Signature structure alone does not distinguish same-marker Claude endpoints; keep endpoint provenance separate.",
+        "confidence": "sample_observed"
+      },
+      {
+        "id": "claude-channel-11-cloud-backend",
+        "field": "signature",
+        "format": "base64 or double-base64 protobuf",
+        "source_scope": "direct_samples",
+        "endpoint_scope": [
+          "aws-bedrock",
+          "vertex"
+        ],
+        "observed_markers": [
+          "top_level_first_byte=0x12 after unwrap",
+          "channel_id=11",
+          "backend_id=1 or backend_id=2",
+          "channel_block_length=72"
+        ],
+        "replay_implication": "Backend markers help classify infrastructure, but replay still remains endpoint-scoped and non-portable.",
+        "confidence": "sample_observed"
+      },
+      {
+        "id": "claude-stream-signature-delta",
+        "field": "signature_delta",
+        "format": "stream content-block delta",
+        "source_scope": "public_sdk_evidence",
+        "endpoint_scope": [
+          "anthropic",
+          "aws-bedrock",
+          "azure",
+          "vertex",
+          "claude-code"
+        ],
+        "observed_markers": [
+          "delta.type=signature_delta",
+          "delta.signature",
+          "paired with thinking_delta on the same thinking content block"
+        ],
+        "replay_implication": "Assemble stream deltas back onto the active thinking block before storing history.",
+        "confidence": "sdk_declared"
+      }
+    ],
+    "feature_summary": [
+      "Lives on Anthropic Messages thinking blocks as signature",
+      "Streaming field is signature_delta attached to active thinking block",
+      "Replay is valid only in compatible Claude endpoint history",
+      "Visible thinking text can be omitted by request display behavior, so replay must not depend only on non-empty thinking text",
+      "Foreign signatures should cause drop_block, not synthetic replacement"
+    ]
+  },
+  {
+    "id": "gpt-responses-encrypted-content",
+    "model_family": "gpt",
+    "field": "encrypted_content",
+    "profile_id": "gpt-openai-responses-reasoning-v1",
+    "observable_format": "base64url Fernet-like opaque token with 0x80 version byte in current CPA samples",
+    "raw_publication_policy": "metadata_only",
+    "must_replay": true,
+    "portable_across_endpoints": false,
+    "synthetic_replacement": {
+      "allowed": false
+    },
+    "observable_variants": [
+      {
+        "id": "gpt-responses-reasoning-item-encrypted-content",
+        "field": "encrypted_content",
+        "format": "base64url Fernet-like opaque token",
+        "source_scope": "direct_samples",
+        "endpoint_scope": [
+          "openai",
+          "codex"
+        ],
+        "observed_markers": [
+          "version_byte=0x80",
+          "decoded_length>=57",
+          "ciphertext_length_is_16_byte_aligned",
+          "iv_and_hmac_present"
+        ],
+        "replay_implication": "Store hash, length, and classification publicly; replay raw value only in private compatible Responses history.",
+        "confidence": "sample_observed"
+      },
+      {
+        "id": "gpt-responses-include-encrypted-content",
+        "field": "encrypted_content",
+        "format": "Responses include flag",
+        "source_scope": "public_sdk_evidence",
+        "endpoint_scope": [
+          "openai",
+          "azure-openai",
+          "codex"
+        ],
+        "observed_markers": [
+          "include contains reasoning.encrypted_content",
+          "reasoning item has id",
+          "reasoning item has type=reasoning",
+          "reasoning item may carry status"
+        ],
+        "replay_implication": "Request encrypted reasoning through include and preserve the returned reasoning item graph.",
+        "confidence": "sdk_declared"
+      },
+      {
+        "id": "gpt-codex-compaction-encrypted-content",
+        "field": "encrypted_content",
+        "format": "Responses compaction item",
+        "source_scope": "public_sdk_evidence",
+        "endpoint_scope": [
+          "codex"
+        ],
+        "observed_markers": [
+          "compaction encrypted_content",
+          "context_compaction encrypted_content",
+          "stored ResponseItem history"
+        ],
+        "replay_implication": "Preserve Codex compaction items as opaque model-visible state instead of flattening them to visible text.",
+        "confidence": "sdk_declared"
+      }
+    ],
+    "feature_summary": [
+      "Lives on OpenAI Responses reasoning items as encrypted_content, with related encrypted containers on compaction, context_compaction, and encrypted function_call_output content items",
+      "Must be replayed as an opaque reasoning input item in compatible history",
+      "store=true histories can require preserving the reasoning item before a dependent server-assigned assistant message",
+      "Azure OpenAI Responses replay may require previous_response_id or valid stored item ids",
+      "Outer format validation does not prove decryptability",
+      "Raw values should not be published by default"
+    ]
+  },
+  {
+    "id": "gemini-thought-signature",
+    "model_family": "gemini",
+    "field": "thoughtSignature",
+    "profile_id": "gemini-generate-content-thought-signature-v1",
+    "observable_format": "base64 protobuf-like part-level opaque signature; malformed or UUID-like legacy values also appear in the wild",
+    "raw_publication_policy": "metadata_only",
+    "must_replay": true,
+    "portable_across_endpoints": false,
+    "synthetic_replacement": {
+      "allowed": true,
+      "field": "thoughtSignature",
+      "value": "skip_thought_signature_validator"
+    },
+    "observable_variants": [
+      {
+        "id": "gemini-long-protobuf-thought-signature",
+        "field": "thoughtSignature",
+        "format": "base64 protobuf",
+        "source_scope": "staging_samples",
+        "endpoint_scope": [
+          "unknown"
+        ],
+        "observed_markers": [
+          "top_level_first_byte=0x0a",
+          "prefix_family=Ci/Ck/Cl/Cm",
+          "part_level_signature",
+          "model_filename_preserved_but_endpoint_missing"
+        ],
+        "replay_implication": "Use as family-level format evidence only until a concrete endpoint capture proves replay scope.",
+        "confidence": "sample_observed"
+      },
+      {
+        "id": "gemini-uuid-like-functioncall-signature",
+        "field": "thoughtSignature",
+        "format": "base64 uuid",
+        "source_scope": "staging_samples",
+        "endpoint_scope": [
+          "unknown"
+        ],
+        "observed_markers": [
+          "decoded_length=36",
+          "decoded_text_matches_uuid_shape",
+          "prefix_family=ZT"
+        ],
+        "replay_implication": "Do not treat UUID-like values as known Gemini thought envelopes; replace with the sentinel when replay validation requires it.",
+        "confidence": "sample_observed"
+      },
+      {
+        "id": "gemini-sdk-part-level-field",
+        "field": "thoughtSignature",
+        "format": "Gemini content part field",
+        "source_scope": "public_sdk_evidence",
+        "endpoint_scope": [
+          "aistudio",
+          "vertex",
+          "antigravity",
+          "gemini-cli"
+        ],
+        "observed_markers": [
+          "thoughtSignature on Part",
+          "thought_signature in Python Part",
+          "functionCall and functionResponse remain distinct parts",
+          "provider metadata namespace may be google/googleVertex/vertex"
+        ],
+        "replay_implication": "Preserve provider-native part identity and metadata namespace until the target Gemini endpoint is known.",
+        "confidence": "sdk_declared"
+      }
+    ],
+    "feature_summary": [
+      "Lives on Gemini content parts as thoughtSignature or thought_signature",
+      "Can appear on thought text, visible text, file-like parts, or functionCall parts",
+      "Adapter metadata namespaces such as google, googleVertex, and vertex must be preserved until the target endpoint is known",
+      "Provider-native signatures should be cached by conversation prefix and part identity",
+      "Gemini can use skip_thought_signature_validator for selected functionCall replay cases"
+    ]
+  },
+  {
+    "id": "grok-xai-encrypted-content-provisional",
+    "model_family": "grok",
+    "field": "encrypted_content",
+    "profile_id": "grok-xai-responses-encrypted-content-v0",
+    "observable_format": "Responses-compatible encrypted_content surface with xAI-specific replay state",
+    "raw_publication_policy": "metadata_only",
+    "must_replay": true,
+    "portable_across_endpoints": false,
+    "synthetic_replacement": {
+      "allowed": false
+    },
+    "observable_variants": [
+      {
+        "id": "grok-xai-responses-compatible-reasoning",
+        "field": "encrypted_content",
+        "format": "Responses-compatible reasoning item",
+        "source_scope": "public_adapter_evidence",
+        "endpoint_scope": [
+          "xai"
+        ],
+        "observed_markers": [
+          "include contains reasoning.encrypted_content",
+          "providerMetadata.xai.reasoningEncryptedContent",
+          "providerMetadata.xai.itemId",
+          "previous_response_id supported by adapter evidence"
+        ],
+        "replay_implication": "Keep xAI replay state separate from OpenAI even when field names overlap.",
+        "confidence": "adapter_observed"
+      },
+      {
+        "id": "grok-xai-native-sample-evidence",
+        "field": "encrypted_content",
+        "format": "metadata-only xAI encrypted_content samples",
+        "source_scope": "direct_samples",
+        "endpoint_scope": [
+          "xai"
+        ],
+        "observed_markers": [
+          "3 metadata-only xAI observations in signatures/grok/xai",
+          "raw encrypted_content omitted from public files",
+          "profile status is provisional"
+        ],
+        "replay_implication": "Keep xAI replay endpoint-scoped until direct captures and public SDK evidence fully agree on encrypted_content behavior.",
+        "confidence": "provisional"
+      }
+    ],
+    "feature_summary": [
+      "Tracked separately from OpenAI because decryptability and replay scope are endpoint-specific",
+      "Public adapter evidence shows store=false requests need reasoning.encrypted_content include and xAI item id metadata",
+      "Public pydantic-ai cassette samples provide metadata-only xAI observations; keep profile provisional until replay scope is fully proven"
+    ]
+  }
+]

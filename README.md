@@ -1,81 +1,81 @@
-# Model Signatures
+# Model Signature Features
 
-This repository collects observable signatures for LLM model families and client surfaces.
+[中文](README_CN.md)
 
-Current scope:
+This repository publishes metadata-only, observable outer-format features for reasoning-continuity
+signatures emitted by Claude, GPT, Gemini, and Grok-family endpoints.
 
-- Claude
-  - API
-  - Claude Code
-- GPT
-  - API
-  - Codex
-- Gemini
-  - AI Studio
-  - Vertex AI
-  - Antigravity
-  - Gemini CLI
+It is a feature catalog, not a capture pipeline or runtime integration database. Raw signature
+values, prompts, tool arguments, request IDs, credentials, and private logs do not belong in the
+public catalog.
 
-The goal is to keep the data small, reviewable, and safe to publish. Do not commit API keys,
-authorization headers, cookies, private prompts, user content, or raw logs that may contain
-secrets.
-
-## Layout
+## Published Layout
 
 ```text
+features/
+  signature-features.json        # family-level feature records and observed outer markers
 signatures/
   claude/
-    api/
-      signatures.json
-    claude-code/
-      signatures.json
   gpt/
-    api/
-      signatures.json
-    codex/
-      signatures.json
   gemini/
-    aistudio/
-      signatures.json
-    vertex/
-      signatures.json
-    antigravity/
-      signatures.json
-    gemini-cli/
-      signatures.json
+  grok/                          # metadata-only observations by trusted endpoint family
 schemas/
   signature.schema.json
+  signature-features.schema.json
+docs/
+  signature-outer-formats.md
+  classification.md
+  schema.md
+tools/
+  validate_public_catalog.py
 ```
 
-## Entry Format
+Internal capture, database, CLIProxyAPI, backlog, staging, and evidence work now lives under
+`internal/`. Those files can help maintain the catalog, but they are not the public surface.
 
-Each `signatures.json` file is an array of entries matching
-[`schemas/signature.schema.json`](schemas/signature.schema.json).
+## What Counts As A Feature
 
-Minimal example:
+A published feature describes observable structure, for example:
 
-```json
-{
-  "provider": "claude",
-  "source": "api",
-  "model": "claude-example-model",
-  "signature_type": "response_shape",
-  "signature": {
-    "example_key": "example_value"
-  },
-  "evidence": {
-    "captured_from": "redacted request/response sample",
-    "notes": "Only non-sensitive fields are included."
-  },
-  "observed_at": "2026-05-27T00:00:00Z",
-  "redactions": ["authorization", "user_content"]
-}
-```
+- native field name: `signature`, `signature_delta`, `encrypted_content`, `thoughtSignature`;
+- public encoding: base64 or base64url;
+- decoded outer markers: first byte, token envelope shape, channel marker, IV/HMAC presence;
+- publication policy: raw value omitted, metadata only;
+- replay boundary: same endpoint/family only unless proven otherwise.
 
-## Validate
+Outer-format classification does not prove decryptability, authentication, or replay success. It
+only says the value matches a known container shape.
 
-Basic JSON validation:
+## Current Families
+
+- Claude: `signature` on Anthropic Messages thinking blocks; stream field `signature_delta`.
+- GPT: `encrypted_content` on OpenAI Responses reasoning and related opaque items.
+- Gemini: `thoughtSignature` / `thought_signature` on content parts.
+- Grok/xAI: Responses-compatible `encrypted_content`, tracked separately from GPT.
+
+See [docs/signature-outer-formats.md](docs/signature-outer-formats.md) for the detailed marker
+rules.
+
+## Validation
+
+Run the public catalog validator before publishing changes:
 
 ```bash
-jq empty signatures/**/*.json schemas/*.json
+python3 tools/validate_public_catalog.py
 ```
+
+For a quick JSON parse check:
+
+```bash
+jq empty features/*.json schemas/*.json signatures/**/*.json
+```
+
+## Publishing Rules
+
+- Publish hashes, lengths, encodings, classifications, and notes only.
+- Do not publish raw native signatures or encrypted reasoning blobs.
+- Keep low-confidence local routing names out of public endpoint taxonomy.
+- Put internal capture artifacts, staging data, runtime exports, and database material in
+  `internal/`.
+- When a field name is shared across providers, such as GPT and xAI `encrypted_content`, keep the
+  families separate until replay compatibility is directly proven.
